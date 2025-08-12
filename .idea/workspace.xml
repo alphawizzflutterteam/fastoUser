@@ -4,7 +4,47 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69af64c8-f614-461a-85cb-c38489fec379" name="Changes" comment="" />
+    <list default="true" id="69af64c8-f614-461a-85cb-c38489fec379" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/lib/Auth/Registration/UI/SignIn.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/.filecache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/app.dill" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/debug_android_application.stamp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/flutter_assets.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/gen_dart_plugin_registrant.stamp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/gen_localizations.stamp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/kernel_snapshot.stamp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/kernel_snapshot_native_assets.stamp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/kernel_snapshot_program.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/kernel_snapshot_program.stamp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/native_assets.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/native_assets.dill" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/native_assets.stamp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/native_assets.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/outputs.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/program.dill" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/package_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/package_config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/package_config_subset" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/package_config_subset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins-dependencies" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/google-services.json" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/google-services.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/Auth/Login/UI/login_ui.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Auth/Login/UI/login_ui.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/Auth/Registration/UI/registration_ui.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Auth/Registration/UI/registration_ui.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/Auth/Verification/UI/verification_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Auth/Verification/UI/verification_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/Auth/Verification/UI/verification_ui.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Auth/Verification/UI/verification_ui.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/Auth/login_navigator.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Auth/login_navigator.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/BookRide/PaymentScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/BookRide/PaymentScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/BookRide/choose_cab_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/BookRide/choose_cab_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/BookRide/ride_booked_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/BookRide/ride_booked_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/DrawerPages/Profile/profile_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DrawerPages/Profile/profile_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/DrawerPages/Rides/intercity_rides.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DrawerPages/Rides/intercity_rides.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/DrawerPages/Rides/my_rides_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DrawerPages/Rides/my_rides_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/DrawerPages/Rides/rental_rides.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DrawerPages/Rides/rental_rides.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/DrawerPages/Rides/ride_info_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DrawerPages/Rides/ride_info_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/DrawerPages/app_drawer.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DrawerPages/app_drawer.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/utils/constant.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utils/constant.dart" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -34,32 +74,21 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 6
-}</component>
   <component name="ProjectId" id="30whbGuMqfTQFqt9hLEEhhejjYs" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
     <option name="showMembers" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Flutter.main.dart.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;io.flutter.reload.alreadyRun&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Alphawizz/AndroidStudioProjects/FastoUser&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.github.ui.GithubSettingsConfigurable&quot;,
-    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
-  }
-}</component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.cidr.known.project.marker" value="true" />
+    <property name="cidr.known.project.marker" value="true" />
+    <property name="dart.analysis.tool.window.visible" value="false" />
+    <property name="io.flutter.reload.alreadyRun" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="flutter.settings" />
+    <property name="show.migrate.to.gradle.popup" value="false" />
+  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Alphawizz\AndroidStudioProjects\Pristine-Andaman-User\assets" />
@@ -67,6 +96,7 @@
       <recent name="C:\Users\Alphawizz\AndroidStudioProjects\Pristine-Andaman-User\android\app\src\main\res" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\FastoUser\FastoUser\android\app" />
       <recent name="D:\Pristine-Andaman-User\android\app" />
     </key>
   </component>
@@ -108,7 +138,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="Dart">
           <url>file://$PROJECT_DIR$/lib/Auth/Registration/UI/registration_ui.dart</url>
-          <line>720</line>
+          <line>721</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="Dart">
@@ -118,7 +148,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="Dart">
           <url>file://$PROJECT_DIR$/lib/DrawerPages/Profile/profile_page.dart</url>
-          <line>743</line>
+          <line>745</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="Dart">

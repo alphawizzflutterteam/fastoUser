@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ffi';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,10 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // import 'package:flutter_login_facebook/flutter_login_facebook.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:pristine_andaman/Auth/Registration/UI/registration_page.dart';
 import 'package:pristine_andaman/Auth/Registration/UI/registration_ui.dart';
 import 'package:pristine_andaman/Auth/Verification/UI/verification_page.dart';
-import 'package:pristine_andaman/Auth/login_navigator.dart';
 import 'package:pristine_andaman/Theme/style.dart';
 import 'package:pristine_andaman/utils/ApiBaseHelper.dart';
 import 'package:pristine_andaman/utils/Session.dart';
@@ -21,6 +18,7 @@ import 'package:sizer/sizer.dart';
 
 import '../../../utils/colors.dart';
 import '../../../utils/widget.dart';
+import '../../Registration/UI/SignIn.dart';
 import 'login_interactor.dart';
 
 class LoginUI extends StatefulWidget {
@@ -86,7 +84,7 @@ class _LoginUIState extends State<LoginUI> {
                 // ),
                 Container(
                   width: MediaQuery.of(context).size.width,
-                  height: (MediaQuery.of(context).size.height) / 1.0,//past 1.5
+                  height: (MediaQuery.of(context).size.height) / 1.0, //past 1.5
                   decoration: BoxDecoration(
                     image: const DecorationImage(
                       image: AssetImage('assets/background.png'),
@@ -222,22 +220,25 @@ class _LoginUIState extends State<LoginUI> {
                                     color: Colors.grey,
                                   ),
                                   prefixIcon: Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 12),
                                     margin: EdgeInsets.only(right: 4),
                                     decoration: BoxDecoration(
-                                      color: MyColorName.colorBg1,
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(5),
-                                        bottomLeft: Radius.circular(5),
-                                      ),
-                                      border: Border.all(width: 2,color: MyColorName.greyBorder)
-                                    ),
+                                        color: MyColorName.colorBg1,
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(5),
+                                          bottomLeft: Radius.circular(5),
+                                        ),
+                                        border: Border.all(
+                                            width: 2,
+                                            color: MyColorName.greyBorder)),
                                     child: Text(
                                       '+91',
-                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500),
                                     ),
                                   ),
-
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(5),
                                   ),
@@ -379,30 +380,31 @@ class _LoginUIState extends State<LoginUI> {
                                     ),
                                   ),
                             Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Container(
-                                  margin: EdgeInsets.only(
-                                      top: 24),
+                                  margin: EdgeInsets.only(top: 24),
                                   child: Row(
                                     children: [
                                       Text(
-                                            "Don't have account? ",
+                                        "Don't have account? ",
                                         style: TextStyle(
                                             fontSize: 18,
-                                            fontWeight:
-                                            FontWeight
-                                                .w500),),
+                                            fontWeight: FontWeight.w500),
+                                      ),
                                       InkWell(
                                         onTap: () {
-
+                                          // Navigator.push(
+                                          //     context,
+                                          //     MaterialPageRoute(
+                                          //         builder: (context) =>
+                                          //             RegisterPage(null)));
                                           Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder:
-                                                      (context) =>
-                                                      RegisterPage(null)));
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => SignIn(),
+                                            ),
+                                          );
                                         },
                                         child: Text(
                                           "Create Account",
@@ -410,9 +412,7 @@ class _LoginUIState extends State<LoginUI> {
                                           style: TextStyle(
                                               color: AppTheme.secondaryColor,
                                               fontSize: 18,
-                                              fontWeight:
-                                              FontWeight
-                                                  .w500),
+                                              fontWeight: FontWeight.w500),
                                         ),
                                       )
                                     ],
@@ -886,6 +886,7 @@ class _LoginUIState extends State<LoginUI> {
               builder: (context) => VerificationPage(
                 _numberController.text.trim().toString(),
                 response['data']['otp'].toString(),
+                'login',
                 isRegister: response['is_registered'],
               ),
             ),

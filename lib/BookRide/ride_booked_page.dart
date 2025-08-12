@@ -931,7 +931,7 @@ class _RideBookedPageState extends State<RideBookedPage>
                             //           final dynamicLinkParams =
                             //               DynamicLinkParameters(
                             //             link: Uri.parse(
-                            //                 "https://pristin.pristineandaman.com/?${widget.model.bookingId}"),
+                            //                 "https://bikebooking.alphawizzserver.com/?${widget.model.bookingId}"),
                             //             uriPrefix:
                             //                 "https://alphawizzserver.com/cab_booking",
                             //             androidParameters:
@@ -986,7 +986,7 @@ class _RideBookedPageState extends State<RideBookedPage>
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(12),
                               child: Image.network(
-                                'https://pristin.pristineandaman.com/upload/customer_profiles/' +
+                                'https://bikebooking.alphawizzserver.com/upload/customer_profiles/' +
                                     widget.model.driverImage.toString(),
                                 height: 72,
                                 width: 72,

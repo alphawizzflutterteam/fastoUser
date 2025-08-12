@@ -95,7 +95,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       var request = http.MultipartRequest(
           'POST',
           Uri.parse(
-              'https://pristin.pristineandaman.com/api/booking/update_booking_payment'));
+              'https://bikebooking.alphawizzserver.com/api/booking/update_booking_payment'));
       request.fields.addAll({
         "user_id": curUserId.toString(),
         "id": widget.bookingId.toString(),
@@ -103,7 +103,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
             '${widget.paymentType == "Part Payment" ? partPayment : widget.amount.toString()}',
         'transaction_id': tranId.toString(),
         'payment_mode': '${_selectedPaymentMethod.toString()}',
-        'payment_type': _selectedPaymentMethod.toString() == 'Cash Payment'  ?   ''  :  '${widget.paymentType.toString()}'
+        'payment_type': _selectedPaymentMethod.toString() == 'Cash Payment'
+            ? ''
+            : '${widget.paymentType.toString()}'
       });
       print("schedule ride is ${request.fields}");
       request.headers.addAll(headers);
@@ -171,10 +173,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
         centerTitle: true,
         title: Text(
           'Payment Type',
-          style: TextStyle(fontSize: 17,color: Colors.black),
+          style: TextStyle(fontSize: 17, color: Colors.black),
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios,color: Colors.black,),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: Colors.black,
+          ),
           onPressed: () {
             Navigator.pop(context);
           },

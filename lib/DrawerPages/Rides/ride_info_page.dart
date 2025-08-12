@@ -178,8 +178,7 @@ class _RideInfoPageState extends State<RideInfoPage> {
                 fontSize: 22,
                 fontFamily: AppTheme.fontFamily,
                 fontWeight: FontWeight.w500,
-                color: MyColorName.secondary
-            ),
+                color: MyColorName.secondary),
           ),
           centerTitle: true,
         ),
@@ -694,45 +693,39 @@ class _RideInfoPageState extends State<RideInfoPage> {
                         children: [
                           Row(
                             children: [
-                              Text(
-                                  '${getTranslated(context, "TRIP_ID")}',
+                              Text('${getTranslated(context, "TRIP_ID")}',
                                   style: TextStyle(
-                                      fontWeight:
-                                      FontWeight.bold,
+                                    fontWeight: FontWeight.bold,
                                     fontSize: 12,
-                                      fontFamily: AppTheme.fontFamily,
-                                  color: MyColorName.textColor,
+                                    fontFamily: AppTheme.fontFamily,
+                                    color: MyColorName.textColor,
                                   )),
                               Text(
                                 ' - ${widget.model.uneaqueId.toString()}',
-                                  style:TextStyle(
-                                      fontSize: 13,
-                                      fontFamily:AppTheme.fontFamily,
-                                      fontWeight: FontWeight.w500
-                                  ),
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    fontFamily: AppTheme.fontFamily,
+                                    fontWeight: FontWeight.w500),
                               ),
                               Spacer(),
                               Text(
                                 "${widget.model.distance.toString()} Kms",
                                 //style: theme.textTheme.bodyMedium,
-                                style:TextStyle(
-                                  fontSize: 13,
-                                  fontFamily:AppTheme.fontFamily,
-                                  fontWeight: FontWeight.w500
-                                ),
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    fontFamily: AppTheme.fontFamily,
+                                    fontWeight: FontWeight.w500),
                               ),
                             ],
                           ),
                           Text(
                             '${getDate(widget.model.dateAdded)}',
-                            style:TextStyle(
-                              fontSize: 13,
-                              fontFamily:AppTheme.fontFamily,
-                              fontWeight: FontWeight.w500
-                          ),
+                            style: TextStyle(
+                                fontSize: 13,
+                                fontFamily: AppTheme.fontFamily,
+                                fontWeight: FontWeight.w500),
                             overflow: TextOverflow.ellipsis,
                           ),
-
 
                           // Align(
                           //   alignment: Alignment.centerLeft,
@@ -1246,9 +1239,11 @@ class _RideInfoPageState extends State<RideInfoPage> {
                                         textColor: MyColorName.textColor1),
                                   ],
                                 )
-
                               : SizedBox(),
-                          Divider(color: MyColorName.lineColor,thickness: 1,),
+                          Divider(
+                            color: MyColorName.lineColor,
+                            thickness: 1,
+                          ),
                           double.parse(widget.model.distance.toString()) > 0
                               ? Row(
                                   mainAxisAlignment:
@@ -1267,7 +1262,10 @@ class _RideInfoPageState extends State<RideInfoPage> {
                                   ],
                                 )
                               : SizedBox(),
-                          Divider(color: MyColorName.lineColor,thickness: 1,),
+                          Divider(
+                            color: MyColorName.lineColor,
+                            thickness: 1,
+                          ),
                           double.parse(widget.model.extraKm.toString()) > 0
                               ? Row(
                                   mainAxisAlignment:
@@ -1326,7 +1324,10 @@ class _RideInfoPageState extends State<RideInfoPage> {
                                   ],
                                 )
                               : SizedBox(),
-                          Divider(color: MyColorName.lineColor,thickness: 1,),
+                          Divider(
+                            color: MyColorName.lineColor,
+                            thickness: 1,
+                          ),
 
                           double.parse(widget.model.cancel_charge.toString()) >
                                   0
@@ -1365,7 +1366,10 @@ class _RideInfoPageState extends State<RideInfoPage> {
                                   textColor: MyColorName.textColor1),
                             ],
                           ),
-                          Divider(color: MyColorName.lineColor,thickness: 1,),
+                          Divider(
+                            color: MyColorName.lineColor,
+                            thickness: 1,
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -1381,7 +1385,6 @@ class _RideInfoPageState extends State<RideInfoPage> {
                                   textColor: MyColorName.textColor1),
                             ],
                           ),
-
 
                           // double.parse(widget.model.paidAmount.toString()) > 0
                           //     ? Row(
@@ -1557,7 +1560,7 @@ class _RideInfoPageState extends State<RideInfoPage> {
                         ? InkWell(
                             onTap: () async {
                               final Uri uri = Uri.parse(
-                                  'https://pristin.pristineandaman.com/api/payment/download_invoice?booking_id=${widget.model.bookingId}');
+                                  'https://bikebooking.alphawizzserver.com/api/payment/download_invoice?booking_id=${widget.model.bookingId}');
                               if (!await launchUrl(uri,
                                   mode: LaunchMode.externalApplication)) {
                                 throw Exception('Could not launch $uri');

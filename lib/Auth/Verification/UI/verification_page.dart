@@ -5,10 +5,10 @@ import 'verification_interactor.dart';
 import 'verification_ui.dart';
 
 class VerificationPage extends StatefulWidget {
-  String mobile, otp;
+  String mobile, otp, comeFrom;
   bool? isRegister;
 
-  VerificationPage(this.mobile, this.otp, {this.isRegister});
+  VerificationPage(this.mobile, this.otp, this.comeFrom, {this.isRegister});
 
   @override
   _VerificationPageState createState() => _VerificationPageState();
@@ -18,7 +18,13 @@ class _VerificationPageState extends State<VerificationPage>
     implements VerificationInteractor {
   @override
   Widget build(BuildContext context) {
-    return VerificationUI(this, widget.mobile, widget.otp,isRegister: widget.isRegister,);
+    return VerificationUI(
+      this,
+      widget.mobile,
+      widget.otp,
+      widget.comeFrom,
+      isRegister: widget.isRegister,
+    );
   }
 
   @override

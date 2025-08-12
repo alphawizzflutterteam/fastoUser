@@ -40,12 +40,12 @@ const String languageCode = 'languageCode';
 final String baseUrl =
     //"https://192.168.0.50/TAXI_APP/Authentication";
     // 'https://developmentalphawizz.com/why_taxi/api/Authentication/';
-    'https://pristin.pristineandaman.com/api/Authentication/';  //https://admin.whytaxi.com/
+    'https://bikebooking.alphawizzserver.com/api/Authentication/'; //https://admin.whytaxi.com/
 
 final String baseUrl1 =
     //"https://192.168.0.50/TAXI_APP/";
     // 'https://developmentalphawizz.com/why_taxi/api/';
-    'https://pristin.pristineandaman.com/api/';
+    'https://bikebooking.alphawizzserver.com/api/';
 
 final String playUrl =
     "https://play.google.com/store/apps/details?id=$packageName";
@@ -66,7 +66,7 @@ String proImage = "";
 int likeCount = 0;
 bool notification = true;
 bool doLock = false;
-double points=0;
+double points = 0;
 String name = "",
     emergencyName = "",
     email = "",

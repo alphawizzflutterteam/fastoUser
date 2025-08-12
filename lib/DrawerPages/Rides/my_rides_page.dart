@@ -205,7 +205,7 @@ class _MyRidesPageState extends State<MyRidesPage> {
             "My Rides",
             style: TextStyle(
               fontSize: 22,
-              fontFamily:  AppTheme.fontFamily,
+              fontFamily: AppTheme.fontFamily,
               color: MyColorName.secondary,
             ),
           ),
@@ -214,7 +214,7 @@ class _MyRidesPageState extends State<MyRidesPage> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height:34),
+              SizedBox(height: 34),
               // Container(
               //   padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               //   width: getWidth(375),
@@ -229,7 +229,7 @@ class _MyRidesPageState extends State<MyRidesPage> {
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 16),
                 width: double.infinity,
-                height: 40,//getWidth(322.1),
+                height: 40, //getWidth(322.1),
                 decoration: boxDecoration(
                   bgColor: MyColorName.colorBg1,
                   // radius: 10,
@@ -295,7 +295,7 @@ class _MyRidesPageState extends State<MyRidesPage> {
                                   )
                                 ],
                                 borderRadius: BorderRadius.circular(10),
-                                 color: Theme.of(context).primaryColor,
+                                color: Theme.of(context).primaryColor,
                               )
                             : BoxDecoration(),
                         child: Center(
@@ -843,18 +843,20 @@ class _MyRidesPageState extends State<MyRidesPage> {
                                                           //       .bodyText1,
                                                           // ),
                                                           if (rideList[index]
-                                                              .status !=
+                                                                  .status !=
                                                               'complete')
                                                             Text(
                                                               rideList[index]
-                                                                  .acceptReject ==
-                                                                  "6"
+                                                                          .acceptReject ==
+                                                                      "6"
                                                                   ? "Trip End OTP : ${rideList[index].bookingOtp.toString()}"
                                                                   : "Start OTP : ${rideList[index].bookingOtp.toString()}",
                                                               style: TextStyle(
                                                                   fontWeight:
-                                                                  FontWeight.w600,
-                                                                  color: Colors.blue,
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  color: Colors
+                                                                      .blue,
                                                                   fontSize: 12),
                                                             ),
                                                           Spacer(),
@@ -1001,7 +1003,6 @@ class _MyRidesPageState extends State<MyRidesPage> {
                                                               //         fontSize: 12),
                                                               //   ),
 
-
                                                               rideList[index].extraKmPrice ==
                                                                           null ||
                                                                       rideList[index]
@@ -1088,119 +1089,117 @@ class _MyRidesPageState extends State<MyRidesPage> {
                                                         ],
                                                       ),
                                                     ),
-                                                Padding(
-                                                  padding:
-                                                  const EdgeInsets.only(
-                                                      left: 10,
-                                                      right: 10),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                    children: [
-                                                      boxHeight(5),
-                                                      !rideList[index]
-                                                              .bookingType!
-                                                              .contains("Point")
-                                                          ? Padding(
-                                                              padding: const EdgeInsets
-                                                                  .symmetric(
-                                                                  horizontal: 8.0),
-                                                              child: Row(
-                                                                mainAxisAlignment: rideList[
-                                                                                    index]
-                                                                                .sharing_type !=
-                                                                            null &&
-                                                                        rideList[index]
-                                                                                .sharing_type !=
-                                                                            ""
-                                                                    ? MainAxisAlignment
-                                                                        .spaceBetween
-                                                                    : MainAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  AnimatedTextKit(
-                                                                    animatedTexts: [
-                                                                      ColorizeAnimatedText(
-                                                                        "Booking Date - ${rideList[index].pickupDate ?? ''} ${rideList[index].pickupTime}",
-                                                                        textStyle:
-                                                                            colorizeTextStyle
-                                                                                .copyWith(
-                                                                                    fontSize:
-                                                                                        16),
-                                                                        colors:
-                                                                            colorizeColors,
+                                                    Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                                left: 10,
+                                                                right: 10),
+                                                        child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              boxHeight(5),
+                                                              !rideList[index]
+                                                                      .bookingType!
+                                                                      .contains(
+                                                                          "Point")
+                                                                  ? Padding(
+                                                                      padding: const EdgeInsets
+                                                                          .symmetric(
+                                                                          horizontal:
+                                                                              8.0),
+                                                                      child:
+                                                                          Row(
+                                                                        mainAxisAlignment: rideList[index].sharing_type != null &&
+                                                                                rideList[index].sharing_type != ""
+                                                                            ? MainAxisAlignment.spaceBetween
+                                                                            : MainAxisAlignment.center,
+                                                                        children: [
+                                                                          AnimatedTextKit(
+                                                                            animatedTexts: [
+                                                                              ColorizeAnimatedText(
+                                                                                "Booking Date - ${rideList[index].pickupDate ?? ''} ${rideList[index].pickupTime}",
+                                                                                textStyle: colorizeTextStyle.copyWith(fontSize: 16),
+                                                                                colors: colorizeColors,
+                                                                              ),
+                                                                            ],
+                                                                            pause:
+                                                                                Duration(milliseconds: 100),
+                                                                            isRepeatingAnimation:
+                                                                                true,
+                                                                            totalRepeatCount:
+                                                                                100,
+                                                                            onTap:
+                                                                                () {
+                                                                              print("Tap Event");
+                                                                            },
+                                                                          ),
+                                                                          // rideList[index].sharing_type !=
+                                                                          //             null &&
+                                                                          //         rideList[index]
+                                                                          //                 .sharing_type !=
+                                                                          //             ""
+                                                                          //     ? AnimatedTextKit(
+                                                                          //         animatedTexts: [
+                                                                          //           ColorizeAnimatedText(
+                                                                          //             "${getTranslated(context, "RIDE_TYPE")} - ${rideList[index].sharing_type}",
+                                                                          //             textStyle:
+                                                                          //                 colorizeTextStyle,
+                                                                          //             colors:
+                                                                          //                 colorizeColors,
+                                                                          //           ),
+                                                                          //         ],
+                                                                          //         pause: Duration(
+                                                                          //             milliseconds:
+                                                                          //                 100),
+                                                                          //         isRepeatingAnimation:
+                                                                          //             true,
+                                                                          //         totalRepeatCount:
+                                                                          //             100,
+                                                                          //         onTap: () {
+                                                                          //           print(
+                                                                          //               "Tap Event");
+                                                                          //         },
+                                                                          //       )
+                                                                          //     : SizedBox(),
+                                                                        ],
                                                                       ),
-                                                                    ],
-                                                                    pause: Duration(
-                                                                        milliseconds:
-                                                                            100),
-                                                                    isRepeatingAnimation:
-                                                                        true,
-                                                                    totalRepeatCount: 100,
-                                                                    onTap: () {
-                                                                      print("Tap Event");
-                                                                    },
-                                                                  ),
-                                                                  // rideList[index].sharing_type !=
-                                                                  //             null &&
-                                                                  //         rideList[index]
-                                                                  //                 .sharing_type !=
-                                                                  //             ""
-                                                                  //     ? AnimatedTextKit(
-                                                                  //         animatedTexts: [
-                                                                  //           ColorizeAnimatedText(
-                                                                  //             "${getTranslated(context, "RIDE_TYPE")} - ${rideList[index].sharing_type}",
-                                                                  //             textStyle:
-                                                                  //                 colorizeTextStyle,
-                                                                  //             colors:
-                                                                  //                 colorizeColors,
-                                                                  //           ),
-                                                                  //         ],
-                                                                  //         pause: Duration(
-                                                                  //             milliseconds:
-                                                                  //                 100),
-                                                                  //         isRepeatingAnimation:
-                                                                  //             true,
-                                                                  //         totalRepeatCount:
-                                                                  //             100,
-                                                                  //         onTap: () {
-                                                                  //           print(
-                                                                  //               "Tap Event");
-                                                                  //         },
-                                                                  //       )
-                                                                  //     : SizedBox(),
-                                                                ],
-                                                              ),
-                                                            )
-                                                          : SizedBox(),
-                                                      boxHeight(8),
-                                                      rideList[index].returnDate != "" &&
-                                                          rideList[index]
-                                                              .returnDate !=
-                                                              null
-                                                          ? AnimatedTextKit(
-                                                        animatedTexts: [
-                                                          ColorizeAnimatedText(
-                                                            "Return Date - ${rideList[index].returnDate ?? ''}",
-                                                            textStyle:
-                                                            colorizeTextStyle
-                                                                .copyWith(
-                                                                fontSize:
-                                                                16),
-                                                            colors: colorizeColors,
-                                                          ),
-                                                        ],
-                                                        pause: Duration(
-                                                            milliseconds: 100),
-                                                        isRepeatingAnimation: true,
-                                                        totalRepeatCount: 100,
-                                                        onTap: () {
-                                                          print("Tap Event");
-                                                        },
-                                                      )
-                                                          : boxHeight(5),
-                                                    ])),
+                                                                    )
+                                                                  : SizedBox(),
+                                                              boxHeight(8),
+                                                              rideList[index].returnDate !=
+                                                                          "" &&
+                                                                      rideList[index]
+                                                                              .returnDate !=
+                                                                          null
+                                                                  ? AnimatedTextKit(
+                                                                      animatedTexts: [
+                                                                        ColorizeAnimatedText(
+                                                                          "Return Date - ${rideList[index].returnDate ?? ''}",
+                                                                          textStyle:
+                                                                              colorizeTextStyle.copyWith(fontSize: 16),
+                                                                          colors:
+                                                                              colorizeColors,
+                                                                        ),
+                                                                      ],
+                                                                      pause: Duration(
+                                                                          milliseconds:
+                                                                              100),
+                                                                      isRepeatingAnimation:
+                                                                          true,
+                                                                      totalRepeatCount:
+                                                                          100,
+                                                                      onTap:
+                                                                          () {
+                                                                        print(
+                                                                            "Tap Event");
+                                                                      },
+                                                                    )
+                                                                  : boxHeight(
+                                                                      5),
+                                                            ])),
 
                                                     //SizedBox(height: 5),
                                                     // if (!selected)
@@ -1514,7 +1513,7 @@ class _MyRidesPageState extends State<MyRidesPage> {
                                                       //     final dynamicLinkParams =
                                                       //         DynamicLinkParameters(
                                                       //       link: Uri.parse(
-                                                      //           "https://pristin.pristineandaman.com/?${rideList[index].bookingId}"),
+                                                      //           "https://bikebooking.alphawizzserver.com/?${rideList[index].bookingId}"),
                                                       //       uriPrefix:
                                                       //           "https://alphawizzserver.com/cab_booking",
                                                       //       androidParameters:
