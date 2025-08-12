@@ -8,7 +8,6 @@ import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as path;
-import 'package:sizer/sizer.dart';
 import 'package:pristine_andaman/Components/custom_button.dart';
 import 'package:pristine_andaman/Components/entry_field.dart';
 import 'package:pristine_andaman/Theme/style.dart';
@@ -19,8 +18,8 @@ import 'package:pristine_andaman/utils/common.dart';
 import 'package:pristine_andaman/utils/constant.dart';
 import 'package:pristine_andaman/utils/new_utils/ui.dart';
 import 'package:pristine_andaman/utils/widget.dart';
+import 'package:sizer/sizer.dart';
 
-import '../../BookRide/search_location_page.dart';
 import '../../bottom_nav_screen.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -360,98 +359,98 @@ class _ProfilePageState extends State<ProfilePage> {
             //   height: 60,
             // ),
             InkWell(
-              onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) => imagePick(),
-                );
-                // requestPermission(context);
-              },
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  // Profile Picture Container
-                  Container(
-                    height: 150,
-                    width: 150,
-                    decoration: BoxDecoration(
-                      color: theme.hintColor,
-                      borderRadius: BorderRadius.circular(182),
-                      border: Border.all(
-                        color: Colors.black, // border color
-                        width: 3,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.15),
-                          blurRadius: 6,
-                          offset: Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    alignment: Alignment.center,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(182),
-                      child: _image == null
-                          ? Image.network(
-                        image,
-                        height: 150,
-                        width: 150,
-                        fit: BoxFit.fill,
-                      )
-                          : Image.file(
-                        _image!,
-                        height: 150,
-                        width: 150,
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                  ),
-
-                  // Positioned Camera Icon
-                  Positioned(
-                    bottom: 8,
-                    right: 8,
-                    child: Container(
-                      padding: EdgeInsets.all(6),
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (context) => imagePick(),
+                  );
+                  // requestPermission(context);
+                },
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    // Profile Picture Container
+                    Container(
+                      height: 150,
+                      width: 150,
                       decoration: BoxDecoration(
-                        color: Colors.blue, // background color of camera button
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.black, width: 2),
+                        color: theme.hintColor,
+                        borderRadius: BorderRadius.circular(182),
+                        border: Border.all(
+                          color: Colors.black, // border color
+                          width: 1,
+                        ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            blurRadius: 4,
-                            offset: Offset(0, 2),
+                            color: Colors.black.withOpacity(0.15),
+                            blurRadius: 6,
+                            offset: Offset(0, 3),
                           ),
                         ],
                       ),
-                      child: Icon(
-                        Icons.camera_alt,
-                        color: Colors.white,
-                        size: 18,
+                      alignment: Alignment.center,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(182),
+                        child: _image == null
+                            ? Image.network(
+                                image,
+                                height: 150,
+                                width: 150,
+                                fit: BoxFit.fill,
+                              )
+                            : Image.file(
+                                _image!,
+                                height: 150,
+                                width: 150,
+                                fit: BoxFit.fill,
+                              ),
                       ),
                     ),
-                  ),
-                ],
-              )
 
-            ),
+                    // Positioned Camera Icon
+                    Positioned(
+                      bottom: 8,
+                      right: 8,
+                      child: Container(
+                        padding: EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: Colors.blue,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.black, width: 2),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              blurRadius: 1,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          Icons.camera_alt,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                      ),
+                    ),
+                  ],
+                )),
 
             SizedBox(
               height: 10,
             ),
-          Container(
-            width: 160,
-            child: Text(name,
+            Container(
+              width: 160,
+              child: Text(
+                name,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.bodyMedium!
-                    .copyWith(
+                style: theme.textTheme.bodyMedium!.copyWith(
                     color: Colors.black,
                     fontWeight: FontWeight.w600,
-                    fontSize: 20),textAlign: TextAlign.center,),
-          ),
+                    fontSize: 20),
+                textAlign: TextAlign.center,
+              ),
+            ),
             SizedBox(
               height: 20,
             ),
@@ -488,7 +487,10 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             Text(
               'Emergency Contact',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16,fontFamily: 'Poppins'),
+              style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                  fontFamily: 'Poppins'),
               textAlign: TextAlign.start,
             ),
             SizedBox(

@@ -737,7 +737,7 @@ class _InterCityRidePageState extends State<InterCityRidePage> {
                                           //     final dynamicLinkParams =
                                           //         DynamicLinkParameters(
                                           //       link: Uri.parse(
-                                          //           "https://pristin.pristineandaman.com/?${rideList[index].bookingId}"),
+                                          //           "https://bikebooking.alphawizzserver.com/?${rideList[index].bookingId}"),
                                           //       uriPrefix:
                                           //           "https://alphawizzserver.com/cab_booking",
                                           //       androidParameters:

@@ -1768,7 +1768,7 @@ class _ChooseCabPageState extends State<ChooseCabPage> {
   String surgePer = '0';
   bool isChecked = false;
   final Uri _url = Uri.parse(
-      'https://pristin.pristineandaman.com/api/authentication/read_before_book');
+      'https://bikebooking.alphawizzserver.com/api/authentication/read_before_book');
 
   Future<void> _launchURL() async {
     if (!await launchUrl(_url, mode: LaunchMode.externalApplication)) {
@@ -1785,7 +1785,7 @@ class _ChooseCabPageState extends State<ChooseCabPage> {
     var request = http.Request(
         'GET',
         Uri.parse(
-            'https://pristin.pristineandaman.com/api/authentication/read_before_book'));
+            'https://bikebooking.alphawizzserver.com/api/authentication/read_before_book'));
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {

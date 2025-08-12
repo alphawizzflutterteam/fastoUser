@@ -1,6 +1,6 @@
-import 'package:pristine_andaman/utils/new_utils/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:pristine_andaman/Routes/page_routes.dart';
+
 import 'AddMoney/UI/add_money_page.dart';
 import 'Login/UI/login_page.dart';
 import 'Registration/UI/registration_page.dart';
@@ -16,9 +16,6 @@ class LoginRoutes {
 }
 
 class LoginNavigator extends StatelessWidget {
-
-
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -43,7 +40,7 @@ class LoginNavigator extends StatelessWidget {
               builder = (BuildContext _) => RegisterPage(phoneNumber);
               break;
             case LoginRoutes.verification:
-              builder = (BuildContext _) => VerificationPage("","");
+              builder = (BuildContext _) => VerificationPage("", "", '');
               break;
             case LoginRoutes.addMoney:
               builder = (BuildContext _) => AddMoneyPage(

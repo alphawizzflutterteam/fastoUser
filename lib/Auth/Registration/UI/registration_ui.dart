@@ -20,7 +20,6 @@ import 'package:sizer/sizer.dart';
 
 import '../../../utils/common.dart';
 import '../../../utils/constant.dart';
-import '../../Login/UI/login_page.dart';
 
 class RegistrationUI extends StatefulWidget {
   final String? phoneNumber;
@@ -87,13 +86,12 @@ class _RegistrationUIState extends State<RegistrationUI> {
       body: SingleChildScrollView(
         // physics: NeverScrollableScrollPhysics(),
         child: Container(
-
           //   height: MediaQuery.of(context).size.height + MediaQuery.of(context).size.height*0.5,
           child: Stack(
             children: [
               Container(
                 width: MediaQuery.of(context).size.width,
-                height: (MediaQuery.of(context).size.height) / 1.0,//past 1.5
+                height: (MediaQuery.of(context).size.height) / 1.0, //past 1.5
                 decoration: BoxDecoration(
                   image: const DecorationImage(
                     image: AssetImage('assets/background.png'),
@@ -123,13 +121,12 @@ class _RegistrationUIState extends State<RegistrationUI> {
                         // mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text(
-                            'Create Your Account',textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 24,
-                              fontWeight: FontWeight.w900)
-                          ),
+                          Text('Create Your Account',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w900)),
                           // SizedBox(height: 12),
                           // Text(
                           //   'We will send you a confirmation code',
@@ -313,56 +310,60 @@ class _RegistrationUIState extends State<RegistrationUI> {
                                     ? text(getTranslated(context, 'SIGN_UP')!,
                                         // getTranslated(context, "CONTINUE")!,
                                         fontFamily: fontMedium,
-                                        fontSize: 12.sp,
+                                        fontSize: 15.sp,
                                         textColor: Colors.white)
-                                    : CircularProgressIndicator(
-                                        color: Colors.white),
+                                    : SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(
+                                            color: Colors.white),
+                                      ),
                               ),
                             ),
                           ),
                           SizedBox(height: 24),
-                          Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                margin: EdgeInsets.only(
-                                    top: 24),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      "Already have account? ",
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight:
-                                          FontWeight
-                                              .w500),),
-                                    InkWell(
-                                      onTap: () {
-
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder:
-                                                    (context) =>
-                                                        LoginPage()));
-                                      },
-                                      child: Text(
-                                        "Log in",
-                                        // 'Login',
-                                        style: TextStyle(
-                                            color: AppTheme.secondaryColor,
-                                            fontSize: 18,
-                                            fontWeight:
-                                            FontWeight
-                                                .w500),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
+                          // Row(
+                          //   mainAxisAlignment:
+                          //   MainAxisAlignment.center,
+                          //   children: [
+                          //     Container(
+                          //       margin: EdgeInsets.only(
+                          //           top: 24),
+                          //       child: Row(
+                          //         children: [
+                          //           Text(
+                          //             "Already have account? ",
+                          //             style: TextStyle(
+                          //                 fontSize: 18,
+                          //                 fontWeight:
+                          //                 FontWeight
+                          //                     .w500),),
+                          //           InkWell(
+                          //             onTap: () {
+                          //
+                          //               Navigator.push(
+                          //                   context,
+                          //                   MaterialPageRoute(
+                          //                       builder:
+                          //                           (context) =>
+                          //                               LoginPage()));
+                          //             },
+                          //             child: Text(
+                          //               "Log in",
+                          //               // 'Login',
+                          //               style: TextStyle(
+                          //                   color: AppTheme.secondaryColor,
+                          //                   fontSize: 18,
+                          //                   fontWeight:
+                          //                   FontWeight
+                          //                       .w500),
+                          //             ),
+                          //           )
+                          //         ],
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
                         ],
                       ),
                     ),
@@ -764,7 +765,6 @@ class _RegistrationUIState extends State<RegistrationUI> {
             ),
           );
         }
-
         request.headers.addAll(headers);
         request.fields.addAll({
           "gender": genderCon.text,

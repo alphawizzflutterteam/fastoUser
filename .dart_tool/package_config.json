@@ -261,7 +261,7 @@
     },
     {
       "name": "flutter",
-      "rootUri": "file:///C:/Users/Alphawizz/develop/flutter_3.27.0/packages/flutter",
+      "rootUri": "file:///D:/flutter_windows_3.27.0-stable/flutter/packages/flutter",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
@@ -333,7 +333,7 @@
     },
     {
       "name": "flutter_localizations",
-      "rootUri": "file:///C:/Users/Alphawizz/develop/flutter_3.27.0/packages/flutter_localizations",
+      "rootUri": "file:///D:/flutter_windows_3.27.0-stable/flutter/packages/flutter_localizations",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
@@ -399,7 +399,7 @@
     },
     {
       "name": "flutter_test",
-      "rootUri": "file:///C:/Users/Alphawizz/develop/flutter_3.27.0/packages/flutter_test",
+      "rootUri": "file:///D:/flutter_windows_3.27.0-stable/flutter/packages/flutter_test",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
@@ -411,7 +411,7 @@
     },
     {
       "name": "flutter_web_plugins",
-      "rootUri": "file:///C:/Users/Alphawizz/develop/flutter_3.27.0/packages/flutter_web_plugins",
+      "rootUri": "file:///D:/flutter_windows_3.27.0-stable/flutter/packages/flutter_web_plugins",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
@@ -981,7 +981,7 @@
     },
     {
       "name": "sky_engine",
-      "rootUri": "file:///C:/Users/Alphawizz/develop/flutter_3.27.0/bin/cache/pkg/sky_engine",
+      "rootUri": "file:///D:/flutter_windows_3.27.0-stable/flutter/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
@@ -1232,10 +1232,10 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2025-08-11T08:24:29.795820Z",
+  "generated": "2025-08-12T11:15:38.411072Z",
   "generator": "pub",
   "generatorVersion": "3.6.0",
-  "flutterRoot": "file:///C:/Users/Alphawizz/develop/flutter_3.27.0",
+  "flutterRoot": "file:///D:/flutter_windows_3.27.0-stable/flutter",
   "flutterVersion": "3.27.0",
   "pubCache": "file:///C:/Users/Alphawizz/AppData/Local/Pub/Cache"
 }

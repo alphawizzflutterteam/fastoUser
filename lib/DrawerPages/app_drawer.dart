@@ -11,9 +11,7 @@ import 'package:pristine_andaman/DrawerPages/Profile/profile_page.dart';
 import 'package:pristine_andaman/DrawerPages/Rides/my_rides_page.dart';
 import 'package:pristine_andaman/DrawerPages/faq_page.dart';
 import 'package:pristine_andaman/DrawerPages/privacy_policy.dart';
-import 'package:pristine_andaman/DrawerPages/support_screen.dart';
 import 'package:pristine_andaman/DrawerPages/terms_conditions.dart';
-import 'package:pristine_andaman/Theme/style.dart';
 import 'package:pristine_andaman/utils/ApiBaseHelper.dart';
 import 'package:pristine_andaman/utils/Session.dart';
 import 'package:pristine_andaman/utils/colors.dart';
@@ -22,7 +20,6 @@ import 'package:pristine_andaman/utils/constant.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../utils/new_utils/ui.dart';
-import 'ReferEarn/refer_earn.dart';
 
 class AppDrawer extends StatefulWidget {
   final bool fromHome;
@@ -316,26 +313,26 @@ class _AppDrawerState extends State<AppDrawer> {
                 // buildListTile(context, "assets/svg/Wallet.svg", "EMERGENCY_CALL", () {
                 //   launch("tel://${userNumber}");
                 // }),
-                buildListTile(context, "assets/sos1.svg", "Sos", () {
-                  if (emergencyMobile == '' && emergencyEmail == '') {
-                    Fluttertoast.showToast(
-                        msg:
-                            'Please add emergency contact details in profile section');
-                  } else {
-                    sendSosRequest();
-                    Navigator.pop(context);
-                  }
-                }),
+                // buildListTile(context, "assets/sos1.svg", "Sos", () {
+                //   if (emergencyMobile == '' && emergencyEmail == '') {
+                //     Fluttertoast.showToast(
+                //         msg:
+                //             'Please add emergency contact details in profile section');
+                //   } else {
+                //     sendSosRequest();
+                //     Navigator.pop(context);
+                //   }
+                // }),
 
-                buildListTile(context, "assets/svg/Wallet.svg", "Refer & Earn",
-                    () {
-                  if (widget.fromHome)
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => ReferEarn()));
-                  else
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => ReferEarn()));
-                }),
+                // buildListTile(context, "assets/svg/Wallet.svg", "Refer & Earn",
+                //     () {
+                //   if (widget.fromHome)
+                //     Navigator.push(context,
+                //         MaterialPageRoute(builder: (context) => ReferEarn()));
+                //   else
+                //     Navigator.push(context,
+                //         MaterialPageRoute(builder: (context) => ReferEarn()));
+                // }),
                 // buildListTile(context, "assets/svg/lock.svg", "Change Password",
                 //     () {
                 //   Navigator.pop(context);
@@ -357,7 +354,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => PrivacyPolicy()));
                   // Navigator.pop(context);
-                  // _launchUrl("https://pristin.pristineandaman.com/privacy-policy");
+                  // _launchUrl("https://bikebooking.alphawizzserver.com/privacy-policy");
                 }),
                 buildListTile(
                     context, "assets/svg/t&c.svg", "Terms and Conditions", () {
@@ -366,12 +363,12 @@ class _AppDrawerState extends State<AppDrawer> {
                       MaterialPageRoute(
                           builder: (context) => TermsConditions()));
                   // Navigator.pop(context);
-                  // _launchUrl("https://pristin.pristineandaman.com/privacy-policy");
+                  // _launchUrl("https://bikebooking.alphawizzserver.com/privacy-policy");
                 }),
                 // buildListTile(
                 //     context, "assets/svg/t&c.svg", "Terms and Conditions", () {
                 //   Navigator.pop(context);
-                //   _launchUrl("https://pristin.pristineandaman.com/terms-conditions");
+                //   _launchUrl("https://bikebooking.alphawizzserver.com/terms-conditions");
                 // }),
                 buildListTile(context, "assets/svg/faq.svg", "FAQS", () {
                   Navigator.pop(context);
@@ -382,16 +379,16 @@ class _AppDrawerState extends State<AppDrawer> {
                     ),
                   );
                 }),
-                buildListTile(context, "assets/svg/privacypolicy.svg",
-                    "Support Management", () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SupportScreen(),
-                    ),
-                  );
-                }),
+                // buildListTile(context, "assets/svg/privacypolicy.svg",
+                //     "Support Management", () {
+                //   Navigator.pop(context);
+                //   Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //       builder: (context) => SupportScreen(),
+                //     ),
+                //   );
+                // }),
                 // buildListTile(
                 //     context, "assets/svg/privacypolicy.svg", "Referrals", () {
                 //   Navigator.pop(context);
@@ -754,7 +751,7 @@ class _AppDrawerState extends State<AppDrawer> {
     var request = http.MultipartRequest(
         'POST',
         Uri.parse(
-            'https://pristin.pristineandaman.com/api/Authentication/delete_user'));
+            'https://bikebooking.alphawizzserver.com/api/Authentication/delete_user'));
     request.fields.addAll({'user_id': curUserId.toString()});
     print("User id in delete account ${request.fields}");
     request.headers.addAll(headers);

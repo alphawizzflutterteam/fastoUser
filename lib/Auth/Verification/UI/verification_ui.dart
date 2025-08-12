@@ -1,18 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:pristine_andaman/bottom_nav_screen.dart';
-import 'package:sizer/sizer.dart';
-import 'package:pristine_andaman/BookRide/search_location_page.dart';
 import 'package:pristine_andaman/Theme/style.dart';
+import 'package:pristine_andaman/bottom_nav_screen.dart';
 import 'package:pristine_andaman/utils/ApiBaseHelper.dart';
 import 'package:pristine_andaman/utils/Session.dart';
 import 'package:pristine_andaman/utils/common.dart';
 import 'package:pristine_andaman/utils/constant.dart';
 import 'package:pristine_andaman/utils/new_utils/ui.dart';
+import 'package:sizer/sizer.dart';
 
-import '../../../Components/auth_bg.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/widget.dart';
 import '../../Registration/UI/registration_ui.dart';
@@ -20,9 +19,10 @@ import 'verification_interactor.dart';
 
 class VerificationUI extends StatefulWidget {
   final VerificationInteractor verificationInteractor;
-  String mobile, otp;
+  String mobile, otp, comeFrom;
   bool? isRegister;
-  VerificationUI(this.verificationInteractor, this.mobile, this.otp,
+  VerificationUI(
+      this.verificationInteractor, this.mobile, this.otp, this.comeFrom,
       {this.isRegister});
 
   @override
@@ -71,14 +71,16 @@ class _VerificationUIState extends State<VerificationUI> {
             child: Column(
               children: [
                 // AuthBg(),
-                SizedBox(height: 142,),
+                SizedBox(
+                  height: 142,
+                ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(
                       "assets/splashLogo.png",
-                      scale: 1.5,//4
+                      scale: 1.7, //4
                       // height: 80,
                     ),
                     // SizedBox(width: 12),
@@ -93,8 +95,12 @@ class _VerificationUIState extends State<VerificationUI> {
                   height: 40,
                 ),
                 Text(
-                  'Enter 4 digit verification code sent to your phone number',textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900,),
+                  'Enter 4 digit verification code sent to your phone number',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
                 SizedBox(height: 10),
                 Text(
@@ -103,16 +109,16 @@ class _VerificationUIState extends State<VerificationUI> {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  '${widget.mobile}',
+                  '${widget.mobile} OTP: ${widget.otp}',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 10),
-                Text(
-                  '${widget.otp}',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
+                // SizedBox(height: 10),
+                // Text(
+                //   '',
+                //   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                // ),
                 SizedBox(
-                  height: 20,
+                  height: 25,
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -133,10 +139,12 @@ class _VerificationUIState extends State<VerificationUI> {
                       borderRadius: BorderRadius.circular(8),
                       fieldHeight: 50,
                       fieldWidth: 50,
-                      activeFillColor: MyColorName.lightGrey,
-                      disabledColor: MyColorName.lightGrey,
-                      activeColor: MyColorName.lightGrey,
-                      inactiveColor: MyColorName.lightGrey,
+                      activeFillColor: Colors.black, // Active fill black
+                      inactiveFillColor: Colors.black, // Inactive fill black
+                      selectedFillColor: Colors.black, // Selected fill black
+                      activeColor: Colors.black, // Active border black
+                      inactiveColor: Colors.black, // Inactive border black
+                      selectedColor: Colors.black,
                     ),
                   ),
                 ),
@@ -149,45 +157,57 @@ class _VerificationUIState extends State<VerificationUI> {
                   },
                   child: Center(
                       child: Text(
-                        "Resend OTP",
-                        style: TextStyle(
-                            color: AppTheme.secondaryColor,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w400),
-                      )
+                    "Resend OTP",
+                    style: TextStyle(
+                        color: AppTheme.secondaryColor,
+                        fontSize: 19,
+                        fontWeight: FontWeight.w400),
+                  )
 
-                    // CustomButton(
-                    //   onTap: () {},
-                    //   text: "Resend Otp",
-                    //   color: Colors.white,
-                    //   textColor: AppTheme.primaryColor,
-                    // ),
-                  ),
+                      // CustomButton(
+                      //   onTap: () {},
+                      //   text: "Resend Otp",
+                      //   color: Colors.white,
+                      //   textColor: AppTheme.primaryColor,
+                      // ),
+                      ),
                 ),
-                SizedBox(height: 10,),
+                SizedBox(
+                  height: 10,
+                ),
                 !loading
                     ? SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-                            if (_otpController.text == "" ||
+                            if (_otpController.text.isEmpty ||
                                 _otpController.text.length != 4) {
-                              UI.setSnackBar("Please Enter Valid Otp", context);
-                              return;
-                            }
-                            if (_otpController.text != widget.otp) {
-                              UI.setSnackBar("Wrong Otp", context);
+                              Fluttertoast.showToast(
+                                  msg: "Please Enter Valid Otp");
+                              // UI.setSnackBar("Please Enter Valid Otp", context);
                               return;
                             }
                             if (widget.isRegister == false) {
-                              navigateScreen(context,
-                                  RegistrationUI(widget.mobile, "", ""));
-                            } else {
-                              setState(() {
-                                loading = true;
-                              });
-                              loginUser();
+                              if (_otpController.text == widget.otp) {
+                                navigateScreen(
+                                  context,
+                                  RegistrationUI(widget.mobile, "", ""),
+                                );
+                              } else {
+                                Fluttertoast.showToast(msg: "Wrong Otp");
+                                // UI.setSnackBar("Wrong Otp", context);
+                              }
+                              return;
                             }
+                            if (_otpController.text != widget.otp) {
+                              Fluttertoast.showToast(msg: "Wrong Otp");
+                              // UI.setSnackBar("Wrong Otp", context);
+                              return;
+                            }
+                            setState(() {
+                              loading = true;
+                            });
+                            loginUser();
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppTheme.secondaryColor,
@@ -201,7 +221,7 @@ class _VerificationUIState extends State<VerificationUI> {
                                 ? text('VERIFY OTP',
                                     // getTranslated(context, "CONTINUE")!,
                                     fontFamily: fontMedium,
-                                    fontSize: 12.sp,
+                                    fontSize: 15.sp,
                                     textColor: Colors.white)
                                 : CircularProgressIndicator(
                                     color: Colors.white),
@@ -214,7 +234,6 @@ class _VerificationUIState extends State<VerificationUI> {
                 SizedBox(
                   height: 10,
                 ),
-
               ],
             ),
           ),
