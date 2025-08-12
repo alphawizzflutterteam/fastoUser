@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1058457918482",
+    "project_id": "pristine-andaman-df88a",
+    "storage_bucket": "pristine-andaman-df88a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1058457918482:android:c0a4c1b105d41ceba40ccb",
+        "android_client_info": {
+          "package_name": "com.fasto.user"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhczITFNilWq062Bb3K6jsfFSqFXg-KKc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
