@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "84088394903",
-    "project_id": "fasto-10844",
-    "storage_bucket": "fasto-10844.firebasestorage.app"
+    "project_number": "712676403225",
+    "project_id": "fasto-main",
+    "storage_bucket": "fasto-main.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:84088394903:android:0491f7998a4c0514ed05d2",
+        "mobilesdk_app_id": "1:712676403225:android:4eb66a0959000537c62288",
         "android_client_info": {
-          "package_name": "com.fasto.driver"
+          "package_name": "com.fasto_main.driver"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAl72z4t2-nuag2Kde-V-0bFSjTEvGxQ1I"
+          "current_key": "AIzaSyBe0FqG--35TEO-6VV_IVAW4JCw3d8g6Uw"
         }
       ],
       "services": {
@@ -26,15 +26,15 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:84088394903:android:0344928fe6283f3ded05d2",
+        "mobilesdk_app_id": "1:712676403225:android:55ce0869ab5339a0c62288",
         "android_client_info": {
-          "package_name": "com.fasto.user"
+          "package_name": "com.fasto_main.user"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAl72z4t2-nuag2Kde-V-0bFSjTEvGxQ1I"
+          "current_key": "AIzaSyBe0FqG--35TEO-6VV_IVAW4JCw3d8g6Uw"
         }
       ],
       "services": {

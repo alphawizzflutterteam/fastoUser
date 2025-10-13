@@ -542,6 +542,12 @@
       "languageVersion": "2.19"
     },
     {
+      "name": "google_places_flutter",
+      "rootUri": "file:///C:/Users/Alphawizz/AppData/Local/Pub/Cache/hosted/pub.dev/google_places_flutter-2.1.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "google_sign_in",
       "rootUri": "file:///C:/Users/Alphawizz/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in-6.3.0",
       "packageUri": "lib/",
@@ -1232,7 +1238,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2025-08-18T08:29:45.814196Z",
+  "generated": "2025-10-13T10:01:23.314877Z",
   "generator": "pub",
   "generatorVersion": "3.6.0",
   "flutterRoot": "file:///D:/flutter_windows_3.27.0-stable/flutter",

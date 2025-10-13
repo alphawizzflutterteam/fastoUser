@@ -926,9 +926,9 @@ class _RideBookedPageState extends State<RideBookedPage>
                               //             androidParameters:
                               //                 const AndroidParameters(
                               //                     packageName:
-                              //                         "com.fasto.user"),
+                              //                         "com.fasto_main.user"),
                               //             iosParameters: const IOSParameters(
-                              //                 bundleId: "com.fasto.user"),
+                              //                 bundleId: "com.fasto_main.user"),
                               //           );
                               //           FirebaseDynamicLinks.instance
                               //               .buildShortLink(dynamicLinkParams)

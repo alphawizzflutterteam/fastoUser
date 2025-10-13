@@ -743,10 +743,10 @@ class _InterCityRidePageState extends State<InterCityRidePage> {
                                           //       androidParameters:
                                           //           const AndroidParameters(
                                           //               packageName:
-                                          //                   "com.fasto.user"),
+                                          //                   "com.fasto_main.user"),
                                           //       iosParameters: const IOSParameters(
                                           //           bundleId:
-                                          //               "com.fasto.user"),
+                                          //               "com.fasto_main.user"),
                                           //     );
                                           //     FirebaseDynamicLinks.instance
                                           //         .buildShortLink(
