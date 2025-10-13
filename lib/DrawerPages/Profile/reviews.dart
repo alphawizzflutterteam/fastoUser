@@ -264,7 +264,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
                           fontSize: 12.sp,
                           textColor: Colors.black),
                     )
-              : Center(child: CircularProgressIndicator()),
+              : Center(child: CircularProgressIndicator(color: Colors.black)),
         ],
       ),
     );

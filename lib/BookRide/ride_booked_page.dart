@@ -26,7 +26,6 @@ import 'package:pristine_andaman/utils/common.dart';
 import 'package:pristine_andaman/utils/constant.dart';
 import 'package:pristine_andaman/utils/new_utils/ui.dart';
 import 'package:pristine_andaman/utils/widget.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:sizer/sizer.dart';
 // import 'package:social_share/social_share.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -435,18 +434,18 @@ class _RideBookedPageState extends State<RideBookedPage>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              "Upon canceling a ride, a cancellation charge will be added to the next ride.",
-              style: TextStyle(color: Colors.red),
-            ),
+            // SizedBox(
+            //   height: 10,
+            // ),
+            // Text(
+            //   "Upon canceling a ride, a cancellation charge will be added to the next ride.",
+            //   style: TextStyle(color: Colors.red),
+            // ),
             // Text(
             //   "This charge is deducted from your wallet",
             //   style: TextStyle(color: Colors.red),
             // ),
-            boxHeight(20),
+            boxHeight(10),
             text("${getTranslated(context, "SELECT_REASON")}",
                 textColor: MyColorName.colorTextPrimary,
                 fontSize: 12.sp,
@@ -502,7 +501,7 @@ class _RideBookedPageState extends State<RideBookedPage>
                                   isCentered: true,
                                   textColor: Colors.white)),
                         )
-                      : CircularProgressIndicator(),
+                      : CircularProgressIndicator(color: Colors.black),
                 ),
                 boxWidth(10),
                 InkWell(
@@ -527,7 +526,7 @@ class _RideBookedPageState extends State<RideBookedPage>
                                   isCentered: true,
                                   textColor: Colors.white)),
                         )
-                      : CircularProgressIndicator(),
+                      : CircularProgressIndicator(color: Colors.black),
                 ),
               ],
             ),
@@ -640,7 +639,8 @@ class _RideBookedPageState extends State<RideBookedPage>
                                       widget.model.dropLongitude.toString())),
                             )
                           : Center(
-                              child: CircularProgressIndicator(),
+                              child: CircularProgressIndicator(
+                                  color: Colors.black),
                             ),
                       !widget.from
                           ? Positioned(
@@ -772,12 +772,11 @@ class _RideBookedPageState extends State<RideBookedPage>
                                                   EdgeInsets.all(getWidth(5)),
                                               decoration: boxDecoration(
                                                   radius: 5,
-                                                  bgColor: Theme.of(context)
-                                                      .primaryColor),
+                                                  bgColor: Color(0xff7DBF04)),
                                               child: Center(
                                                   child: text("Track Location",
                                                       fontFamily: fontMedium,
-                                                      fontSize: 10.sp,
+                                                      fontSize: 13.sp,
                                                       isCentered: true,
                                                       textColor: Colors.white)),
                                             ),
@@ -827,245 +826,77 @@ class _RideBookedPageState extends State<RideBookedPage>
                           : SizedBox()
                     ],
                   )
-                : Center(child: CircularProgressIndicator()),
+                : Center(child: CircularProgressIndicator(color: Colors.black)),
           ),
           bottomNavigationBar: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                !widget.from && widget.model.acceptReject == "1"
-                    ? Container(
-                        padding: EdgeInsets.all(getWidth(10)),
-                        color: Colors.white,
-                        child: AnimatedTextKit(
-                          animatedTexts: [
-                            ColorizeAnimatedText(
-                              "Upon canceling a ride, a cancellation charge will be added to the next ride.",
-                              textStyle: colorizeTextStyle,
-                              colors: colorizeColors,
-                            ),
-                            // ColorizeAnimatedText(
-                            //   "Cancellation Charges ₹${widget.model.cancel_charge} will be deducted from the wallet.",
-                            //   textStyle: colorizeTextStyle,
-                            //   colors: colorizeColors,
-                            // ),
-                          ],
-                          pause: Duration(milliseconds: 100),
-                          isRepeatingAnimation: true,
-                          totalRepeatCount: 100,
-                          onTap: () {
-                            print("Tap Event");
-                          },
-                        ),
-                      )
-                    : SizedBox(),
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  // !widget.from && widget.model.acceptReject == "1"
+                  //     ? Container(
+                  //         padding: EdgeInsets.all(getWidth(10)),
+                  //         color: Colors.white,
+                  //         child: AnimatedTextKit(
+                  //           animatedTexts: [
+                  //             ColorizeAnimatedText(
+                  //               "Upon canceling a ride, a cancellation charge will be added to the next ride.",
+                  //               textStyle: colorizeTextStyle,
+                  //               colors: colorizeColors,
+                  //             ),
+                  //             // ColorizeAnimatedText(
+                  //             //   "Cancellation Charges ₹${widget.model.cancel_charge} will be deducted from the wallet.",
+                  //             //   textStyle: colorizeTextStyle,
+                  //             //   colors: colorizeColors,
+                  //             // ),
+                  //           ],
+                  //           pause: Duration(milliseconds: 100),
+                  //           isRepeatingAnimation: true,
+                  //           totalRepeatCount: 100,
+                  //           onTap: () {
+                  //             print("Tap Event");
+                  //           },
+                  //         ),
+                  //       )
+                  //     : SizedBox(),
 
-                //Text("OTP : ${widget.model.otp.toString()}"),
+                  //Text("OTP : ${widget.model.otp.toString()}"),
 
-                ///
-                // Container(
-                //   padding: EdgeInsets.all(getWidth(10)),
-                //   color: Colors.white,
-                //   child: AnimatedTextKit(
-                //     animatedTexts: [
-                //       ColorizeAnimatedText(
-                //         "OTP : ${widget.model.otp}",
-                //         textStyle: colorizeTextStyle,
-                //         colors: colorizeColors,
-                //       ),
-                //     ],
-                //     pause: Duration(milliseconds: 100),
-                //     isRepeatingAnimation: true,
-                //     totalRepeatCount: 100,
-                //     onTap: () {
-                //       print("Tap Event");
-                //     },
-                //   ),
-                // ),
-                !widget.from
-                    ? Container(
-                        padding: EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  widget.model.acceptReject == "6"
-                                      ? ''
-                                      // "Trip End OTP : ${widget.model.bookingOtp}"
-                                      : "Start OTP : ${widget.model.bookingOtp}",
-                                  style: TextStyle(fontSize: 20),
-                                ),
-                                SizedBox(
-                                  width: MediaQuery.sizeOf(context).width / 2,
-                                ),
-                                InkWell(
-                                    onTap: () async {
-                                      await _getCurrentLocation();
-                                      String googleMapsUrl =
-                                          "https://www.google.com/maps?q=${_currentPosition?.latitude},${_currentPosition?.longitude}";
-                                      String shareMessage =
-                                          'Pickup Address: ${widget.model.pickupAddress}\n'
-                                          'Drop Address: ${widget.model.dropAddress}\n'
-                                          'Driver Name: ${widget.model.driverName}\n'
-                                          'Driver Mobile No.: ${widget.model.driverContact}\n'
-                                          'Navigate to location: $googleMapsUrl';
-
-                                      Share.share(shareMessage,
-                                          subject: 'Ride Information');
-                                    },
-                                    child: Icon(
-                                      Icons.share,
-                                      color: Colors.black,
-                                    ))
-                              ],
-                            ),
-                            // !widget.from
-                            //     ? IconButton(
-                            //         onPressed: () {
-                            //           setState(() {
-                            //             shareLoading = true;
-                            //           });
-                            //           final dynamicLinkParams =
-                            //               DynamicLinkParameters(
-                            //             link: Uri.parse(
-                            //                 "https://bikebooking.alphawizzserver.com/?${widget.model.bookingId}"),
-                            //             uriPrefix:
-                            //                 "https://alphawizzserver.com/cab_booking",
-                            //             androidParameters:
-                            //                 const AndroidParameters(
-                            //                     packageName:
-                            //                         "com.fasto.user"),
-                            //             iosParameters: const IOSParameters(
-                            //                 bundleId: "com.fasto.user"),
-                            //           );
-                            //           FirebaseDynamicLinks.instance
-                            //               .buildShortLink(dynamicLinkParams)
-                            //               .then((ShortDynamicLink value) {
-                            //             print(value.shortUrl);
-                            //             capturePng(0, value.shortUrl);
-                            //           });
-                            //         },
-                            //         icon: !shareLoading
-                            //             ? Icon(
-                            //                 Icons.share,
-                            //                 color:
-                            //                     Theme.of(context).primaryColor,
-                            //               )
-                            //             : CircularProgressIndicator(),
-                            //       )
-                            //     : SizedBox()
-                          ],
-                        ),
-                      )
-                    : SizedBox(),
-                RepaintBoundary(
-                  key: globalKey,
-                  child: GestureDetector(
-                    onVerticalDragDown: (details) {
-                      setState(() {
-                        isOpened = !isOpened;
-                      });
-                    },
-                    child: Container(
-                      height: 100,
-                      padding: EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.background,
-                        borderRadius: isOpened
-                            ? BorderRadius.circular(16)
-                            : BorderRadius.vertical(top: Radius.circular(16)),
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            height: 60,
-                            width: 60,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: Image.network(
-                                'https://bikebooking.alphawizzserver.com/upload/customer_profiles/' +
-                                    widget.model.driverImage.toString(),
-                                height: 72,
-                                width: 72,
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 14),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                  ///
+                  // Container(
+                  //   padding: EdgeInsets.all(getWidth(10)),
+                  //   color: Colors.white,
+                  //   child: AnimatedTextKit(
+                  //     animatedTexts: [
+                  //       ColorizeAnimatedText(
+                  //         "OTP : ${widget.model.otp}",
+                  //         textStyle: colorizeTextStyle,
+                  //         colors: colorizeColors,
+                  //       ),
+                  //     ],
+                  //     pause: Duration(milliseconds: 100),
+                  //     isRepeatingAnimation: true,
+                  //     totalRepeatCount: 100,
+                  //     onTap: () {
+                  //       print("Tap Event");
+                  //     },
+                  //   ),
+                  // ),
+                  !widget.from
+                      ? Container(
+                          padding: EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.verified_outlined,
-                                    color: Colors.green,
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    '${widget.model.driverName}',
-                                    style: theme.textTheme.bodyMedium!.copyWith(
-                                        fontSize: 18, letterSpacing: 1.2),
-                                  ),
-                                ],
-                              ),
                               Text(
-                                '${getTranslated(context, "TRIP_ID")} - ${widget.model.uneaqueId.toString()}',
-                                style: theme.textTheme.bodyMedium,
+                                widget.model.acceptReject == "6"
+                                    ? ''
+                                    // "Trip End OTP : ${widget.model.bookingOtp}"
+                                    : "Start OTP : ${widget.model.bookingOtp}",
+                                style: TextStyle(fontSize: 20),
                               ),
-                              Spacer(flex: 2),
-                              Text(
-                                '${widget.model.taxiType} ${widget.model.car_no ?? ''} ',
-                                style: theme.textTheme.bodyMedium!
-                                    .copyWith(fontSize: 12),
-                              ),
-                              /* Spacer(),
-                              Text(
-                                '${widget.model.car_no}',
-                                style: theme.textTheme.bodyText1!
-                                    .copyWith(fontSize: 13.5),
-                              ),*/
-                            ],
-                          ),
-                          Spacer(),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              widget.model.rating.toString() != "null"
-                                  ? Container(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 6, vertical: 2),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(30),
-                                        color: AppTheme.ratingsColor,
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            widget.model.rating.toString(),
-                                            style: theme.textTheme.bodyMedium!
-                                                .copyWith(fontSize: 12),
-                                          ),
-                                          SizedBox(width: 4),
-                                          Icon(
-                                            Icons.star,
-                                            color: AppTheme.starColor,
-                                            size: 10,
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                  : SizedBox(),
-                              Spacer(flex: 2),
-                              Text(
-                                getTranslated(context, 'CURRENT_STATUS')!,
-                                style: theme.textTheme.bodyMedium,
-                              ),
-                              Spacer(),
                               Text(
                                 widget.model.acceptReject == "1"
                                     ? "Arriving"
@@ -1073,28 +904,173 @@ class _RideBookedPageState extends State<RideBookedPage>
                                         ? "Started"
                                         : "Completed",
                                 style: theme.textTheme.bodyMedium!.copyWith(
-                                    fontSize: 13.5,
+                                    fontSize: 15.5,
                                     color: widget.model.acceptReject == "1"
                                         ? Colors.orange
                                         : widget.model.acceptReject == "6"
                                             ? Colors.brown
                                             : Colors.green),
                               ),
+                              // !widget.from
+                              //     ? IconButton(
+                              //         onPressed: () {
+                              //           setState(() {
+                              //             shareLoading = true;
+                              //           });
+                              //           final dynamicLinkParams =
+                              //               DynamicLinkParameters(
+                              //             link: Uri.parse(
+                              //                 "https://bikebooking.alphawizzserver.com/?${widget.model.bookingId}"),
+                              //             uriPrefix:
+                              //                 "https://alphawizzserver.com/cab_booking",
+                              //             androidParameters:
+                              //                 const AndroidParameters(
+                              //                     packageName:
+                              //                         "com.fasto.user"),
+                              //             iosParameters: const IOSParameters(
+                              //                 bundleId: "com.fasto.user"),
+                              //           );
+                              //           FirebaseDynamicLinks.instance
+                              //               .buildShortLink(dynamicLinkParams)
+                              //               .then((ShortDynamicLink value) {
+                              //             print(value.shortUrl);
+                              //             capturePng(0, value.shortUrl);
+                              //           });
+                              //         },
+                              //         icon: !shareLoading
+                              //             ? Icon(
+                              //                 Icons.share,
+                              //                 color:
+                              //                     Theme.of(context).primaryColor,
+                              //               )
+                              //             : CircularProgressIndicator(color:Colors.black),
+                              //       )
+                              //     : SizedBox()
                             ],
                           ),
-                        ],
+                        )
+                      : SizedBox(),
+                  RepaintBoundary(
+                    key: globalKey,
+                    child: GestureDetector(
+                      onVerticalDragDown: (details) {
+                        setState(() {
+                          isOpened = !isOpened;
+                        });
+                      },
+                      child: Container(
+                        height: 90,
+                        padding: EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          // color: theme.colorScheme.background,
+                          borderRadius: isOpened
+                              ? BorderRadius.circular(16)
+                              : BorderRadius.vertical(top: Radius.circular(16)),
+                        ),
+                        child: Row(
+                          children: [
+                            // Container(
+                            //   height: 60,
+                            //   width: 60,
+                            //   child: ClipRRect(
+                            //     borderRadius: BorderRadius.circular(12),
+                            //     child: Image.network(
+                            //       'https://bikebooking.alphawizzserver.com/upload/customer_profiles/' +
+                            //           widget.model.driverImage.toString(),
+                            //       height: 72,
+                            //       width: 72,
+                            //     ),
+                            //   ),
+                            // ),
+                            // SizedBox(width: 14),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.verified_outlined,
+                                      color: Colors.green,
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      '${widget.model.driverName}',
+                                      style: theme.textTheme.bodyMedium!
+                                          .copyWith(
+                                              fontSize: 18, letterSpacing: 1.2),
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  '${getTranslated(context, "TRIP_ID")} - ${widget.model.uneaqueId.toString()}',
+                                  style: theme.textTheme.bodyMedium,
+                                ),
+                                // Spacer(flex: 2),
+                                // Text(
+                                //   '${widget.model.taxiType} ${widget.model.car_no ?? ''} ',
+                                //   style: theme.textTheme.bodyMedium!
+                                //       .copyWith(fontSize: 12),
+                                // ),
+                                /* Spacer(),
+                                Text(
+                                  '${widget.model.car_no}',
+                                  style: theme.textTheme.bodyText1!
+                                      .copyWith(fontSize: 13.5),
+                                ),*/
+                              ],
+                            ),
+                            Spacer(),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                widget.model.rating.toString() != "null"
+                                    ? Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 6, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                          color: AppTheme.ratingsColor,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Text(widget.model.rating.toString(),
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.w600)),
+                                            SizedBox(width: 4),
+                                            Icon(
+                                              Icons.star,
+                                              color: AppTheme.starColor,
+                                              size: 10,
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                    : SizedBox(),
+                                // Text(
+                                //   getTranslated(context, 'CURRENT_STATUS')!,
+                                //   style: theme.textTheme.bodyMedium,
+                                // ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                isOpened ? Details(widget.model, widget.from) : SizedBox(),
-                /* AnimatedContainer(
-                  duration: Duration(milliseconds: 300),
-                  height: 72,
-                  color:
-                  isOpened ? Colors.transparent : theme.backgroundColor,
-                ),*/
-              ],
+                  isOpened ? Details(widget.model, widget.from) : SizedBox(),
+                  /* AnimatedContainer(
+                    duration: Duration(milliseconds: 300),
+                    height: 72,
+                    color:
+                    isOpened ? Colors.transparent : theme.backgroundColor,
+                  ),*/
+                ],
+              ),
             ),
           )
           // : SizedBox(),
@@ -1156,20 +1132,17 @@ class _RideBookedPageState extends State<RideBookedPage>
         style: TextButton.styleFrom(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          backgroundColor: Color(0xff7DBF04),
         ),
         icon: Icon(
           icon,
           size: 17,
-          color: Colors.black,
+          color: Colors.white,
         ),
         label: Text(
           getTranslated(context, text)!,
           overflow: TextOverflow.ellipsis,
-          style: Theme.of(context)
-              .textTheme
-              .bodyMedium!
-              .copyWith(fontSize: 13.5, fontWeight: FontWeight.w500),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
         ),
       ),
     );
@@ -1193,65 +1166,51 @@ class _DetailsState extends State<Details> {
       duration: Duration(milliseconds: 300),
       child: Column(
         children: [
-          SizedBox(height: 12),
-          Container(
-            decoration: BoxDecoration(
-                color: theme.colorScheme.background,
-                borderRadius: BorderRadius.circular(16)),
-            child: Column(
-              children: [
-                ListTile(
-                  title: Text(
-                    getTranslated(context, 'RIDE_INFO')!,
-                    style: theme.textTheme.bodyMedium!
-                        .copyWith(color: theme.hintColor, fontSize: 16.5),
-                  ),
-                  trailing: widget.model.km == null ||
-                          widget.model.km == '' ||
-                          widget.model.km == '0'
-                      ? SizedBox.shrink()
-                      : Text('${widget.model.km} km',
-                          style: theme.textTheme.bodyMedium!
-                              .copyWith(fontSize: 16.5)),
-                ),
-                ListTile(
+          // SizedBox(height: 12),
+          ListTile(
+            title: Text(
+              getTranslated(context, 'RIDE_INFO')!,
+              style: theme.textTheme.bodyMedium!
+                  .copyWith(color: theme.hintColor, fontSize: 16.5),
+            ),
+            trailing: widget.model.km == null ||
+                    widget.model.km == '' ||
+                    widget.model.km == '0'
+                ? SizedBox.shrink()
+                : Text('${widget.model.km} km',
+                    style:
+                        theme.textTheme.bodyMedium!.copyWith(fontSize: 16.5)),
+          ),
+          ListTile(
+            horizontalTitleGap: 0,
+            leading: Icon(
+              Icons.location_on,
+              color: Colors.red,
+              size: 20,
+            ),
+            title: Text(
+              '${widget.model.pickupAddress}',
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+            ),
+          ),
+          widget.model.dropAddress == null || widget.model.dropAddress == ''
+              ? SizedBox.shrink()
+              : ListTile(
                   horizontalTitleGap: 0,
                   leading: Icon(
-                    Icons.location_on,
-                    color: theme.primaryColor,
+                    Icons.navigation,
+                    color: Colors.green,
                     size: 20,
                   ),
                   title: Text(
-                    '${widget.model.pickupAddress}',
+                    '${widget.model.dropAddress}',
                     style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
                   ),
                 ),
-                widget.model.dropAddress == null ||
-                        widget.model.dropAddress == ''
-                    ? SizedBox.shrink()
-                    : ListTile(
-                        horizontalTitleGap: 0,
-                        leading: Icon(
-                          Icons.navigation,
-                          color: theme.primaryColor,
-                          size: 20,
-                        ),
-                        title: Text(
-                          '${widget.model.dropAddress}',
-                          style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.w500),
-                        ),
-                      ),
-              ],
-            ),
-          ),
           SizedBox(height: 12),
           !widget.from
-              ? Container(
-                  padding: EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                      color: theme.colorScheme.background,
-                      borderRadius: BorderRadius.circular(16)),
+              ? Padding(
+                  padding: const EdgeInsets.only(left: 15),
                   child: Row(
                     children: [
                       widget.model.transaction == null ||
@@ -1262,12 +1221,12 @@ class _DetailsState extends State<Details> {
                               'PAYMENT_VIA',
                               '${widget.model.transaction}',
                               Icons.account_balance_wallet),
-                      Spacer(),
-                      buildRowItem(
-                          theme,
-                          'RIDE_FARE',
-                          '\u{20B9} ${widget.model.amount}',
-                          Icons.account_balance_wallet),
+                      // Spacer(),
+                      // buildRowItem(
+                      //     theme,
+                      //     'RIDE_FARE',
+                      //     '\u{20B9} ${widget.model.amount}',
+                      //     Icons.account_balance_wallet),
                       Spacer(),
                       buildRowItem(theme, 'RIDE_TYPE',
                           '${widget.model.bookingType}', Icons.drive_eta),
@@ -1275,139 +1234,134 @@ class _DetailsState extends State<Details> {
                   ),
                 )
               : SizedBox(),
-          !widget.from && widget.model.acceptReject == "3"
-              ? Container(
-                  padding: EdgeInsets.all(getWidth(15)),
-                  child: Column(
-                    children: [
-                      double.parse(widget.model.baseFare.toString()) > 0
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                text(
-                                    "${getTranslated(context, "BASE_FARE")} : ",
-                                    fontSize: 10.sp,
-                                    fontFamily: fontRegular,
-                                    textColor: Colors.black),
-                                text("₹" + widget.model.baseFare.toString(),
-                                    fontSize: 10.sp,
-                                    fontFamily: fontRegular,
-                                    textColor: Colors.black),
-                              ],
-                            )
-                          : SizedBox(),
-                      double.parse(widget.model.km.toString()) >= 2 &&
-                              double.parse(widget.model.ratePerKm.toString()) >
-                                  0
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                text(
-                                    "${widget.model.km.toString()} ${getTranslated(context, "KILOMETERS")} : ",
-                                    fontSize: 10.sp,
-                                    fontFamily: fontRegular,
-                                    textColor: Colors.black),
-                                text("₹" + widget.model.ratePerKm.toString(),
-                                    fontSize: 10.sp,
-                                    fontFamily: fontRegular,
-                                    textColor: Colors.black),
-                              ],
-                            )
-                          : SizedBox(),
-                      double.parse(widget.model.timeAmount.toString()) > 0
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                text(
-                                    "${widget.model.totalTime.toString()} ${getTranslated(context, "MINUTES")} : ",
-                                    fontSize: 10.sp,
-                                    fontFamily: fontRegular,
-                                    textColor: Colors.black),
-                                text("₹" + widget.model.timeAmount.toString(),
-                                    fontSize: 10.sp,
-                                    fontFamily: fontRegular,
-                                    textColor: Colors.black),
-                              ],
-                            )
-                          : SizedBox(),
-                      double.parse(widget.model.amount.toString()) > 0
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                text(
-                                    "${getTranslated(context, "SUB_TOTAL")} : ",
-                                    fontSize: 10.sp,
-                                    fontFamily: fontMedium,
-                                    textColor: Colors.black),
-                                text(
-                                    "₹" +
-                                        (double.parse(widget.model.amount
-                                                    .toString()) +
-                                                double.parse(widget
-                                                    .model.promo_discount
-                                                    .toString()) -
-                                                double.parse(widget
-                                                    .model.gstAmount
-                                                    .toString()) -
-                                                double.parse(widget
-                                                    .model.surgeAmount
-                                                    .toString()))
-                                            .toStringAsFixed(2),
-                                    fontSize: 10.sp,
-                                    fontFamily: fontMedium,
-                                    textColor: Colors.black),
-                              ],
-                            )
-                          : SizedBox(),
-                      double.parse(widget.model.gstAmount.toString()) > 0
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                text("${getTranslated(context, "TAXES")} : ",
-                                    fontSize: 10.sp,
-                                    fontFamily: fontMedium,
-                                    textColor: Colors.black),
-                                text("₹" + widget.model.gstAmount.toString(),
-                                    fontSize: 10.sp,
-                                    fontFamily: fontMedium,
-                                    textColor: Colors.black),
-                              ],
-                            )
-                          : SizedBox(),
-                      double.parse(widget.model.surgeAmount.toString()) > 0
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                text("${getTranslated(context, "SURGE")} : ",
-                                    fontSize: 10.sp,
-                                    fontFamily: fontMedium,
-                                    textColor: Colors.black),
-                                text("₹" + widget.model.surgeAmount.toString(),
-                                    fontSize: 10.sp,
-                                    fontFamily: fontMedium,
-                                    textColor: Colors.black),
-                              ],
-                            )
-                          : SizedBox(),
-                      Divider(),
-                      Row(
+          // !widget.from && widget.model.acceptReject == "3"
+          //     ?
+          Container(
+            padding: EdgeInsets.all(getWidth(15)),
+            child: Column(
+              children: [
+                double.parse(widget.model.baseFare.toString()) > 0
+                    ? Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          text("${getTranslated(context, "TOTAL")} : ",
-                              fontSize: 10.sp,
+                          text("${getTranslated(context, "BASE_FARE")} : ",
+                              fontSize: 12.sp,
+                              fontFamily: fontRegular,
+                              textColor: Colors.black),
+                          text("₹" + widget.model.baseFare.toString(),
+                              fontSize: 12.sp,
+                              fontFamily: fontRegular,
+                              textColor: Colors.black),
+                        ],
+                      )
+                    : SizedBox(),
+                double.parse(widget.model.km.toString()) >= 2 &&
+                        double.parse(widget.model.ratePerKm.toString()) > 0
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          text("${getTranslated(context, "KILOMETERS")} : ",
+                              fontSize: 12.sp,
+                              fontFamily: fontRegular,
+                              textColor: Colors.black),
+                          text(widget.model.km.toString(),
+                              fontSize: 12.sp,
+                              fontFamily: fontRegular,
+                              textColor: Colors.black),
+                        ],
+                      )
+                    : SizedBox(),
+                // double.parse(widget.model.timeAmount.toString()) > 0
+                //     ? Row(
+                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //         children: [
+                //           text(
+                //               "${widget.model.totalTime.toString()} ${getTranslated(context, "MINUTES")} : ",
+                //               fontSize: 12.sp,
+                //               fontFamily: fontRegular,
+                //               textColor: Colors.black),
+                //           text("₹" + widget.model.timeAmount.toString(),
+                //               fontSize: 12.sp,
+                //               fontFamily: fontRegular,
+                //               textColor: Colors.black),
+                //         ],
+                //       )
+                //     : SizedBox(),
+                double.parse(widget.model.amount.toString()) > 0
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          text("${getTranslated(context, "SUB_TOTAL")} : ",
+                              fontSize: 12.sp,
                               fontFamily: fontMedium,
                               textColor: Colors.black),
-                          text("₹" + "${widget.model.amount}",
-                              fontSize: 10.sp,
+                          text(
+                              "₹" +
+                                  (double.parse(
+                                              widget.model.amount.toString()) +
+                                          double.parse(widget
+                                              .model.promo_discount
+                                              .toString()) -
+                                          double.parse(widget.model.gstAmount
+                                              .toString()) -
+                                          double.parse(widget.model.surgeAmount
+                                              .toString()))
+                                      .toStringAsFixed(2),
+                              fontSize: 12.sp,
                               fontFamily: fontMedium,
                               textColor: Colors.black),
                         ],
-                      ),
-                      boxHeight(10),
-                    ],
-                  ),
-                )
-              : SizedBox(),
+                      )
+                    : SizedBox(),
+                double.parse(widget.model.gstAmount.toString()) > 0
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          text("${getTranslated(context, "TAXES")} : ",
+                              fontSize: 12.sp,
+                              fontFamily: fontMedium,
+                              textColor: Colors.black),
+                          text("₹" + widget.model.gstAmount.toString(),
+                              fontSize: 12.sp,
+                              fontFamily: fontMedium,
+                              textColor: Colors.black),
+                        ],
+                      )
+                    : SizedBox(),
+                // double.parse(widget.model.surgeAmount.toString()) > 0
+                //     ? Row(
+                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //         children: [
+                //           text("${getTranslated(context, "SURGE")} : ",
+                //               fontSize: 10.sp,
+                //               fontFamily: fontMedium,
+                //               textColor: Colors.black),
+                //           text("₹" + widget.model.surgeAmount.toString(),
+                //               fontSize: 10.sp,
+                //               fontFamily: fontMedium,
+                //               textColor: Colors.black),
+                //         ],
+                //       )
+                //     : SizedBox(),
+                // Divider(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    text("${getTranslated(context, "TOTAL")} : ",
+                        fontSize: 12.sp,
+                        fontFamily: fontMedium,
+                        textColor: Colors.black),
+                    text("₹" + "${widget.model.amount}",
+                        fontSize: 12.sp,
+                        fontFamily: fontMedium,
+                        textColor: Colors.black),
+                  ],
+                ),
+                boxHeight(20),
+              ],
+            ),
+          )
+          // : SizedBox(),
         ],
       ),
     );
@@ -1422,7 +1376,7 @@ class _DetailsState extends State<Details> {
         children: [
           Text(
             getTranslated(context, title)!,
-            style: theme.textTheme.bodyMedium!
+            style: theme.textTheme.bodySmall!
                 .copyWith(color: theme.hintColor, fontSize: 16),
           ),
           SizedBox(height: 8),
@@ -1430,7 +1384,7 @@ class _DetailsState extends State<Details> {
             children: [
               Icon(
                 icon,
-                color: theme.primaryColor,
+                color: Color(0xff7DBF04),
                 size: 20,
               ),
               SizedBox(width: 6),
@@ -1438,7 +1392,7 @@ class _DetailsState extends State<Details> {
                 child: Text(
                   subtitle,
                   style: theme.textTheme.bodyMedium!.copyWith(
-                    fontSize: 12,
+                    fontSize: 14,
                   ),
                 ),
               ),

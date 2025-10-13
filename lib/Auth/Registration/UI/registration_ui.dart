@@ -588,7 +588,7 @@ class _RegistrationUIState extends State<RegistrationUI> {
       //     : Container(
       //         width: 50,
       //         height: 50,
-      //         child: Center(child: CircularProgressIndicator())),
+      //         child: Center(child: CircularProgressIndicator(color:Colors.black))),
     );
   }
 

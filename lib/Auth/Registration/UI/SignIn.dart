@@ -370,7 +370,7 @@ class _LoginUIState extends State<SignIn> {
                                   child: Row(
                                     children: [
                                       Text(
-                                        "All ready have account? ",
+                                        "Already have account? ",
                                         style: TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.w500),
@@ -385,7 +385,7 @@ class _LoginUIState extends State<SignIn> {
                                           );
                                         },
                                         child: Text(
-                                          "LoginIn",
+                                          "Login",
                                           // 'Login',
                                           style: TextStyle(
                                               color: AppTheme.secondaryColor,
@@ -681,7 +681,7 @@ class _LoginUIState extends State<SignIn> {
     //           //                               fontFamily: fontMedium,
     //           //                               fontSize: 12.sp,
     //           //                               textColor: Colors.white)
-    //           //                               : CircularProgressIndicator()),
+    //           //                               : CircularProgressIndicator(color:Colors.black)),
     //           //                     ),
     //           //                   ),
     //           //                   InkWell(
@@ -703,7 +703,7 @@ class _LoginUIState extends State<SignIn> {
     //           //                               fontFamily: fontMedium,
     //           //                               fontSize: 12.sp,
     //           //                               textColor: Colors.white)
-    //           //                               : CircularProgressIndicator()),
+    //           //                               : CircularProgressIndicator(color:Colors.black)),
     //           //                     ),
     //           //                   ),
     //           //                 ],
@@ -1144,7 +1144,7 @@ class _LoginUIState extends State<SignIn> {
 //                                 fontFamily: fontMedium,
 //                                 fontSize: 12.sp,
 //                                 textColor: Colors.white)
-//                             : CircularProgressIndicator()),
+//                             : CircularProgressIndicator(color:Colors.black)),
 //                   ),
 //                 ),
 //                 InkWell(
@@ -1165,7 +1165,7 @@ class _LoginUIState extends State<SignIn> {
 //                                 fontFamily: fontMedium,
 //                                 fontSize: 12.sp,
 //                                 textColor: Colors.white)
-//                             : CircularProgressIndicator()),
+//                             : CircularProgressIndicator(color:Colors.black)),
 //                   ),
 //                 ),
 //               ],
@@ -1264,7 +1264,7 @@ class _LoginUIState extends State<SignIn> {
 //               : Container(
 //                   width: 50,
 //                   child:
-//                       Center(child: CircularProgressIndicator())),*/
+//                       Center(child: CircularProgressIndicator(color:Colors.black))),*/
 //         ],
 //       ),
 //     ),

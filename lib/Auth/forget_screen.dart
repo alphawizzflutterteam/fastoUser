@@ -114,7 +114,8 @@ class _ForgetScreenState extends State<ForgetScreen> {
                                     fontFamily: fontMedium,
                                     fontSize: 12.sp,
                                     textColor: Colors.white)
-                                : CircularProgressIndicator()),
+                                : CircularProgressIndicator(
+                                    color: Colors.black)),
                       ),
                     ),
                     Spacer(flex: 1),
@@ -138,7 +139,7 @@ class _ForgetScreenState extends State<ForgetScreen> {
                           : Container(
                               width: 50,
                               child:
-                                  Center(child: CircularProgressIndicator())),*/
+                                  Center(child: CircularProgressIndicator(color:Colors.black))),*/
                   ],
                 ),
               ),

@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 // import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
@@ -14,10 +14,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:pristine_andaman/BookRide/premium_slider_details.dart';
-import 'package:pristine_andaman/BookRide/rate_ride_dialog.dart';
 import 'package:pristine_andaman/BookRide/ride_booked_page.dart';
-import 'package:pristine_andaman/BookRide/select_location_screen.dart';
 import 'package:pristine_andaman/DrawerPages/Rides/intercity_rides.dart';
 import 'package:pristine_andaman/DrawerPages/Rides/rental_rides.dart';
 import 'package:pristine_andaman/DrawerPages/app_drawer.dart';
@@ -27,6 +24,7 @@ import 'package:pristine_andaman/Model/my_ride_model.dart';
 import 'package:pristine_andaman/Model/share_ride_model.dart';
 import 'package:pristine_andaman/Model/slider_model.dart';
 import 'package:pristine_andaman/Model/wallet_model.dart';
+import 'package:pristine_andaman/Theme/style.dart';
 import 'package:pristine_andaman/utils/ApiBaseHelper.dart';
 import 'package:pristine_andaman/utils/Session.dart';
 import 'package:pristine_andaman/utils/colors.dart';
@@ -37,14 +35,16 @@ import 'package:pristine_andaman/utils/new_utils/ui.dart';
 import 'package:pristine_andaman/utils/referCodeService.dart';
 import 'package:pristine_andaman/utils/widget.dart';
 import 'package:sizer/sizer.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-import '../Components/entry_field.dart';
+import '../Model/driver_model.dart';
 import '../Model/location_model.dart';
 import '../Model/premium_slider_model.dart';
+import '../Model/promo_code.dart';
 import '../Model/rental_model_new.dart';
+import '../Model/rides_model.dart';
 import '../utils/PushNotificationService.dart';
+import '../utils/new_utils/MapScreen.dart';
+import 'confirm_rider_request.dart';
 
 class SearchLocationPage extends StatefulWidget {
   @override
@@ -80,17 +80,27 @@ class _SearchLocationPageState extends State<SearchLocationPage>
   List<String> airportType = ['Airport Pick Up', 'Airport Drop'];
   String? _currentAddress;
   Position? _currentPosition;
+  LatLng? _currentPositions;
+
+  Future<void> _getCurrentLocations() async {
+    print("hererereer");
+    LocationPermission permission = await Geolocator.requestPermission();
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    setState(() {
+      _currentPositions = LatLng(position.latitude, position.longitude);
+    });
+    print("ddddddddddddd $_currentPositions");
+  }
+
   Future<void> _getCurrentLocation() async {
+    print("locationfuntcion===========");
     bool serviceEnabled;
     LocationPermission permission;
-
-    // Check if location services are enabled
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       return Future.error('Location services are disabled.');
     }
-
-    // Check for location permission
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -98,7 +108,6 @@ class _SearchLocationPageState extends State<SearchLocationPage>
         return Future.error('Location permissions are denied');
       }
     }
-
     if (permission == LocationPermission.deniedForever) {
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
@@ -110,8 +119,6 @@ class _SearchLocationPageState extends State<SearchLocationPage>
     setState(() {
       _currentPosition = position;
     });
-
-    // Get the address
     await _getAddressFromLatLng(position);
   }
 
@@ -147,6 +154,275 @@ class _SearchLocationPageState extends State<SearchLocationPage>
       UI.setSnackBar("Something Went Wrong", context);
       setState(() {
         saveStatus = true;
+      });
+    }
+  }
+
+  String? vendorId,
+      vehicleId,
+      unitPrice,
+      tollTax,
+      parking,
+      stateCharge,
+      nightCharge;
+
+  String distance = "0".toString();
+  String totalTime = "0".toString();
+  bool saveStatus = true;
+  bool driveStatus = true;
+  List<RidesModel> rideList = [];
+  List<DriverModel> driverList = [];
+
+  double calculateDistance(lat1, lon1, lat2, lon2) {
+    try {
+      var p = 0.017453292519943295;
+      var c = cos;
+      var a = 0.5 -
+          c((lat2 - lat1) * p) / 2 +
+          c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
+      return 12742 * asin(sqrt(a));
+    } on Exception catch (exception) {
+      return 0; // only executed if error is of type Exception
+    } catch (error) {
+      return 0; // executed for errors of all types other than Exception
+    }
+  }
+
+  double gst = 0.0;
+  double surge = 0.0;
+
+  Future getEstimated() async {
+    calculateDistance(latitude, longitude, dropLatitude, dropLongitude);
+    var request = http.Request(
+        'GET',
+        Uri.parse(
+            'https://maps.googleapis.com/maps/api/distancematrix/json?origins=${latitude},${longitude}&destinations=${dropLatitude},${dropLongitude}&key=AIzaSyBq52y-MtlJa6wtmzZ1XIz3LTbwBpaWXuU'));
+    http.StreamedResponse response = await request.send();
+    print(request);
+    if (response.statusCode == 200) {
+      final str = await response.stream.bytesToString();
+      var data = json.decode(str);
+      print(data);
+
+      if (data["status"] == "OK") {
+        setState(() {
+          var dis =
+              data["rows"][0]["elements"][0]["distance"]["text"].toString();
+          List d = dis.toString().split(" ").toList();
+          distance = d[0].toString();
+          print("$distance>>>>>>>>>>>>>>>>>>>>");
+        });
+        getRides('');
+      } else {}
+    } else {
+      return null;
+    }
+  }
+
+  int _currentCar = 0;
+  String promoDiscount = "0";
+
+  getRides(totalTime) async {
+    try {
+      Map params = {
+        "distance": (double.parse(distance) >= 1 ? distance : "0"),
+        'time': '',
+        "pickup_lat_long": "${latitude},${longitude}",
+        // "lang": widget.source.longitude.toString(),
+        "drop_location": dropCon.text,
+        "pickup_location": pickupCon.text,
+        "pickup_date_time": bookingDate == null
+            ? DateTime.now().toString()
+            : bookingDate.toString(),
+        'drop_lat_long': '${dropLatitude},${dropLongitude}',
+        "user_id": curUserId,
+        // "booking_type": widget.shareType != ""
+        //     ? "schedule"
+        //     : bookingDate != null
+        //         ? "schedule"
+        //         : "",
+        "booking_type": bookingDate != null ? "schedule" : "current",
+        "order_type": '',
+        'return_date': returnDate.toString(),
+        'return_time': returnTime.toString()
+      };
+      print("GET CAN CHARGE ;;;;;;;;;;;; $params");
+      Map response = await apiBase.postAPICall(
+          Uri.parse(baseUrl1 + "booking/get_ride"), params);
+      List<RidesModel> tempList = [];
+      if (response['status'] &&
+          response['data'] != null &&
+          response['data'].length > 0) {
+        for (var v in response['data']) {
+          setState(() {
+            unitPrice = v['unit_price'].toString();
+            tollTax = v['toll_tax'].toString();
+            stateCharge = v['state_tax'].toString();
+            nightCharge = v['night_charge'].toString();
+            parking = v['parking'].toString();
+            print("unit price is $unitPrice $tollTax ${stateCharge}");
+            tempList.add(new RidesModel(
+              v['taxi_id'],
+              v['vendor_id'].toString(),
+              v['cartype'],
+              v['carmodel'],
+              v['intialkm'].toString(),
+              double.parse(v['amount'] != null
+                      ? v['amount'].toString()
+                      : v['fixed_amount'] != null
+                          ? v['fixed_amount'].toString()
+                          : "0")
+                  .toString(),
+              double.parse(v['basic_fare'] != null
+                      ? v['basic_fare'].toString()
+                      : "0")
+                  .toString(),
+              double.parse(v['time_cahrge'] != null
+                      ? v['time_cahrge'].toString()
+                      : "0")
+                  .toStringAsFixed(2),
+              double.parse(v['rate_per_km'].toString()).toStringAsFixed(2),
+              double.parse(v['main_rate_per_km'].toString()).toStringAsFixed(2),
+              v['car_image'].toString(),
+              v['serge'].toString(),
+              v['gst'].toString(),
+              v['surge_charge'],
+              v['car_categories'],
+              v['min_fare'] != null
+                  ? double.parse(v['min_fare']).toString()
+                  : "0",
+              double.parse(v['cancellation_charges'].toString()).toString(),
+              v['admin_commission'].toString(),
+              v['fuel_type'].toString(),
+              v['seating_capacity'].toString(),
+              v['insurance_expiry'].toString(),
+              v['pollution_expiry'].toString(),
+              v['vehicle_no'].toString(),
+              v['luggage_carrier'].toString(),
+              v['luggage_capacity'].toString(),
+              v['distance'].toString(),
+              v['extra_price'].toString(),
+              v['tax_amount'].toString(),
+              v['cancellation_charge'].toString(),
+              v['service_charge'].toString(),
+            ));
+          });
+        }
+        setState(() {
+          rideList = new List.from(tempList);
+        });
+        getPromo();
+        getJoiningBonus();
+        // paymentCalculate();
+        if (rideList[_currentCar].surge_charge != null &&
+            rideList[_currentCar].surge_charge.length > 0 &&
+            rideList[_currentCar].surge_charge[0]['time_on_off'].toString() !=
+                "CLOSED") {
+          surge = ((double.parse(rideList[_currentCar]
+                      .surge_charge[0]['amount']
+                      .toString()) *
+                  double.parse(rideList[_currentCar].intailrate)) /
+              100);
+        } else {
+          surge = 0;
+        }
+      } else {
+        UI.setSnackBar("Rides Not Available", context);
+        Navigator.pop(context);
+      }
+    } on TimeoutException catch (_) {
+      UI.setSnackBar(getTranslated(context, "WRONG")!, context);
+    }
+  }
+
+  getJoiningBonus() async {
+    try {
+      setState(() {
+        driveStatus = true;
+        driverList.clear();
+      });
+      // Map params = {
+      //   "lat": widget.source.latitude.toString(),
+      //   "lang": widget.source.longitude.toString(),
+      // };
+      https: //productsalphawizz.com/taxi/api/Payment/get_promo_code
+      Map response = await apiBase.getAPICall(
+        Uri.parse(baseUrl1 + "Payment/joining_bonus_user"),
+      );
+
+      if (response['status']) {
+        minRideAmount = response['data']['min_booking'];
+        String promoAmount = response['data']['amount'];
+        print("this is joining bonus amount $minRideAmount and $promoAmount");
+        setState(() {
+          driveStatus = false;
+        });
+        if (isFirstUser == "0") {
+          if (double.parse(rideList[_currentCar].intailrate) >
+              double.parse(minRideAmount)) {
+            setState(() {
+              promoDiscount = promoAmount;
+            });
+          }
+        }
+        print("this is promoDiscount $promoDiscount");
+      } else {
+        setState(() {
+          driveStatus = false;
+        });
+        //UI.setSnackBar(response['message'], context);
+      }
+    } on TimeoutException catch (_) {
+      UI.setSnackBar(getTranslated(context, "WRONG")!, context);
+      setState(() {
+        driveStatus = true;
+      });
+    }
+  }
+
+  List<PromoModel> promoList = [];
+  String bonusAmount = '';
+  String minRideAmount = '';
+
+  getPromo() async {
+    try {
+      setState(() {
+        driveStatus = true;
+        promoList.clear();
+      });
+      print(rideList[_currentCar].catType);
+      Map params = {
+        "lat": latitude.toString(),
+        "lang": longitude.toString(),
+        "user_id": curUserId,
+        "vehicle_type": rideList[_currentCar].catType != "" &&
+                rideList[_currentCar].catType != "Auto"
+            ? "2"
+            : "1",
+      };
+      print('PrintData:_____${params}______');
+      Map response = await apiBase.postAPICall(
+          Uri.parse(baseUrl1 + "Payment/get_promo_code"), params);
+
+      if (response['status']) {
+        for (var v in response['data']) {
+          setState(() {
+            promoList.add(new PromoModel.fromJson(v));
+          });
+        }
+        setState(() {
+          driveStatus = false;
+        });
+      } else {
+        setState(() {
+          driveStatus = false;
+        });
+        //UI.setSnackBar(response['message'], context);
+      }
+    } on TimeoutException catch (_) {
+      UI.setSnackBar(getTranslated(context, "WRONG")!, context);
+      setState(() {
+        driveStatus = true;
       });
     }
   }
@@ -293,6 +569,8 @@ class _SearchLocationPageState extends State<SearchLocationPage>
     );
   }
 
+  String paymentType = "Cash";
+
   /* vehicleCardCar(CarData rentList, int index) {
     return Container(
       height: 200,
@@ -428,6 +706,7 @@ class _SearchLocationPageState extends State<SearchLocationPage>
   @override
   void initState() {
     super.initState();
+    _getCurrentLocations();
     getSlider();
     getPremiumSlider();
     getAvailableLocation();
@@ -446,10 +725,45 @@ class _SearchLocationPageState extends State<SearchLocationPage>
     getProfile();
     getCurrentInfo(first: true);
     getBookInfo();
-    getRides("3");
+
     getRental();
     getNumber();
+    // getTime1(
+    //     latitude.toString(), longitude.toString(), dropLatitude, dropLongitude);
     // getWallet();
+  }
+
+  getTime1(lat1, lon1, lat2, lon2) async {
+    if (lat1 != "" &&
+        lat1 != null &&
+        lon1 != "" &&
+        lon1 != null &&
+        lat2 != "" &&
+        lat2 != null &&
+        lon2 != "" &&
+        lon2 != null) {
+      print("check1");
+      // http.Response response = await http.get(Uri.parse(
+      //     "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=$lat1,$lon1&destinations=$lat2,$lon2&key=AIzaSyD65ula_94BY_XziYpJOLXFN-DOVwnBdcI"));
+      // print("GET TIME::::::" + response.body.toString());
+      // Map res = jsonDecode(response.body);
+      // List<dynamic> data = res['rows'][0]['elements'];
+      // //  String totalTime = "0 Mins".toString();
+      // if (response.body.contains("text")) {
+      //   totalTime = (int.parse(data[0]['duration']['value'].toString()) / 60)
+      //       .round()
+      //       .toString();
+      //   distance =
+      //       (double.parse(data[0]['distance']['value'].toString()) / 1000)
+      //           .toStringAsFixed(2);
+      // }
+      // getRides(totalTime);
+      getRides(0);
+      // print("TOTAL TIME" + totalTime + "");
+    } else {
+      print("TIME 0");
+      getRides("0");
+    }
   }
 
   @override
@@ -584,58 +898,57 @@ class _SearchLocationPageState extends State<SearchLocationPage>
     }
   }
 
-  List<MyRideModel> rideList = [];
   bool dialogOpen = false;
-  getRides(type, {bool first = false}) async {
-    try {
-      setState(() {
-        loading = true;
-      });
-      Map params = {
-        "user_id": curUserId,
-        "type": type,
-      };
-      print("ALL COMPLETE RIDE PARAM ====== $params");
-      Map response = await apiBase.postAPICall(
-          Uri.parse(baseUrl1 + "Payment/get_all_complete_user"), params);
-
-      setState(() {
-        loading = false;
-        rideList.clear();
-      });
-      if (response['status']) {
-        print(response['data']);
-        for (var v in response['data']) {
-          if (v['transaction'].toString().contains("Wait") &&
-              v['accept_reject'] == "3") {
-            setState(() {
-              rideList.add(MyRideModel.fromJson(v));
-            });
-          }
-        }
-
-        //await Future.delayed(Duration(seconds: 2));
-        if (rideList.isNotEmpty && first && !dialogOpen) {
-          dialogOpen = true;
-          var result = await showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (context) => RateRideDialog(
-                    rideList[0],
-                    check: false,
-                    from: true,
-                  ));
-          if (result != null && result) {
-            dialogOpen = false;
-            getProfile();
-            getRides("3");
-          }
-        }
-      } else {}
-    } on TimeoutException catch (_) {
-      UI.setSnackBar(getTranslated(context, "WRONG")!, context);
-    }
-  }
+  // getRidess(type, {bool first = false}) async {
+  //   try {
+  //     setState(() {
+  //       loading = true;
+  //     });
+  //     Map params = {
+  //       "user_id": curUserId,
+  //       "type": type,
+  //     };
+  //     print("ALL COMPLETE RIDE PARAM ====== $params");
+  //     Map response = await apiBase.postAPICall(
+  //         Uri.parse(baseUrl1 + "Payment/get_all_complete_user"), params);
+  //
+  //     setState(() {
+  //       loading = false;
+  //       rideList.clear();
+  //     });
+  //     if (response['status']) {
+  //       print(response['data']);
+  //       for (var v in response['data']) {
+  //         if (v['transaction'].toString().contains("Wait") &&
+  //             v['accept_reject'] == "3") {
+  //           setState(() {
+  //             rideList.add(MyRideModel.fromJson(v));
+  //           });
+  //         }
+  //       }
+  //
+  //       //await Future.delayed(Duration(seconds: 2));
+  //       if (rideList.isNotEmpty && first && !dialogOpen) {
+  //         dialogOpen = true;
+  //         var result = await showDialog(
+  //             context: context,
+  //             barrierDismissible: false,
+  //             builder: (context) => RateRideDialog(
+  //                   rideList[0],
+  //                   check: false,
+  //                   from: true,
+  //                 ));
+  //         if (result != null && result) {
+  //           dialogOpen = false;
+  //           getProfile();
+  //           getRides("3");
+  //         }
+  //       }
+  //     } else {}
+  //   } on TimeoutException catch (_) {
+  //     UI.setSnackBar(getTranslated(context, "WRONG")!, context);
+  //   }
+  // }
 
   getLocation() {
     GetLocation location = new GetLocation((result) {
@@ -695,7 +1008,6 @@ class _SearchLocationPageState extends State<SearchLocationPage>
 
   bool loading = true;
   bool loadingRental = false;
-  bool saveStatus = true;
   ApiBaseHelper apiBase = new ApiBaseHelper();
   bool isNetwork = false;
 
@@ -1085,7 +1397,6 @@ class _SearchLocationPageState extends State<SearchLocationPage>
     }
   }
 
-  String paymentType = "Cash";
   DateTime? currentBackPressTime;
 
   Future<bool> onWill() async {
@@ -1099,6 +1410,8 @@ class _SearchLocationPageState extends State<SearchLocationPage>
     exit(1);
     return Future.value();
   }
+
+  GoogleMapController? _mapController;
 
   String? selectCabType;
   int currentIndex = 0, timeIndex = 0, vehicleType = 0, bikeIndex = 0;
@@ -1301,79 +1614,80 @@ class _SearchLocationPageState extends State<SearchLocationPage>
           },
         ),
         resizeToAvoidBottomInset: true,
-        floatingActionButton: rideList.isNotEmpty
-            ? Container(
-                margin: EdgeInsets.all(8.0),
-                padding: EdgeInsets.all(8.0),
-                decoration:
-                    boxDecoration(showShadow: true, bgColor: Colors.white),
-                child: Row(
-                  children: [
-                    Expanded(
-                        child: Text(
-                      "Your previous ${rideList[0].bookingType!} ride payment is due",
-                    )),
-                    boxWidth(10),
-                    InkWell(
-                      onTap: () async {
-                        /*if (bookModel!.bookingType!
-                                  .toLowerCase()
-                                  .contains("schedule")) {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            MyRidesPage("1")));
-                              } else*/
-                        if (rideList[0]!
-                            .bookingType!
-                            .toLowerCase()
-                            .contains("intercity")) {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      InterCityRidePage("1")));
-                        } else if (rideList[0]!
-                            .bookingType!
-                            .toLowerCase()
-                            .contains("rental")) {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => RentalRides(
-                                        selected: false,
-                                      )));
-                        } else {
-                          var result = await showDialog(
-                              context: context,
-                              builder: (context) => RateRideDialog(
-                                    rideList[0],
-                                    check: false,
-                                    from: true,
-                                  ));
-                          if (result != null) {
-                            getRides("3");
-                          }
-                        }
-                      },
-                      child: Container(
-                        width: 30.w,
-                        height: 5.h,
-                        decoration: boxDecoration(
-                            radius: 5, bgColor: Theme.of(context).primaryColor),
-                        child: Center(
-                            child: text("Pay",
-                                fontFamily: fontMedium,
-                                fontSize: 10.sp,
-                                isCentered: true,
-                                textColor: Colors.white)),
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            : SizedBox(),
+        // floatingActionButton: rideList.isNotEmpty
+        //     ? Container(
+        //         margin: EdgeInsets.all(8.0),
+        //         padding: EdgeInsets.all(8.0),
+        //         decoration:
+        //             boxDecoration(showShadow: true, bgColor: Colors.white),
+        //         child: Row(
+        //           children: [
+        //             Expanded(
+        //                 child: Text(
+        //               "Your previous ${rideList[0].bookingType!} ride payment is due",
+        //             )),
+        //             boxWidth(10),
+        //             InkWell(
+        //               onTap: () async {
+        //                 /*if (bookModel!.bookingType!
+        //                           .toLowerCase()
+        //                           .contains("schedule")) {
+        //                         Navigator.push(
+        //                             context,
+        //                             MaterialPageRoute(
+        //                                 builder: (context) =>
+        //                                     MyRidesPage("1")));
+        //                       } else*/
+        //                 if (rideList[0]!
+        //                     .bookingType!
+        //                     .toLowerCase()
+        //                     .contains("intercity")) {
+        //                   Navigator.push(
+        //                       context,
+        //                       MaterialPageRoute(
+        //                           builder: (context) =>
+        //                               InterCityRidePage("1")));
+        //                 } else if (rideList[0]!
+        //                     .bookingType!
+        //                     .toLowerCase()
+        //                     .contains("rental")) {
+        //                   Navigator.push(
+        //                       context,
+        //                       MaterialPageRoute(
+        //                           builder: (context) => RentalRides(
+        //                                 selected: false,
+        //                               )));
+        //                 } else {
+        //                   var result = await showDialog(
+        //                       context: context,
+        //                       builder: (context) => RateRideDialog(
+        //                             rideList[0],
+        //                             check: false,
+        //                             from: true,
+        //                           ),
+        //                   );
+        //                   if (result != null) {
+        //                     getRides("3");
+        //                   }
+        //                 }
+        //               },
+        //               child: Container(
+        //                 width: 30.w,
+        //                 height: 5.h,
+        //                 decoration: boxDecoration(
+        //                     radius: 5, bgColor: Theme.of(context).primaryColor),
+        //                 child: Center(
+        //                     child: text("Pay",
+        //                         fontFamily: fontMedium,
+        //                         fontSize: 10.sp,
+        //                         isCentered: true,
+        //                         textColor: Colors.white)),
+        //               ),
+        //             ),
+        //           ],
+        //         ),
+        //       )
+        //     : SizedBox(),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         body: saveStatus
             ? RefreshIndicator(
@@ -1384,146 +1698,54 @@ class _SearchLocationPageState extends State<SearchLocationPage>
                   child: Column(
                     children: [
                       // Map image placeholder
-                      Image.asset(
-                        'assets/map.png', // Replace with your map image or Google Map widget
-                        fit: BoxFit.cover,
-                        height: MediaQuery.of(context).size.height * 0.4,
-                        width: double.infinity,
-                      ),
-                      Container(
-                       // margin: const EdgeInsets.all(16),
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                blurRadius: 8,
-                                offset: const Offset(0, 4))
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Booking type
-                            Row(
-                              children: [
-                                // Radio(
-                                //   value: 0,
-                                //   groupValue: bookingType,
-                                //   onChanged: (val) {
-                                //     setState(() {
-                                //       bookingType = val!;
-                                //     });
-                                //   },
-                                // ),
-                                // const Text("Current Booking"),
-                                // const SizedBox(width: 10),
-                                // Radio(
-                                //   value: 1,
-                                //   groupValue: bookingType,
-                                //   onChanged: (val) {
-                                //     setState(() {
-                                //       bookingType = val!;
-                                //     });
-                                //   },
-                                // ),
-                                const Text("Schedule Bookings"),
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-
-                            // Pickup location
-                            TextField(
-                              decoration: InputDecoration(
-                                prefixIcon: const Icon(Icons.location_on,
-                                    color: Colors.green),
-                                hintText: "Enter pickup location",
-                                filled: true,
-                                fillColor: Colors.grey[200],
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  borderSide: BorderSide.none,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-
-                            // Destination
-                            TextField(
-                              decoration: InputDecoration(
-                                prefixIcon:
-                                const Icon(Icons.location_on, color: Colors.red),
-                                hintText: "Enter your destination",
-                                filled: true,
-                                fillColor: Colors.grey[200],
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  borderSide: BorderSide.none,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-
-                            // Date and time
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: OutlinedButton.icon(
-                                    onPressed: () {},
-                                    icon: const Icon(Icons.calendar_today,
-                                        color: Colors.black),
-                                    label: const Text("Select Date",
-                                        style: TextStyle(color: Colors.black)),
-                                    style: OutlinedButton.styleFrom(
-                                      padding:
-                                      const EdgeInsets.symmetric(vertical: 16),
-                                      side: const BorderSide(color: Colors.grey),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: OutlinedButton.icon(
-                                    onPressed: () {},
-                                    icon: const Icon(Icons.access_time,
-                                        color: Colors.black),
-                                    label: const Text("Select Time",
-                                        style: TextStyle(color: Colors.black)),
-                                    style: OutlinedButton.styleFrom(
-                                      padding:
-                                      const EdgeInsets.symmetric(vertical: 16),
-                                      side: const BorderSide(color: Colors.grey),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 15),
-
-                            // Confirm button
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                onPressed: () {},
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.green,
-                                  padding: const EdgeInsets.symmetric(vertical: 16),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                                child: const Text(
-                                  "Confirm",
-                                  style: TextStyle(color: Colors.white),
+                      _currentPositions == null || _currentPositions == ""
+                          ? Container(
+                              height: MediaQuery.of(context).size.height / 2,
+                              alignment: Alignment.center,
+                              child: const SizedBox(
+                                width: 30,
+                                height: 30,
+                                child: CircularProgressIndicator(
+                                  color: Colors.black,
                                 ),
                               ),
                             )
-                          ],
+                          : Container(
+                              height: 300,
+                              child: GoogleMap(
+                                initialCameraPosition: CameraPosition(
+                                  target: _currentPositions!,
+                                  zoom: 15,
+                                ),
+                                onMapCreated: (controller) {
+                                  _mapController = controller;
+                                },
+                                markers: {
+                                  Marker(
+                                    markerId: const MarkerId("currentLocation"),
+                                    position: _currentPositions!,
+                                    infoWindow:
+                                        const InfoWindow(title: "You are here"),
+                                    icon: BitmapDescriptor.defaultMarkerWithHue(
+                                        BitmapDescriptor.hueRed),
+                                  ),
+                                },
+                                myLocationEnabled: true,
+                                myLocationButtonEnabled: true,
+                              ),
+                            ),
+                      SizedBox(
+                        height: 3,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 5),
+                        child: Center(
+                          child: Text(
+                            "For saving carbon pollution by not choosing Petrol or diesel vehicle.",
+                            style: TextStyle(fontSize: 14, color: Colors.red),
+                          ),
                         ),
                       ),
-
                       // Row(
                       //   mainAxisAlignment: MainAxisAlignment.end,
                       //   children: [
@@ -1667,7 +1889,7 @@ class _SearchLocationPageState extends State<SearchLocationPage>
                       // //         live: false,
                       // //         SOURCE_LOCATION: LatLng(latitude, longitude),
                       // //       )
-                      // //     : Center(child: CircularProgressIndicator()),
+                      // //     : Center(child: CircularProgressIndicator(color:Colors.black)),
                       // // Container(
                       // //   height: double.infinity,
                       // //   color: Colors.white.withOpacity(0.5),
@@ -1692,8 +1914,8 @@ class _SearchLocationPageState extends State<SearchLocationPage>
                       //   ),
                       // ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16.0, vertical: 0),
+                        padding:
+                            const EdgeInsets.only(left: 10, right: 10, top: 5),
                         child: Container(
                           // height: 100,
                           decoration: BoxDecoration(
@@ -1705,109 +1927,170 @@ class _SearchLocationPageState extends State<SearchLocationPage>
                             children: [
                               Container(
                                 // height: getHeight(160),
-                                // padding: EdgeInsets.all(getWidth(10)),
-                                padding: EdgeInsets.only(
-                                    top: 20, left: 16, bottom: 16),
+                                // padding: EdgeInsets.symmetric(horizontal: 0,),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.grey.shade300,
+                                    width: 1.5,
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.white,
+                                ),
                                 child: SingleChildScrollView(
                                   scrollDirection: Axis.horizontal,
                                   physics: AlwaysScrollableScrollPhysics(),
                                   child: Row(
                                     children:
                                         List.generate(catList.length, (index) {
-                                      return InkWell(
-                                        onTap: () {
-                                          setState(() {
-                                            bookingDate = null;
-                                            returnDate = null;
-                                            currentIndex = index;
-                                            selectedHour = null;
-                                          });
-                                          print(
-                                              "tyepindex=${catList[index].name}===========");
-                                          selectCabType =
-                                              catList[index].name.toString();
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  SelectLocationScreen(
-                                                currentIndex: currentIndex,
-                                                selectCabType: selectCabType,
-                                                availableLocationList:
-                                                    selectedCity,
-                                              ),
-                                            ),
-                                          );
-                                          /*if (index == 0) {
-                                          setState(() {
-                                            currentIndex = index;
-                                          });
-                                          return;
-                                        }
-                                        if (bookModel == null) {
+                                      return Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Radio<int>(
+                                            value: index,
+                                            groupValue: currentIndex,
+                                            activeColor: Colors
+                                                .green, // green like screenshot
+                                            onChanged: (val) {
+                                              setState(() {
+                                                bookingDate = null;
+                                                returnDate = null;
+                                                selectedHour = null;
+                                                currentIndex = val!;
+                                                selectCabType = catList[val]
+                                                    .name
+                                                    .toString();
+                                              });
 
-                                        } else {
-                                          UI.setSnackBar(
-                                              "You have an already scheduled ride", context);
-                                        }*/
-                                        },
-                                        child: Container(
-                                          margin: EdgeInsets.only(
-                                              right: getWidth(12)),
-                                          height: getHeight(160),
-                                          width: getWidth(148),
-                                          padding: EdgeInsets.all(getWidth(12)),
-                                          // margin: EdgeInsets.all(getWidth(5)),
-                                          decoration: boxDecoration(
-                                            bgColor: currentIndex == index
-                                                ? MyColorName.lightGrey
-                                                : Colors.transparent,
-                                            color: currentIndex == index
-                                                ? Colors.transparent
-                                                : Colors.grey,
-                                            radius: 8,
+                                              // Navigator.push(
+                                              //   context,
+                                              //   MaterialPageRoute(
+                                              //     builder: (context) => SelectLocationScreen(
+                                              //       currentIndex: currentIndex,
+                                              //       selectCabType: selectCabType,
+                                              //       availableLocationList: selectedCity,
+                                              //     ),
+                                              //   ),
+                                              // );
+                                            },
                                           ),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              SizedBox(
-                                                height: 8,
-                                              ),
-                                              Image.asset(
-                                                catList[index].image,
-                                                scale: 4,
-                                              ),
-                                              // SvgPicture.asset(
-                                              //   catList[index].image,
-                                              //   width: getHeight(65),
-                                              //   height: getHeight(65),
-                                              // ),
-                                              SizedBox(
-                                                height: 16,
-                                              ),
-                                              Text(
-                                                catList[index].name,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleLarge!
-                                                    .copyWith(
-                                                        fontSize: 14.0,
-                                                        fontWeight:
-                                                            FontWeight.w700),
-                                              ),
-                                              // SizedBox(
-                                              //   height: 12,
-                                              // ),
-                                            ],
+                                          Text(
+                                            catList[index].name,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleLarge!
+                                                .copyWith(
+                                                  fontSize: 14.0,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
                                           ),
-                                        ),
+                                        ],
                                       );
-                                    }).toList(),
+                                    }),
                                   ),
+
+                                  // child: SingleChildScrollView(
+                                  //   scrollDirection: Axis.horizontal,
+                                  //   physics: AlwaysScrollableScrollPhysics(),
+                                  //   child: Row(
+                                  //     children:
+                                  //         List.generate(catList.length, (index) {
+                                  //       return InkWell(
+                                  //         onTap: () {
+                                  //           setState(() {
+                                  //             bookingDate = null;
+                                  //             returnDate = null;
+                                  //             currentIndex = index;
+                                  //             selectedHour = null;
+                                  //           });
+                                  //           print(
+                                  //               "tyepindex=${catList[index].name}===========");
+                                  //           selectCabType =
+                                  //               catList[index].name.toString();
+                                  //           Navigator.push(
+                                  //             context,
+                                  //             MaterialPageRoute(
+                                  //               builder: (context) =>
+                                  //                   SelectLocationScreen(
+                                  //                 currentIndex: currentIndex,
+                                  //                 selectCabType: selectCabType,
+                                  //                 availableLocationList:
+                                  //                     selectedCity,
+                                  //               ),
+                                  //             ),
+                                  //           );
+                                  //           /*if (index == 0) {
+                                  //           setState(() {
+                                  //             currentIndex = index;
+                                  //           });
+                                  //           return;
+                                  //         }
+                                  //         if (bookModel == null) {
+                                  //
+                                  //         } else {
+                                  //           UI.setSnackBar(
+                                  //               "You have an already scheduled ride", context);
+                                  //         }*/
+                                  //         },
+                                  //         child: Container(
+                                  //           margin: EdgeInsets.only(
+                                  //               right: getWidth(12)),
+                                  //           height: getHeight(160),
+                                  //           width: getWidth(148),
+                                  //           padding: EdgeInsets.all(getWidth(12)),
+                                  //           // margin: EdgeInsets.all(getWidth(5)),
+                                  //           decoration: boxDecoration(
+                                  //             bgColor: currentIndex == index
+                                  //                 ? MyColorName.lightGrey
+                                  //                 : Colors.transparent,
+                                  //             color: currentIndex == index
+                                  //                 ? Colors.transparent
+                                  //                 : Colors.grey,
+                                  //             radius: 8,
+                                  //           ),
+                                  //           child: Column(
+                                  //             mainAxisAlignment:
+                                  //                 MainAxisAlignment.center,
+                                  //             crossAxisAlignment:
+                                  //                 CrossAxisAlignment.center,
+                                  //             children: [
+                                  //               SizedBox(
+                                  //                 height: 8,
+                                  //               ),
+                                  //               Image.asset(
+                                  //                 catList[index].image,
+                                  //                 scale: 4,
+                                  //               ),
+                                  //               // SvgPicture.asset(
+                                  //               //   catList[index].image,
+                                  //               //   width: getHeight(65),
+                                  //               //   height: getHeight(65),
+                                  //               // ),
+                                  //               SizedBox(
+                                  //                 height: 16,
+                                  //               ),
+                                  //               Text(
+                                  //                 catList[index].name,
+                                  //                 style: Theme.of(context)
+                                  //                     .textTheme
+                                  //                     .titleLarge!
+                                  //                     .copyWith(
+                                  //                         fontSize: 14.0,
+                                  //                         fontWeight:
+                                  //                             FontWeight.w700),
+                                  //               ),
+                                  //               // SizedBox(
+                                  //               //   height: 12,
+                                  //               // ),
+                                  //             ],
+                                  //           ),
+                                  //         ),
+                                  //       );
+                                  //     }).toList(),
+                                  //   ),
                                 ),
+                              ),
+                              SizedBox(
+                                height: 10,
                               ),
 
                               // currentIndex == 2?Container(
@@ -1833,173 +2116,173 @@ class _SearchLocationPageState extends State<SearchLocationPage>
                               // ):SizedBox(),
 
                               ///
-                              currentIndex == 2
-                                  ? Padding(
-                                      padding: const EdgeInsets.only(left: 15.0),
-                                      child: Row(
-                                        children: [
-                                          InkWell(
-                                            onTap: () {
-                                              setState(() {
-                                                vehicleType = 0;
-                                                bikeIndex = 0;
-                                                tempList = bikeRentList.toList();
-                                              });
-                                            },
-                                            child: Container(
-                                              margin: EdgeInsets.only(
-                                                  right: getWidth(5)),
-                                              // height: getHeight(200),
-                                              // width: getWidth(110),
-                                              padding:
-                                                  EdgeInsets.all(getWidth(10)),
-                                              decoration: boxDecoration(
-                                                  bgColor: vehicleType == 0
-                                                      ? MyColorName.primaryLite
-                                                          .withOpacity(0.1)
-                                                      : Colors.transparent,
-                                                  radius: 5,
-                                                  color: MyColorName
-                                                      .colorTextPrimary),
-                                              child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  // text(
-                                                  //   rentList[0].carModel!=null?rentList[0].carModel.toString():"Auto",
-                                                  //   fontSize: 8.sp,
-                                                  //   fontFamily: fontMedium,
-                                                  //   textColor: MyColorName.appbarBg,
-                                                  // ),
-                                                  // boxHeight(10),
-                                                  Image.asset(
-                                                    "assets/cars/car1.png",
-                                                    height: getHeight(30),
-                                                    width: getWidth(30),
-                                                    fit: BoxFit.fill,
-                                                  ),
-                                                  SizedBox(
-                                                    height: 5,
-                                                    width: 5,
-                                                  ),
-                                                  Center(
-                                                    child: text(
-                                                      "Auto",
-                                                      // rentList[0].hours.toString()+" Hour",
-                                                      fontSize: 10.sp,
-                                                      fontFamily: fontMedium,
-                                                      textColor:
-                                                          MyColorName.appbarBg,
-                                                    ),
-                                                  ),
-                                                  // Row(
-                                                  //   mainAxisAlignment:
-                                                  //   MainAxisAlignment.spaceBetween,
-                                                  //   children: [
-                                                  //     text(
-                                                  //       "₹"+rentList[index].fixedRate.toString(),
-                                                  //       fontSize: 9.sp,
-                                                  //       fontFamily: fontMedium,
-                                                  //       textColor: MyColorName.appbarBg,
-                                                  //     ),
-                                                  //     text(
-                                                  //       "₹"+rentList[index].ratePerHour.toString() + "/hr",
-                                                  //       fontSize: 7.sp,
-                                                  //       fontFamily: fontRegular,
-                                                  //       textColor: MyColorName.appbarBg,
-                                                  //     ),
-                                                  //   ],
-                                                  // ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          InkWell(
-                                            onTap: () {
-                                              setState(() {
-                                                vehicleType = 1;
-                                                bikeIndex = 0;
-                                                tempList = carRentList.toList();
-                                              });
-                                            },
-                                            child: Container(
-                                              margin: EdgeInsets.only(
-                                                  right: getWidth(5)),
-                                              // height: getHeight(200),
-                                              // width: getWidth(110),
-                                              padding:
-                                                  EdgeInsets.all(getWidth(10)),
-                                              decoration: boxDecoration(
-                                                  bgColor: vehicleType == 1
-                                                      ? MyColorName.primaryLite
-                                                          .withOpacity(0.1)
-                                                      : Colors.transparent,
-                                                  radius: 5,
-                                                  color: MyColorName
-                                                      .colorTextPrimary),
-                                              child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  // text(
-                                                  //   rentList[0].carModel!=null?rentList[0].carModel.toString():"Auto",
-                                                  //   fontSize: 8.sp,
-                                                  //   fontFamily: fontMedium,
-                                                  //   textColor: MyColorName.appbarBg,
-                                                  // ),
-                                                  // boxHeight(10),
-                                                  Image.asset(
-                                                    "assets/cars/car2.png",
-                                                    height: getHeight(30),
-                                                    width: getWidth(30),
-                                                    fit: BoxFit.fill,
-                                                  ),
-                                                  SizedBox(
-                                                    height: 5,
-                                                    width: 5,
-                                                  ),
-                                                  Center(
-                                                    child: text(
-                                                      "Car",
-                                                      // rentList[0].hours.toString()+" Hour",
-                                                      fontSize: 10.sp,
-                                                      fontFamily: fontMedium,
-                                                      textColor:
-                                                          MyColorName.appbarBg,
-                                                    ),
-                                                  ),
-                                                  boxHeight(5),
-                                                  // Row(
-                                                  //   mainAxisAlignment:
-                                                  //   MainAxisAlignment.spaceBetween,
-                                                  //   children: [
-                                                  //     text(
-                                                  //       "₹"+rentList[index].fixedRate.toString(),
-                                                  //       fontSize: 9.sp,
-                                                  //       fontFamily: fontMedium,
-                                                  //       textColor: MyColorName.appbarBg,
-                                                  //     ),
-                                                  //     text(
-                                                  //       "₹"+rentList[index].ratePerHour.toString() + "/hr",
-                                                  //       fontSize: 7.sp,
-                                                  //       fontFamily: fontRegular,
-                                                  //       textColor: MyColorName.appbarBg,
-                                                  //     ),
-                                                  //   ],
-                                                  // ),
-                                                ],
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                  : SizedBox(),
+                              // currentIndex == 2
+                              //     ? Padding(
+                              //         padding: const EdgeInsets.only(left: 15.0),
+                              //         child: Row(
+                              //           children: [
+                              //             InkWell(
+                              //               onTap: () {
+                              //                 setState(() {
+                              //                   vehicleType = 0;
+                              //                   bikeIndex = 0;
+                              //                   tempList = bikeRentList.toList();
+                              //                 });
+                              //               },
+                              //               child: Container(
+                              //                 margin: EdgeInsets.only(
+                              //                     right: getWidth(5)),
+                              //                 // height: getHeight(200),
+                              //                 // width: getWidth(110),
+                              //                 padding:
+                              //                     EdgeInsets.all(getWidth(10)),
+                              //                 decoration: boxDecoration(
+                              //                     bgColor: vehicleType == 0
+                              //                         ? MyColorName.primaryLite
+                              //                             .withOpacity(0.1)
+                              //                         : Colors.transparent,
+                              //                     radius: 5,
+                              //                     color: MyColorName
+                              //                         .colorTextPrimary),
+                              //                 child: Row(
+                              //                   crossAxisAlignment:
+                              //                       CrossAxisAlignment.center,
+                              //                   mainAxisAlignment:
+                              //                       MainAxisAlignment.center,
+                              //                   children: [
+                              //                     // text(
+                              //                     //   rentList[0].carModel!=null?rentList[0].carModel.toString():"Auto",
+                              //                     //   fontSize: 8.sp,
+                              //                     //   fontFamily: fontMedium,
+                              //                     //   textColor: MyColorName.appbarBg,
+                              //                     // ),
+                              //                     // boxHeight(10),
+                              //                     Image.asset(
+                              //                       "assets/cars/car1.png",
+                              //                       height: getHeight(30),
+                              //                       width: getWidth(30),
+                              //                       fit: BoxFit.fill,
+                              //                     ),
+                              //                     SizedBox(
+                              //                       height: 5,
+                              //                       width: 5,
+                              //                     ),
+                              //                     Center(
+                              //                       child: text(
+                              //                         "Auto",
+                              //                         // rentList[0].hours.toString()+" Hour",
+                              //                         fontSize: 10.sp,
+                              //                         fontFamily: fontMedium,
+                              //                         textColor:
+                              //                             MyColorName.appbarBg,
+                              //                       ),
+                              //                     ),
+                              //                     // Row(
+                              //                     //   mainAxisAlignment:
+                              //                     //   MainAxisAlignment.spaceBetween,
+                              //                     //   children: [
+                              //                     //     text(
+                              //                     //       "₹"+rentList[index].fixedRate.toString(),
+                              //                     //       fontSize: 9.sp,
+                              //                     //       fontFamily: fontMedium,
+                              //                     //       textColor: MyColorName.appbarBg,
+                              //                     //     ),
+                              //                     //     text(
+                              //                     //       "₹"+rentList[index].ratePerHour.toString() + "/hr",
+                              //                     //       fontSize: 7.sp,
+                              //                     //       fontFamily: fontRegular,
+                              //                     //       textColor: MyColorName.appbarBg,
+                              //                     //     ),
+                              //                     //   ],
+                              //                     // ),
+                              //                   ],
+                              //                 ),
+                              //               ),
+                              //             ),
+                              //             InkWell(
+                              //               onTap: () {
+                              //                 setState(() {
+                              //                   vehicleType = 1;
+                              //                   bikeIndex = 0;
+                              //                   tempList = carRentList.toList();
+                              //                 });
+                              //               },
+                              //               child: Container(
+                              //                 margin: EdgeInsets.only(
+                              //                     right: getWidth(5)),
+                              //                 // height: getHeight(200),
+                              //                 // width: getWidth(110),
+                              //                 padding:
+                              //                     EdgeInsets.all(getWidth(10)),
+                              //                 decoration: boxDecoration(
+                              //                     bgColor: vehicleType == 1
+                              //                         ? MyColorName.primaryLite
+                              //                             .withOpacity(0.1)
+                              //                         : Colors.transparent,
+                              //                     radius: 5,
+                              //                     color: MyColorName
+                              //                         .colorTextPrimary),
+                              //                 child: Row(
+                              //                   crossAxisAlignment:
+                              //                       CrossAxisAlignment.center,
+                              //                   mainAxisAlignment:
+                              //                       MainAxisAlignment
+                              //                           .spaceBetween,
+                              //                   children: [
+                              //                     // text(
+                              //                     //   rentList[0].carModel!=null?rentList[0].carModel.toString():"Auto",
+                              //                     //   fontSize: 8.sp,
+                              //                     //   fontFamily: fontMedium,
+                              //                     //   textColor: MyColorName.appbarBg,
+                              //                     // ),
+                              //                     // boxHeight(10),
+                              //                     Image.asset(
+                              //                       "assets/cars/car2.png",
+                              //                       height: getHeight(30),
+                              //                       width: getWidth(30),
+                              //                       fit: BoxFit.fill,
+                              //                     ),
+                              //                     SizedBox(
+                              //                       height: 5,
+                              //                       width: 5,
+                              //                     ),
+                              //                     Center(
+                              //                       child: text(
+                              //                         "Car",
+                              //                         // rentList[0].hours.toString()+" Hour",
+                              //                         fontSize: 10.sp,
+                              //                         fontFamily: fontMedium,
+                              //                         textColor:
+                              //                             MyColorName.appbarBg,
+                              //                       ),
+                              //                     ),
+                              //                     boxHeight(5),
+                              //                     // Row(
+                              //                     //   mainAxisAlignment:
+                              //                     //   MainAxisAlignment.spaceBetween,
+                              //                     //   children: [
+                              //                     //     text(
+                              //                     //       "₹"+rentList[index].fixedRate.toString(),
+                              //                     //       fontSize: 9.sp,
+                              //                     //       fontFamily: fontMedium,
+                              //                     //       textColor: MyColorName.appbarBg,
+                              //                     //     ),
+                              //                     //     text(
+                              //                     //       "₹"+rentList[index].ratePerHour.toString() + "/hr",
+                              //                     //       fontSize: 7.sp,
+                              //                     //       fontFamily: fontRegular,
+                              //                     //       textColor: MyColorName.appbarBg,
+                              //                     //     ),
+                              //                     //   ],
+                              //                     // ),
+                              //                   ],
+                              //                 ),
+                              //               ),
+                              //             )
+                              //           ],
+                              //         ),
+                              //       )
+                              //     : SizedBox(),
                               currentIndex == 2
                                   ? Container(
                                       height: getHeight(255),
@@ -2366,526 +2649,902 @@ class _SearchLocationPageState extends State<SearchLocationPage>
                                       )
                                   : SizedBox(),
 
-                              currentIndex == 2
-                                  ? DropdownButtonHideUnderline(
-                                      child: Container(
-                                        height: 56,
-                                        width: double.infinity,
-                                        padding: const EdgeInsets.only(left: 12),
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal: 16, vertical: 8),
-                                        decoration: BoxDecoration(
-                                          color: Color(0xffF5F5F5),
-                                          borderRadius: BorderRadius.circular(8),
-                                          border: Border.all(
-                                            color: Color(0xffE1E1E1),
-                                            width: 1,
-                                          ),
-                                        ),
-                                        child: DropdownButton<String>(
-                                          value: selectedAir,
-                                          isExpanded: true,
-                                          icon: Icon(Icons.arrow_drop_down,
-                                              color: Colors.grey),
-                                          iconSize: 30,
-                                          style: TextStyle(
-                                              color: Colors.black, fontSize: 16),
-                                          hint: Text('Airport Tranfer',
-                                              style:
-                                                  TextStyle(color: Colors.grey)),
-                                          items: airportType.map((String item) {
-                                            return DropdownMenuItem<String>(
-                                              value: item,
-                                              child: Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 10),
-                                                decoration: BoxDecoration(
-                                                  border: Border(
-                                                    bottom: BorderSide(
-                                                      color: Colors.grey.shade300,
-                                                      width: 0.5,
-                                                    ),
-                                                  ),
-                                                ),
-                                                child: Text(
-                                                  item,
-                                                  style: TextStyle(fontSize: 13),
-                                                ),
-                                              ),
-                                            );
-                                          }).toList(),
-                                          onChanged: (String? newValue) {
-                                            setState(() {
-                                              selectedAir = newValue;
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                    )
-                                  : SizedBox(),
-                              Stack(
-                                alignment: Alignment.centerRight,
-                                children: [
-                                  Column(
-                                    children: [
-                                      currentIndex == 2 &&
-                                              selectedAir == 'Airport Pick Up'
-                                          ? Container(
-                                              // height: 60,
-                                              // margin: EdgeInsets.all(10),
-                                              child: EntryField(
-                                                controller: pickupCon,
-                                                readOnly: true,
-                                              //   onTap: () {
-                                              //     Navigator.push(
-                                              //       context,
-                                              //       MaterialPageRoute(
-                                              //         builder: (context) =>
-                                              //             PlacePicker(
-                                              //           apiKey:
-                                              //               "AIzaSyD65ula_94BY_XziYpJOLXFN-DOVwnBdcI",
-                                              //           initialPosition: LatLng(
-                                              //               latitude, longitude),
-                                              //           useCurrentLocation: false,
-                                              //           autocompleteTypes: [
-                                              //             'airport'
-                                              //           ],
-                                              //           onPlacePicked: (result) {
-                                              //             if (currentIndex == 2) {
-                                              //               latitude = result
-                                              //                   .geometry!
-                                              //                   .location
-                                              //                   .lat;
-                                              //               longitude = result
-                                              //                   .geometry!
-                                              //                   .location
-                                              //                   .lng;
-                                              //               pickupCon.text = result
-                                              //                   .formattedAddress
-                                              //                   .toString();
-                                              //               print(
-                                              //                   "aaaaaaasssssssssssssss $latitude $longitude");
-                                              //               if (result
-                                              //                       .formattedAddress
-                                              //                       .toString()
-                                              //                       .split(",")
-                                              //                       .length >
-                                              //                   2) {
-                                              //                 List<String>
-                                              //                     cityList =
-                                              //                     result
-                                              //                         .formattedAddress
-                                              //                         .toString()
-                                              //                         .split(",");
-                                              //                 setState(() {
-                                              //                   pickupCityCon
-                                              //                           .text =
-                                              //                       cityList[cityList
-                                              //                               .length -
-                                              //                           3];
-                                              //                 });
-                                              //               }
-                                              //               /* getAddress(latitude, longitude)
-                                              //     .then((value) {
-                                              //   if (!value.first.city
-                                              //       .toString()
-                                              //       .contains("pricing"))
-                                              //     setState(() {
-                                              //       pickupCityCon.text =
-                                              //           value.first.city.toString();
-                                              //     });
-                                              // });*/
-                                              //             } else {
-                                              //               setState(() {
-                                              //                 pickupCon.text = result
-                                              //                     .formattedAddress
-                                              //                     .toString();
-                                              //                 latitude = result
-                                              //                     .geometry!
-                                              //                     .location
-                                              //                     .lat;
-                                              //                 longitude = result
-                                              //                     .geometry!
-                                              //                     .location
-                                              //                     .lng;
-                                              //               });
-                                              //             }
-                                              //             Navigator.of(context)
-                                              //                 .pop();
-                                              //           },
-                                              //         ),
-                                              //       ),
-                                              //     );
-                                              //   },
-                                                label: getTranslated(
-                                                    context, "PICKUP_LOCATION"),
-                                                suffixIcon: currentIndex == 2
-                                                    ? Text(pickupCityCon.text)
-                                                    : null,
-                                              ),
-                                            )
-                                          : Container(
-                                              // height: 60,
-                                              // margin: EdgeInsets.all(10),
-                                              child: EntryField(
-                                                  controller: pickupCon,
-                                                  readOnly: true,
-                                              //     onTap: () {
-                                              //       Navigator.push(
-                                              //         context,
-                                              //         MaterialPageRoute(
-                                              //           builder: (context) =>
-                                              //               PlacePicker(
-                                              //             apiKey: Platform
-                                              //                     .isAndroid
-                                              //                 ? "AIzaSyD65ula_94BY_XziYpJOLXFN-DOVwnBdcI"
-                                              //                 : "AIzaSyD65ula_94BY_XziYpJOLXFN-DOVwnBdcI",
-                                              //             onPlacePicked:
-                                              //                 (result) {
-                                              //               if (currentIndex ==
-                                              //                   2) {
-                                              //                 latitude = result
-                                              //                     .geometry!
-                                              //                     .location
-                                              //                     .lat;
-                                              //                 longitude = result
-                                              //                     .geometry!
-                                              //                     .location
-                                              //                     .lng;
-                                              //                 pickupCon.text = result
-                                              //                     .formattedAddress
-                                              //                     .toString();
-                                              //                 print(
-                                              //                     "asdadadsaddaasdasd $latitude $longitude");
-                                              //                 if (result
-                                              //                         .formattedAddress
-                                              //                         .toString()
-                                              //                         .split(",")
-                                              //                         .length >
-                                              //                     2) {
-                                              //                   List<String>
-                                              //                       cityList =
-                                              //                       result
-                                              //                           .formattedAddress
-                                              //                           .toString()
-                                              //                           .split(
-                                              //                               ",");
-                                              //                   setState(() {
-                                              //                     pickupCityCon
-                                              //                             .text =
-                                              //                         cityList[
-                                              //                             cityList.length -
-                                              //                                 3];
-                                              //                   });
-                                              //                 }
-                                              //                 /* getAddress(latitude, longitude)
-                                              //     .then((value) {
-                                              //   if (!value.first.city
-                                              //       .toString()
-                                              //       .contains("pricing"))
-                                              //     setState(() {
-                                              //       pickupCityCon.text =
-                                              //           value.first.city.toString();
-                                              //     });
-                                              // });*/
-                                              //               } else {
-                                              //                 setState(() {
-                                              //                   pickupCon.text = result
-                                              //                       .formattedAddress
-                                              //                       .toString();
-                                              //                   latitude = result
-                                              //                       .geometry!
-                                              //                       .location
-                                              //                       .lat;
-                                              //                   longitude = result
-                                              //                       .geometry!
-                                              //                       .location
-                                              //                       .lng;
-                                              //                 });
-                                              //               }
-                                              //               Navigator.of(context)
-                                              //                   .pop();
-                                              //             },
-                                              //             initialPosition: LatLng(
-                                              //                 latitude,
-                                              //                 longitude),
-                                              //             useCurrentLocation:
-                                              //                 true,
-                                              //           ),
-                                              //         ),
-                                              //       );
-                                              //     },
-                                                  label: getTranslated(
-                                                      context, "PICKUP_LOCATION"),
-                                                  suffixIcon: currentIndex == 2
-                                                      ? Text(pickupCityCon.text)
-                                                      : null,
-                                                  prefixIcon: Icons.location_on),
-                                            ),
+                              // currentIndex == 2
+                              //     ? DropdownButtonHideUnderline(
+                              //         child: Container(
+                              //           height: 56,
+                              //           width: double.infinity,
+                              //           padding:
+                              //               const EdgeInsets.only(left: 12),
+                              //           margin: EdgeInsets.symmetric(
+                              //               horizontal: 16, vertical: 8),
+                              //           decoration: BoxDecoration(
+                              //             color: Color(0xffF5F5F5),
+                              //             borderRadius:
+                              //                 BorderRadius.circular(8),
+                              //             border: Border.all(
+                              //               color: Color(0xffE1E1E1),
+                              //               width: 1,
+                              //             ),
+                              //           ),
+                              //           child: DropdownButton<String>(
+                              //             value: selectedAir,
+                              //             isExpanded: true,
+                              //             icon: Icon(Icons.arrow_drop_down,
+                              //                 color: Colors.grey),
+                              //             iconSize: 30,
+                              //             style: TextStyle(
+                              //                 color: Colors.black,
+                              //                 fontSize: 16),
+                              //             hint: Text('Airport Tranfer',
+                              //                 style: TextStyle(
+                              //                     color: Colors.grey)),
+                              //             items: airportType.map((String item) {
+                              //               return DropdownMenuItem<String>(
+                              //                 value: item,
+                              //                 child: Container(
+                              //                   padding:
+                              //                       const EdgeInsets.symmetric(
+                              //                           vertical: 10),
+                              //                   decoration: BoxDecoration(
+                              //                     border: Border(
+                              //                       bottom: BorderSide(
+                              //                         color:
+                              //                             Colors.grey.shade300,
+                              //                         width: 0.5,
+                              //                       ),
+                              //                     ),
+                              //                   ),
+                              //                   child: Text(
+                              //                     item,
+                              //                     style:
+                              //                         TextStyle(fontSize: 13),
+                              //                   ),
+                              //                 ),
+                              //               );
+                              //             }).toList(),
+                              //             onChanged: (String? newValue) {
+                              //               setState(() {
+                              //                 selectedAir = newValue;
+                              //               });
+                              //             },
+                              //           ),
+                              //         ),
+                              //       )
+                              //     : SizedBox(),
 
-                                      // currentIndex != 2 ?
-                                      currentIndex == 2 &&
-                                              selectedAir == 'Airport Drop'
-                                          ? Container(
-                                              // height: 60,
-                                              // margin: EdgeInsets.all(10),
-                                              child: EntryField(
-                                                controller: dropCon,
-                                                readOnly: true,
-                                              //   onTap: () {
-                                              //     Navigator.push(
-                                              //       context,
-                                              //       MaterialPageRoute(
-                                              //         builder: (context) =>
-                                              //             PlacePicker(
-                                              //           apiKey:
-                                              //               "AIzaSyD65ula_94BY_XziYpJOLXFN-DOVwnBdcI",
-                                              //           initialPosition: LatLng(
-                                              //               latitude, longitude),
-                                              //           useCurrentLocation: false,
-                                              //           autocompleteTypes: [
-                                              //             'airport'
-                                              //           ],
-                                              //           onPlacePicked: (result) {
-                                              //             if (currentIndex == 2) {
-                                              //               latitude = result
-                                              //                   .geometry!
-                                              //                   .location
-                                              //                   .lat;
-                                              //               longitude = result
-                                              //                   .geometry!
-                                              //                   .location
-                                              //                   .lng;
-                                              //               dropLatitude = result
-                                              //                   .geometry!
-                                              //                   .location
-                                              //                   .lat;
-                                              //               dropLongitude = result
-                                              //                   .geometry!
-                                              //                   .location
-                                              //                   .lng;
-                                              //               dropCon.text = result
-                                              //                   .formattedAddress
-                                              //                   .toString();
-                                              //               print(
-                                              //                   "======drop=========$dropLatitude dropp $dropLongitude===========");
-                                              //               if (result
-                                              //                       .formattedAddress
-                                              //                       .toString()
-                                              //                       .split(",")
-                                              //                       .length >
-                                              //                   2) {
-                                              //                 List<String>
-                                              //                     cityList =
-                                              //                     result
-                                              //                         .formattedAddress
-                                              //                         .toString()
-                                              //                         .split(",");
-                                              //                 setState(() {
-                                              //                   dropCityCon.text =
-                                              //                       cityList[cityList
-                                              //                               .length -
-                                              //                           3];
-                                              //                 });
-                                              //               }
-                                              //               /* getAddress(latitude, longitude)
-                                              //     .then((value) {
-                                              //   if (!value.first.city
-                                              //       .toString()
-                                              //       .contains("pricing"))
-                                              //     setState(() {
-                                              //       pickupCityCon.text =
-                                              //           value.first.city.toString();
-                                              //     });
-                                              // });*/
-                                              //             } else {
-                                              //               setState(() {
-                                              //                 dropCon.text = result
-                                              //                     .formattedAddress
-                                              //                     .toString();
-                                              //                 latitude = result
-                                              //                     .geometry!
-                                              //                     .location
-                                              //                     .lat;
-                                              //                 longitude = result
-                                              //                     .geometry!
-                                              //                     .location
-                                              //                     .lng;
-                                              //               });
-                                              //             }
-                                              //             Navigator.of(context)
-                                              //                 .pop();
-                                              //           },
-                                              //         ),
-                                              //       ),
-                                              //     );
-                                              //   },
-                                                label: getTranslated(
-                                                    context, "DROP_LOCATION"),
-                                                suffixIcon: currentIndex == 2
-                                                    ? Text(dropCityCon.text)
-                                                    : null,
-                                              ),
-                                            )
-                                          : currentIndex == 3
-                                              ? SizedBox()
-                                              : Container(
-                                                  // height: 60,
-                                                  // margin: EdgeInsets.all(10),
-                                                  child: EntryField(
-                                                      controller: dropCon,
-                                                      readOnly: true,
-                                                      onTap: () {
-                                                    //     Navigator.push(
-                                                    //       context,
-                                                    //       MaterialPageRoute(
-                                                    //         builder: (context) =>
-                                                    //             PlacePicker(
-                                                    //           apiKey: Platform
-                                                    //                   .isAndroid
-                                                    //               ? "AIzaSyD65ula_94BY_XziYpJOLXFN-DOVwnBdcI"
-                                                    //               : "AIzaSyD65ula_94BY_XziYpJOLXFN-DOVwnBdcI",
-                                                    //           onPlacePicked:
-                                                    //               (result) {
-                                                    //             print(result
-                                                    //                 .formattedAddress);
-                                                    //             if (currentIndex ==
-                                                    //                 2) {
-                                                    //               dropLatitude =
-                                                    //                   result
-                                                    //                       .geometry!
-                                                    //                       .location
-                                                    //                       .lat;
-                                                    //               dropLongitude =
-                                                    //                   result
-                                                    //                       .geometry!
-                                                    //                       .location
-                                                    //                       .lng;
-                                                    //               dropCon.text = result
-                                                    //                   .formattedAddress
-                                                    //                   .toString();
-                                                    //               if (result
-                                                    //                       .formattedAddress
-                                                    //                       .toString()
-                                                    //                       .split(
-                                                    //                           ",")
-                                                    //                       .length >
-                                                    //                   2) {
-                                                    //                 List<String>
-                                                    //                     cityList =
-                                                    //                     result
-                                                    //                         .formattedAddress
-                                                    //                         .toString()
-                                                    //                         .split(
-                                                    //                             ",");
-                                                    //                 setState(() {
-                                                    //                   dropCityCon
-                                                    //                           .text =
-                                                    //                       cityList[
-                                                    //                           cityList.length -
-                                                    //                               3];
-                                                    //                 });
-                                                    //               }
-                                                    //               /*getAddress(
-                                                    //         dropLatitude, dropLongitude)
-                                                    //     .then((value) {
-                                                    //   if (!value.first.city
-                                                    //       .toString()
-                                                    //       .contains("pricing"))
-                                                    //     setState(() {
-                                                    //       dropCityCon.text =
-                                                    //           value.first.city.toString();
-                                                    //     });
-                                                    // });*/
-                                                    //             } else {
-                                                    //               setState(() {
-                                                    //                 dropCon.text = result
-                                                    //                     .formattedAddress
-                                                    //                     .toString();
-                                                    //                 dropLatitude = result
-                                                    //                     .geometry!
-                                                    //                     .location
-                                                    //                     .lat;
-                                                    //                 dropLongitude = result
-                                                    //                     .geometry!
-                                                    //                     .location
-                                                    //                     .lng;
-                                                    //               });
-                                                    //             }
-                                                    //             Navigator.of(
-                                                    //                     context)
-                                                    //                 .pop();
-                                                    //             //  getBookInfo();
-                                                    //             // getRides("3");
-                                                    //           },
-                                                    //           initialPosition: dropLatitude !=
-                                                    //                   0
-                                                    //               ? LatLng(
-                                                    //                   dropLatitude,
-                                                    //                   dropLongitude)
-                                                    //               : LatLng(
-                                                    //                   latitude,
-                                                    //                   longitude),
-                                                    //           useCurrentLocation:
-                                                    //               true,
-                                                    //         ),
-                                                    //       ),
-                                                    //     );
-                                                      },
-                                                      label: getTranslated(
-                                                          context,
-                                                          "DROP_LOCATION"),
-                                                      suffixIcon: currentIndex ==
-                                                              2
-                                                          ? Text(dropCityCon.text)
-                                                          : null,
-                                                      prefixIcon:
-                                                          Icons.location_on),
-                                                ),
-                                    ],
+                              TextFormField(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            MapSearchScreen()),
+                                  ).then((result) {
+                                    if (result != null &&
+                                        result is Map<String, dynamic>) {
+                                      setState(() {
+                                        pickupCon.text = result['address'];
+                                        latitude = double.parse(
+                                            result['lat'].toString());
+                                        longitude = double.parse(
+                                            result['lng'].toString());
+                                      });
+                                      getEstimated();
+                                      getRides("3");
+                                    }
+                                  });
+                                },
+                                controller: pickupCon,
+                                decoration: InputDecoration(
+                                  fillColor: Colors.grey.shade100,
+                                  prefixIcon: Icon(
+                                    Icons.location_on,
+                                    color: Colors.green,
+                                    size: 20,
                                   ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      GestureDetector(
-                                          onTap: () {
-                                            var pickLocation = pickupCon.text;
-                                            var dropLocation = dropCon.text;
-                                            pickupCon.text = dropLocation;
-                                            dropCon.text = pickLocation;
-                                            //
-                                            // //recie ->sender
-                                            // //sender - >receiver
-                                            //
-                                            var recieverLat2 = latitude;
-                                            var recieverLong2 = longitude;
-
-                                            latitude = dropLatitude;
-                                            longitude = dropLongitude;
-
-                                            dropLatitude = recieverLat2;
-                                            dropLongitude = recieverLong2;
-                                            //
-                                            // print(latSender.toString() +
-                                            //     "Sender Lat Sender 2");
-                                            // print(longSender.toString() +
-                                            //     "Sender Long Sender 2");
-                                            //
-                                            // print(latReceiver.toString() +
-                                            //     "Sender Lat 2 Receiver Lat 2");
-                                            // print(longReceiver.toString() +
-                                            //     "Sender Long 2 Receiver Lat 2");
-                                          },
-                                          child: Image.asset(
-                                            "assets/change.png",
-                                            height: 30,
-                                          )),
-                                      SizedBox(width: 24)
-                                    ],
-                                  ),
-                                ],
+                                  border: InputBorder.none,
+                                  hintText: 'Pickup Location',
+                                  hintStyle:
+                                      const TextStyle(color: Colors.grey),
+                                ),
                               ),
+                              SizedBox(
+                                height: 8,
+                              ),
+                              TextFormField(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => MapSearchScreen(),
+                                    ),
+                                  ).then((result) {
+                                    if (result != null &&
+                                        result is Map<String, dynamic>) {
+                                      setState(() {
+                                        dropCon.text = result['address'];
+                                        dropLatitude = double.parse(
+                                            result['lat'].toString());
+                                        dropLongitude = double.parse(
+                                            result['lng'].toString());
+                                      });
+                                      getEstimated();
+                                      getRides("3");
+                                    }
+                                  });
+                                },
+                                controller: dropCon,
+                                decoration: InputDecoration(
+                                  fillColor: Colors.grey.shade100,
+                                  prefixIcon: Icon(
+                                    Icons.location_on,
+                                    color: Colors.red,
+                                    size: 20,
+                                  ),
+                                  border: InputBorder.none,
+                                  hintText: 'Drop Location',
+                                  hintStyle:
+                                      const TextStyle(color: Colors.grey),
+                                ),
+                              ),
+
+                              // EntryField(
+                              //   controller: pickupCon,
+                              //   readOnly: true,
+                              //   //   onTap: () {
+                              //   //     Navigator.push(
+                              //   //       context,
+                              //   //       MaterialPageRoute(
+                              //   //         builder: (context) =>
+                              //   //             PlacePicker(
+                              //   //           apiKey:
+                              //   //               "AIzaSyD65ula_94BY_XziYpJOLXFN-DOVwnBdcI",
+                              //   //           initialPosition: LatLng(
+                              //   //               latitude, longitude),
+                              //   //           useCurrentLocation: false,
+                              //   //           autocompleteTypes: [
+                              //   //             'airport'
+                              //   //           ],
+                              //   //           onPlacePicked: (result) {
+                              //   //             if (currentIndex == 2) {
+                              //   //               latitude = result
+                              //   //                   .geometry!
+                              //   //                   .location
+                              //   //                   .lat;
+                              //   //               longitude = result
+                              //   //                   .geometry!
+                              //   //                   .location
+                              //   //                   .lng;
+                              //   //               pickupCon.text = result
+                              //   //                   .formattedAddress
+                              //   //                   .toString();
+                              //   //               print(
+                              //   //                   "aaaaaaasssssssssssssss $latitude $longitude");
+                              //   //               if (result
+                              //   //                       .formattedAddress
+                              //   //                       .toString()
+                              //   //                       .split(",")
+                              //   //                       .length >
+                              //   //                   2) {
+                              //   //                 List<String>
+                              //   //                     cityList =
+                              //   //                     result
+                              //   //                         .formattedAddress
+                              //   //                         .toString()
+                              //   //                         .split(",");
+                              //   //                 setState(() {
+                              //   //                   pickupCityCon
+                              //   //                           .text =
+                              //   //                       cityList[cityList
+                              //   //                               .length -
+                              //   //                           3];
+                              //   //                 });
+                              //   //               }
+                              //   //               /* getAddress(latitude, longitude)
+                              //   //     .then((value) {
+                              //   //   if (!value.first.city
+                              //   //       .toString()
+                              //   //       .contains("pricing"))
+                              //   //     setState(() {
+                              //   //       pickupCityCon.text =
+                              //   //           value.first.city.toString();
+                              //   //     });
+                              //   // });*/
+                              //   //             } else {
+                              //   //               setState(() {
+                              //   //                 pickupCon.text = result
+                              //   //                     .formattedAddress
+                              //   //                     .toString();
+                              //   //                 latitude = result
+                              //   //                     .geometry!
+                              //   //                     .location
+                              //   //                     .lat;
+                              //   //                 longitude = result
+                              //   //                     .geometry!
+                              //   //                     .location
+                              //   //                     .lng;
+                              //   //               });
+                              //   //             }
+                              //   //             Navigator.of(context)
+                              //   //                 .pop();
+                              //   //           },
+                              //   //         ),
+                              //   //       ),
+                              //   //     );
+                              //   //   },
+                              //   label:
+                              //       getTranslated(context, "PICKUP_LOCATION"),
+                              //   suffixIcon: currentIndex == 2
+                              //       ? Text(pickupCityCon.text)
+                              //       : null,
+                              // ),
+                              // : Container(
+                              //     // height: 60,
+                              //     // margin: EdgeInsets.all(10),
+                              //     child: EntryField(
+                              //         controller: pickupCon,
+                              //         readOnly: true,
+                              //         //     onTap: () {
+                              //         //       Navigator.push(
+                              //         //         context,
+                              //         //         MaterialPageRoute(
+                              //         //           builder: (context) =>
+                              //         //               PlacePicker(
+                              //         //             apiKey: Platform
+                              //         //                     .isAndroid
+                              //         //                 ? "AIzaSyD65ula_94BY_XziYpJOLXFN-DOVwnBdcI"
+                              //         //                 : "AIzaSyD65ula_94BY_XziYpJOLXFN-DOVwnBdcI",
+                              //         //             onPlacePicked:
+                              //         //                 (result) {
+                              //         //               if (currentIndex ==
+                              //         //                   2) {
+                              //         //                 latitude = result
+                              //         //                     .geometry!
+                              //         //                     .location
+                              //         //                     .lat;
+                              //         //                 longitude = result
+                              //         //                     .geometry!
+                              //         //                     .location
+                              //         //                     .lng;
+                              //         //                 pickupCon.text = result
+                              //         //                     .formattedAddress
+                              //         //                     .toString();
+                              //         //                 print(
+                              //         //                     "asdadadsaddaasdasd $latitude $longitude");
+                              //         //                 if (result
+                              //         //                         .formattedAddress
+                              //         //                         .toString()
+                              //         //                         .split(",")
+                              //         //                         .length >
+                              //         //                     2) {
+                              //         //                   List<String>
+                              //         //                       cityList =
+                              //         //                       result
+                              //         //                           .formattedAddress
+                              //         //                           .toString()
+                              //         //                           .split(
+                              //         //                               ",");
+                              //         //                   setState(() {
+                              //         //                     pickupCityCon
+                              //         //                             .text =
+                              //         //                         cityList[
+                              //         //                             cityList.length -
+                              //         //                                 3];
+                              //         //                   });
+                              //         //                 }
+                              //         //                 /* getAddress(latitude, longitude)
+                              //         //     .then((value) {
+                              //         //   if (!value.first.city
+                              //         //       .toString()
+                              //         //       .contains("pricing"))
+                              //         //     setState(() {
+                              //         //       pickupCityCon.text =
+                              //         //           value.first.city.toString();
+                              //         //     });
+                              //         // });*/
+                              //         //               } else {
+                              //         //                 setState(() {
+                              //         //                   pickupCon.text = result
+                              //         //                       .formattedAddress
+                              //         //                       .toString();
+                              //         //                   latitude = result
+                              //         //                       .geometry!
+                              //         //                       .location
+                              //         //                       .lat;
+                              //         //                   longitude = result
+                              //         //                       .geometry!
+                              //         //                       .location
+                              //         //                       .lng;
+                              //         //                 });
+                              //         //               }
+                              //         //               Navigator.of(context)
+                              //         //                   .pop();
+                              //         //             },
+                              //         //             initialPosition: LatLng(
+                              //         //                 latitude,
+                              //         //                 longitude),
+                              //         //             useCurrentLocation:
+                              //         //                 true,
+                              //         //           ),
+                              //         //         ),
+                              //         //       );
+                              //         //     },
+                              //         label: getTranslated(context,
+                              //             "PICKUP_LOCATION"),
+                              //         suffixIcon: currentIndex == 2
+                              //             ? Text(pickupCityCon.text)
+                              //             : null,
+                              //         prefixIcon:
+                              //             Icons.location_on),
+                              //   ),
+
+                              // currentIndex != 2 ?
+                              // currentIndex == 2 &&
+                              //         selectedAir == 'Airport Drop'
+                              //     ?
+                              // EntryField(
+                              //   controller: dropCon,
+                              //   readOnly: true,
+                              //   //   onTap: () {
+                              //   //     Navigator.push(
+                              //   //       context,
+                              //   //       MaterialPageRoute(
+                              //   //         builder: (context) =>
+                              //   //             PlacePicker(
+                              //   //           apiKey:
+                              //   //               "AIzaSyD65ula_94BY_XziYpJOLXFN-DOVwnBdcI",
+                              //   //           initialPosition: LatLng(
+                              //   //               latitude, longitude),
+                              //   //           useCurrentLocation: false,
+                              //   //           autocompleteTypes: [
+                              //   //             'airport'
+                              //   //           ],
+                              //   //           onPlacePicked: (result) {
+                              //   //             if (currentIndex == 2) {
+                              //   //               latitude = result
+                              //   //                   .geometry!
+                              //   //                   .location
+                              //   //                   .lat;
+                              //   //               longitude = result
+                              //   //                   .geometry!
+                              //   //                   .location
+                              //   //                   .lng;
+                              //   //               dropLatitude = result
+                              //   //                   .geometry!
+                              //   //                   .location
+                              //   //                   .lat;
+                              //   //               dropLongitude = result
+                              //   //                   .geometry!
+                              //   //                   .location
+                              //   //                   .lng;
+                              //   //               dropCon.text = result
+                              //   //                   .formattedAddress
+                              //   //                   .toString();
+                              //   //               print(
+                              //   //                   "======drop=========$dropLatitude dropp $dropLongitude===========");
+                              //   //               if (result
+                              //   //                       .formattedAddress
+                              //   //                       .toString()
+                              //   //                       .split(",")
+                              //   //                       .length >
+                              //   //                   2) {
+                              //   //                 List<String>
+                              //   //                     cityList =
+                              //   //                     result
+                              //   //                         .formattedAddress
+                              //   //                         .toString()
+                              //   //                         .split(",");
+                              //   //                 setState(() {
+                              //   //                   dropCityCon.text =
+                              //   //                       cityList[cityList
+                              //   //                               .length -
+                              //   //                           3];
+                              //   //                 });
+                              //   //               }
+                              //   //               /* getAddress(latitude, longitude)
+                              //   //     .then((value) {
+                              //   //   if (!value.first.city
+                              //   //       .toString()
+                              //   //       .contains("pricing"))
+                              //   //     setState(() {
+                              //   //       pickupCityCon.text =
+                              //   //           value.first.city.toString();
+                              //   //     });
+                              //   // });*/
+                              //   //             } else {
+                              //   //               setState(() {
+                              //   //                 dropCon.text = result
+                              //   //                     .formattedAddress
+                              //   //                     .toString();
+                              //   //                 latitude = result
+                              //   //                     .geometry!
+                              //   //                     .location
+                              //   //                     .lat;
+                              //   //                 longitude = result
+                              //   //                     .geometry!
+                              //   //                     .location
+                              //   //                     .lng;
+                              //   //               });
+                              //   //             }
+                              //   //             Navigator.of(context)
+                              //   //                 .pop();
+                              //   //           },
+                              //   //         ),
+                              //   //       ),
+                              //   //     );
+                              //   //   },
+                              //   label: getTranslated(context, "DROP_LOCATION"),
+                              //   suffixIcon: currentIndex == 2
+                              //       ? Text(dropCityCon.text)
+                              //       : null,
+                              // ),
+                              // Stack(
+                              //   alignment: Alignment.centerRight,
+                              //   children: [
+                              //     Column(
+                              //       children: [
+                              //         // currentIndex == 2 &&
+                              //         //         selectedAir == 'Airport Pick Up'
+                              //         //     ?
+                              //         Container(
+                              //           // height: 60,
+                              //           // margin: EdgeInsets.all(10),
+                              //           child: EntryField(
+                              //             controller: pickupCon,
+                              //             readOnly: true,
+                              //             //   onTap: () {
+                              //             //     Navigator.push(
+                              //             //       context,
+                              //             //       MaterialPageRoute(
+                              //             //         builder: (context) =>
+                              //             //             PlacePicker(
+                              //             //           apiKey:
+                              //             //               "AIzaSyD65ula_94BY_XziYpJOLXFN-DOVwnBdcI",
+                              //             //           initialPosition: LatLng(
+                              //             //               latitude, longitude),
+                              //             //           useCurrentLocation: false,
+                              //             //           autocompleteTypes: [
+                              //             //             'airport'
+                              //             //           ],
+                              //             //           onPlacePicked: (result) {
+                              //             //             if (currentIndex == 2) {
+                              //             //               latitude = result
+                              //             //                   .geometry!
+                              //             //                   .location
+                              //             //                   .lat;
+                              //             //               longitude = result
+                              //             //                   .geometry!
+                              //             //                   .location
+                              //             //                   .lng;
+                              //             //               pickupCon.text = result
+                              //             //                   .formattedAddress
+                              //             //                   .toString();
+                              //             //               print(
+                              //             //                   "aaaaaaasssssssssssssss $latitude $longitude");
+                              //             //               if (result
+                              //             //                       .formattedAddress
+                              //             //                       .toString()
+                              //             //                       .split(",")
+                              //             //                       .length >
+                              //             //                   2) {
+                              //             //                 List<String>
+                              //             //                     cityList =
+                              //             //                     result
+                              //             //                         .formattedAddress
+                              //             //                         .toString()
+                              //             //                         .split(",");
+                              //             //                 setState(() {
+                              //             //                   pickupCityCon
+                              //             //                           .text =
+                              //             //                       cityList[cityList
+                              //             //                               .length -
+                              //             //                           3];
+                              //             //                 });
+                              //             //               }
+                              //             //               /* getAddress(latitude, longitude)
+                              //             //     .then((value) {
+                              //             //   if (!value.first.city
+                              //             //       .toString()
+                              //             //       .contains("pricing"))
+                              //             //     setState(() {
+                              //             //       pickupCityCon.text =
+                              //             //           value.first.city.toString();
+                              //             //     });
+                              //             // });*/
+                              //             //             } else {
+                              //             //               setState(() {
+                              //             //                 pickupCon.text = result
+                              //             //                     .formattedAddress
+                              //             //                     .toString();
+                              //             //                 latitude = result
+                              //             //                     .geometry!
+                              //             //                     .location
+                              //             //                     .lat;
+                              //             //                 longitude = result
+                              //             //                     .geometry!
+                              //             //                     .location
+                              //             //                     .lng;
+                              //             //               });
+                              //             //             }
+                              //             //             Navigator.of(context)
+                              //             //                 .pop();
+                              //             //           },
+                              //             //         ),
+                              //             //       ),
+                              //             //     );
+                              //             //   },
+                              //             label: getTranslated(
+                              //                 context, "PICKUP_LOCATION"),
+                              //             suffixIcon: currentIndex == 2
+                              //                 ? Text(pickupCityCon.text)
+                              //                 : null,
+                              //           ),
+                              //         ),
+                              //         // : Container(
+                              //         //     // height: 60,
+                              //         //     // margin: EdgeInsets.all(10),
+                              //         //     child: EntryField(
+                              //         //         controller: pickupCon,
+                              //         //         readOnly: true,
+                              //         //         //     onTap: () {
+                              //         //         //       Navigator.push(
+                              //         //         //         context,
+                              //         //         //         MaterialPageRoute(
+                              //         //         //           builder: (context) =>
+                              //         //         //               PlacePicker(
+                              //         //         //             apiKey: Platform
+                              //         //         //                     .isAndroid
+                              //         //         //                 ? "AIzaSyD65ula_94BY_XziYpJOLXFN-DOVwnBdcI"
+                              //         //         //                 : "AIzaSyD65ula_94BY_XziYpJOLXFN-DOVwnBdcI",
+                              //         //         //             onPlacePicked:
+                              //         //         //                 (result) {
+                              //         //         //               if (currentIndex ==
+                              //         //         //                   2) {
+                              //         //         //                 latitude = result
+                              //         //         //                     .geometry!
+                              //         //         //                     .location
+                              //         //         //                     .lat;
+                              //         //         //                 longitude = result
+                              //         //         //                     .geometry!
+                              //         //         //                     .location
+                              //         //         //                     .lng;
+                              //         //         //                 pickupCon.text = result
+                              //         //         //                     .formattedAddress
+                              //         //         //                     .toString();
+                              //         //         //                 print(
+                              //         //         //                     "asdadadsaddaasdasd $latitude $longitude");
+                              //         //         //                 if (result
+                              //         //         //                         .formattedAddress
+                              //         //         //                         .toString()
+                              //         //         //                         .split(",")
+                              //         //         //                         .length >
+                              //         //         //                     2) {
+                              //         //         //                   List<String>
+                              //         //         //                       cityList =
+                              //         //         //                       result
+                              //         //         //                           .formattedAddress
+                              //         //         //                           .toString()
+                              //         //         //                           .split(
+                              //         //         //                               ",");
+                              //         //         //                   setState(() {
+                              //         //         //                     pickupCityCon
+                              //         //         //                             .text =
+                              //         //         //                         cityList[
+                              //         //         //                             cityList.length -
+                              //         //         //                                 3];
+                              //         //         //                   });
+                              //         //         //                 }
+                              //         //         //                 /* getAddress(latitude, longitude)
+                              //         //         //     .then((value) {
+                              //         //         //   if (!value.first.city
+                              //         //         //       .toString()
+                              //         //         //       .contains("pricing"))
+                              //         //         //     setState(() {
+                              //         //         //       pickupCityCon.text =
+                              //         //         //           value.first.city.toString();
+                              //         //         //     });
+                              //         //         // });*/
+                              //         //         //               } else {
+                              //         //         //                 setState(() {
+                              //         //         //                   pickupCon.text = result
+                              //         //         //                       .formattedAddress
+                              //         //         //                       .toString();
+                              //         //         //                   latitude = result
+                              //         //         //                       .geometry!
+                              //         //         //                       .location
+                              //         //         //                       .lat;
+                              //         //         //                   longitude = result
+                              //         //         //                       .geometry!
+                              //         //         //                       .location
+                              //         //         //                       .lng;
+                              //         //         //                 });
+                              //         //         //               }
+                              //         //         //               Navigator.of(context)
+                              //         //         //                   .pop();
+                              //         //         //             },
+                              //         //         //             initialPosition: LatLng(
+                              //         //         //                 latitude,
+                              //         //         //                 longitude),
+                              //         //         //             useCurrentLocation:
+                              //         //         //                 true,
+                              //         //         //           ),
+                              //         //         //         ),
+                              //         //         //       );
+                              //         //         //     },
+                              //         //         label: getTranslated(context,
+                              //         //             "PICKUP_LOCATION"),
+                              //         //         suffixIcon: currentIndex == 2
+                              //         //             ? Text(pickupCityCon.text)
+                              //         //             : null,
+                              //         //         prefixIcon:
+                              //         //             Icons.location_on),
+                              //         //   ),
+                              //
+                              //         // currentIndex != 2 ?
+                              //         // currentIndex == 2 &&
+                              //         //         selectedAir == 'Airport Drop'
+                              //         //     ?
+                              //         Container(
+                              //           // height: 60,
+                              //           // margin: EdgeInsets.all(10),
+                              //           child: EntryField(
+                              //             controller: dropCon,
+                              //             readOnly: true,
+                              //             //   onTap: () {
+                              //             //     Navigator.push(
+                              //             //       context,
+                              //             //       MaterialPageRoute(
+                              //             //         builder: (context) =>
+                              //             //             PlacePicker(
+                              //             //           apiKey:
+                              //             //               "AIzaSyD65ula_94BY_XziYpJOLXFN-DOVwnBdcI",
+                              //             //           initialPosition: LatLng(
+                              //             //               latitude, longitude),
+                              //             //           useCurrentLocation: false,
+                              //             //           autocompleteTypes: [
+                              //             //             'airport'
+                              //             //           ],
+                              //             //           onPlacePicked: (result) {
+                              //             //             if (currentIndex == 2) {
+                              //             //               latitude = result
+                              //             //                   .geometry!
+                              //             //                   .location
+                              //             //                   .lat;
+                              //             //               longitude = result
+                              //             //                   .geometry!
+                              //             //                   .location
+                              //             //                   .lng;
+                              //             //               dropLatitude = result
+                              //             //                   .geometry!
+                              //             //                   .location
+                              //             //                   .lat;
+                              //             //               dropLongitude = result
+                              //             //                   .geometry!
+                              //             //                   .location
+                              //             //                   .lng;
+                              //             //               dropCon.text = result
+                              //             //                   .formattedAddress
+                              //             //                   .toString();
+                              //             //               print(
+                              //             //                   "======drop=========$dropLatitude dropp $dropLongitude===========");
+                              //             //               if (result
+                              //             //                       .formattedAddress
+                              //             //                       .toString()
+                              //             //                       .split(",")
+                              //             //                       .length >
+                              //             //                   2) {
+                              //             //                 List<String>
+                              //             //                     cityList =
+                              //             //                     result
+                              //             //                         .formattedAddress
+                              //             //                         .toString()
+                              //             //                         .split(",");
+                              //             //                 setState(() {
+                              //             //                   dropCityCon.text =
+                              //             //                       cityList[cityList
+                              //             //                               .length -
+                              //             //                           3];
+                              //             //                 });
+                              //             //               }
+                              //             //               /* getAddress(latitude, longitude)
+                              //             //     .then((value) {
+                              //             //   if (!value.first.city
+                              //             //       .toString()
+                              //             //       .contains("pricing"))
+                              //             //     setState(() {
+                              //             //       pickupCityCon.text =
+                              //             //           value.first.city.toString();
+                              //             //     });
+                              //             // });*/
+                              //             //             } else {
+                              //             //               setState(() {
+                              //             //                 dropCon.text = result
+                              //             //                     .formattedAddress
+                              //             //                     .toString();
+                              //             //                 latitude = result
+                              //             //                     .geometry!
+                              //             //                     .location
+                              //             //                     .lat;
+                              //             //                 longitude = result
+                              //             //                     .geometry!
+                              //             //                     .location
+                              //             //                     .lng;
+                              //             //               });
+                              //             //             }
+                              //             //             Navigator.of(context)
+                              //             //                 .pop();
+                              //             //           },
+                              //             //         ),
+                              //             //       ),
+                              //             //     );
+                              //             //   },
+                              //             label: getTranslated(
+                              //                 context, "DROP_LOCATION"),
+                              //             suffixIcon: currentIndex == 2
+                              //                 ? Text(dropCityCon.text)
+                              //                 : null,
+                              //           ),
+                              //         )
+                              //         // : currentIndex == 3
+                              //         //     ? SizedBox()
+                              //         //     : Container(
+                              //         //         // height: 60,
+                              //         //         // margin: EdgeInsets.all(10),
+                              //         //         child: EntryField(
+                              //         //             controller: dropCon,
+                              //         //             readOnly: true,
+                              //         //             onTap: () {
+                              //         //               //     Navigator.push(
+                              //         //               //       context,
+                              //         //               //       MaterialPageRoute(
+                              //         //               //         builder: (context) =>
+                              //         //               //             PlacePicker(
+                              //         //               //           apiKey: Platform
+                              //         //               //                   .isAndroid
+                              //         //               //               ? "AIzaSyD65ula_94BY_XziYpJOLXFN-DOVwnBdcI"
+                              //         //               //               : "AIzaSyD65ula_94BY_XziYpJOLXFN-DOVwnBdcI",
+                              //         //               //           onPlacePicked:
+                              //         //               //               (result) {
+                              //         //               //             print(result
+                              //         //               //                 .formattedAddress);
+                              //         //               //             if (currentIndex ==
+                              //         //               //                 2) {
+                              //         //               //               dropLatitude =
+                              //         //               //                   result
+                              //         //               //                       .geometry!
+                              //         //               //                       .location
+                              //         //               //                       .lat;
+                              //         //               //               dropLongitude =
+                              //         //               //                   result
+                              //         //               //                       .geometry!
+                              //         //               //                       .location
+                              //         //               //                       .lng;
+                              //         //               //               dropCon.text = result
+                              //         //               //                   .formattedAddress
+                              //         //               //                   .toString();
+                              //         //               //               if (result
+                              //         //               //                       .formattedAddress
+                              //         //               //                       .toString()
+                              //         //               //                       .split(
+                              //         //               //                           ",")
+                              //         //               //                       .length >
+                              //         //               //                   2) {
+                              //         //               //                 List<String>
+                              //         //               //                     cityList =
+                              //         //               //                     result
+                              //         //               //                         .formattedAddress
+                              //         //               //                         .toString()
+                              //         //               //                         .split(
+                              //         //               //                             ",");
+                              //         //               //                 setState(() {
+                              //         //               //                   dropCityCon
+                              //         //               //                           .text =
+                              //         //               //                       cityList[
+                              //         //               //                           cityList.length -
+                              //         //               //                               3];
+                              //         //               //                 });
+                              //         //               //               }
+                              //         //               //               /*getAddress(
+                              //         //               //         dropLatitude, dropLongitude)
+                              //         //               //     .then((value) {
+                              //         //               //   if (!value.first.city
+                              //         //               //       .toString()
+                              //         //               //       .contains("pricing"))
+                              //         //               //     setState(() {
+                              //         //               //       dropCityCon.text =
+                              //         //               //           value.first.city.toString();
+                              //         //               //     });
+                              //         //               // });*/
+                              //         //               //             } else {
+                              //         //               //               setState(() {
+                              //         //               //                 dropCon.text = result
+                              //         //               //                     .formattedAddress
+                              //         //               //                     .toString();
+                              //         //               //                 dropLatitude = result
+                              //         //               //                     .geometry!
+                              //         //               //                     .location
+                              //         //               //                     .lat;
+                              //         //               //                 dropLongitude = result
+                              //         //               //                     .geometry!
+                              //         //               //                     .location
+                              //         //               //                     .lng;
+                              //         //               //               });
+                              //         //               //             }
+                              //         //               //             Navigator.of(
+                              //         //               //                     context)
+                              //         //               //                 .pop();
+                              //         //               //             //  getBookInfo();
+                              //         //               //             // getRides("3");
+                              //         //               //           },
+                              //         //               //           initialPosition: dropLatitude !=
+                              //         //               //                   0
+                              //         //               //               ? LatLng(
+                              //         //               //                   dropLatitude,
+                              //         //               //                   dropLongitude)
+                              //         //               //               : LatLng(
+                              //         //               //                   latitude,
+                              //         //               //                   longitude),
+                              //         //               //           useCurrentLocation:
+                              //         //               //               true,
+                              //         //               //         ),
+                              //         //               //       ),
+                              //         //               //     );
+                              //         //             },
+                              //         //             label: getTranslated(
+                              //         //                 context,
+                              //         //                 "DROP_LOCATION"),
+                              //         //             suffixIcon:
+                              //         //                 currentIndex == 2
+                              //         //                     ? Text(dropCityCon
+                              //         //                         .text)
+                              //         //                     : null,
+                              //         //             prefixIcon:
+                              //         //                 Icons.location_on),
+                              //         //       ),
+                              //       ],
+                              //     ),
+                              //     // Row(
+                              //     //   mainAxisAlignment: MainAxisAlignment.end,
+                              //     //   children: [
+                              //     //     GestureDetector(
+                              //     //         onTap: () {
+                              //     //           var pickLocation = pickupCon.text;
+                              //     //           var dropLocation = dropCon.text;
+                              //     //           pickupCon.text = dropLocation;
+                              //     //           dropCon.text = pickLocation;
+                              //     //           //
+                              //     //           // //recie ->sender
+                              //     //           // //sender - >receiver
+                              //     //           //
+                              //     //           var recieverLat2 = latitude;
+                              //     //           var recieverLong2 = longitude;
+                              //     //
+                              //     //           latitude = dropLatitude;
+                              //     //           longitude = dropLongitude;
+                              //     //
+                              //     //           dropLatitude = recieverLat2;
+                              //     //           dropLongitude = recieverLong2;
+                              //     //           //
+                              //     //           // print(latSender.toString() +
+                              //     //           //     "Sender Lat Sender 2");
+                              //     //           // print(longSender.toString() +
+                              //     //           //     "Sender Long Sender 2");
+                              //     //           //
+                              //     //           // print(latReceiver.toString() +
+                              //     //           //     "Sender Lat 2 Receiver Lat 2");
+                              //     //           // print(longReceiver.toString() +
+                              //     //           //     "Sender Long 2 Receiver Lat 2");
+                              //     //         },
+                              //     //         child: Image.asset(
+                              //     //           "assets/change.png",
+                              //     //           height: 30,
+                              //     //         )),
+                              //     //     SizedBox(width: 24)
+                              //     //   ],
+                              //     // ),
+                              //   ],
+                              // ),
 
                               // : SizedBox(),
                               /*currentIndex != 2
@@ -3863,74 +4522,455 @@ class _SearchLocationPageState extends State<SearchLocationPage>
                               //     ),
                               //   ),
                               // ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                children: [
+                                  currentIndex == 1
+                                      ? InkWell(
+                                          onTap: () async {
+                                            DateTime today = DateTime.now();
+                                            DateTime dayAfterTomorrow =
+                                                today.add(Duration(days: 1));
+
+                                            DateTime? selectedDate =
+                                                await showDatePicker(
+                                              context: context,
+                                              initialDate: dayAfterTomorrow,
+                                              firstDate: dayAfterTomorrow,
+                                              lastDate:
+                                                  today.add(Duration(days: 14)),
+                                              builder: (BuildContext context,
+                                                  Widget? child) {
+                                                return Theme(
+                                                  data: Theme.of(context)
+                                                      .copyWith(
+                                                    dialogBackgroundColor:
+                                                        Colors.white,
+                                                    colorScheme:
+                                                        ColorScheme.light(
+                                                      primary: MyColorName
+                                                          .primaryLite,
+                                                    ),
+                                                    dialogTheme: DialogTheme(
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(12.0),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  child: child!,
+                                                );
+                                              },
+                                            );
+
+                                            if (selectedDate != null) {
+                                              bookingDate = selectedDate;
+                                              String formattedDate =
+                                                  DateFormat('yyyy-MM-dd')
+                                                      .format(selectedDate);
+                                              print(
+                                                  'Selected Date: $formattedDate');
+                                              TimeOfDay? selectedTime =
+                                                  await showTimePicker(
+                                                context: context,
+                                                initialTime: TimeOfDay.now(),
+                                                builder: (BuildContext context,
+                                                    Widget? child) {
+                                                  return Theme(
+                                                    data: Theme.of(context)
+                                                        .copyWith(
+                                                      dialogBackgroundColor:
+                                                          Colors.white,
+                                                      colorScheme:
+                                                          ColorScheme.light(
+                                                        primary: MyColorName
+                                                            .primaryLite,
+                                                      ),
+                                                      timePickerTheme:
+                                                          TimePickerThemeData(
+                                                        dialBackgroundColor:
+                                                            Colors.white,
+                                                        hourMinuteTextColor:
+                                                            MyColorName
+                                                                .primaryLite,
+                                                        dialHandColor:
+                                                            MyColorName
+                                                                .primaryLite,
+                                                      ),
+                                                    ),
+                                                    child: child!,
+                                                  );
+                                                },
+                                              );
+
+                                              if (selectedTime != null) {
+                                                final now = DateTime.now();
+                                                final selectedDateTime =
+                                                    DateTime(
+                                                  bookingDate!.year,
+                                                  bookingDate!.month,
+                                                  bookingDate!.day,
+                                                  selectedTime.hour,
+                                                  selectedTime.minute,
+                                                );
+
+                                                final minAllowedBookingTime =
+                                                    now.add(
+                                                        Duration(hours: 24));
+
+                                                if (selectedDateTime.isBefore(
+                                                    minAllowedBookingTime)) {
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                    SnackBar(
+                                                      content: Text(
+                                                          "You can only book for 24 hours or more in advance."),
+                                                      backgroundColor:
+                                                          Colors.red,
+                                                    ),
+                                                  );
+                                                  return;
+                                                }
+
+                                                bookingTime = DateFormat(
+                                                        'HH:mm:ss')
+                                                    .format(selectedDateTime);
+                                                print(
+                                                    'Selected Time: $bookingTime');
+
+                                                setState(() {});
+                                              }
+                                            }
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.all(5),
+                                            decoration: boxDecoration(
+                                              bgColor: MyColorName.colorBg1,
+                                              radius: 6,
+                                              color: Color(0xffE1E1E1),
+                                            ),
+                                            height: 42,
+                                            width: 140,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                bookingDate == null
+                                                    ? Text(
+                                                        "Pickup Date",
+                                                        style: TextStyle(
+                                                            color: MyColorName
+                                                                .secondary,
+                                                            fontSize: 16,
+                                                            fontFamily: AppTheme
+                                                                .fontFamily,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                      )
+                                                    : Text(
+                                                        "${DateFormat('yyyy-MM-dd').format(bookingDate!)}",
+                                                        // "${getDate(bookingDate.toString())}",
+                                                        style: TextStyle(
+                                                            color: MyColorName
+                                                                .secondary,
+                                                            fontSize: 16,
+                                                            fontFamily: AppTheme
+                                                                .fontFamily,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                      ),
+                                                Image.asset(
+                                                    "assets/calendar.png"),
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                      : SizedBox(),
+                                  Spacer(),
+                                  currentIndex == 1
+                                      ? InkWell(
+                                          onTap: () async {
+                                            if (bookingDate == null) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                      "Please select a booking date first."),
+                                                  backgroundColor: Colors.red,
+                                                ),
+                                              );
+                                              return;
+                                            }
+                                            TimeOfDay? selectedTime =
+                                                await showTimePicker(
+                                              context: context,
+                                              initialTime: TimeOfDay.now(),
+                                              builder: (BuildContext context,
+                                                  Widget? child) {
+                                                return Theme(
+                                                  data: Theme.of(context)
+                                                      .copyWith(
+                                                    dialogBackgroundColor:
+                                                        Colors.white,
+                                                    colorScheme:
+                                                        ColorScheme.light(
+                                                      primary: MyColorName
+                                                          .primaryLite,
+                                                    ),
+                                                    timePickerTheme:
+                                                        TimePickerThemeData(
+                                                      dialBackgroundColor:
+                                                          Colors.white,
+                                                      hourMinuteTextColor:
+                                                          MyColorName
+                                                              .primaryLite,
+                                                      dialHandColor: MyColorName
+                                                          .primaryLite,
+                                                    ),
+                                                  ),
+                                                  child: child!,
+                                                );
+                                              },
+                                            );
+                                            if (selectedTime != null) {
+                                              final now = DateTime.now();
+                                              final bookingDateTime = DateTime(
+                                                bookingDate!.year,
+                                                bookingDate!.month,
+                                                bookingDate!.day,
+                                                selectedTime.hour,
+                                                selectedTime.minute,
+                                              );
+                                              final minAllowedBookingTime =
+                                                  now.add(Duration(hours: 24));
+                                              if (bookingDateTime.isBefore(
+                                                  minAllowedBookingTime)) {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                        "You can only book for 24 hours or more in advance."),
+                                                    backgroundColor: Colors.red,
+                                                  ),
+                                                );
+                                                return;
+                                              }
+                                              bookingTime =
+                                                  DateFormat('HH:mm:ss')
+                                                      .format(bookingDateTime);
+                                              print(
+                                                  'Selected Time: $bookingTime');
+                                              setState(() {});
+                                            }
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.all(5),
+                                            decoration: boxDecoration(
+                                              bgColor: MyColorName.colorBg1,
+                                              radius: 6,
+                                              color: Color(0xffE1E1E1),
+                                            ),
+                                            height: 42,
+                                            width: 140,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                bookingTime == null
+                                                    ? Text(
+                                                        "Pickup Time",
+                                                        style: TextStyle(
+                                                            color: MyColorName
+                                                                .secondary,
+                                                            fontSize: 16,
+                                                            fontFamily: AppTheme
+                                                                .fontFamily,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                      )
+                                                    : Text(
+                                                        "${bookingTime}",
+                                                        style: TextStyle(
+                                                            color: MyColorName
+                                                                .secondary,
+                                                            fontSize: 16,
+                                                            fontFamily: AppTheme
+                                                                .fontFamily,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                      ),
+                                                Image.asset(
+                                                    "assets/back-in-time.png")
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                      : SizedBox(),
+                                ],
+                              ),
 
                               // SizedBox(height: 10,),
-                              SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                physics: AlwaysScrollableScrollPhysics(),
-                                child: Row(
-                                  children: List.generate(sliderImages.length,
-                                      (index) {
-                                    return InkWell(
-                                      onTap: () async {
-                                        if (sliderImages[index].url == null ||
-                                            sliderImages[index].url == '') {
-                                          print('Could not launch');
-                                        } else {
-                                          await launchUrl(
-                                              Uri.parse(
-                                                  sliderImages[index].url ??
-                                                      ''),
-                                              mode: LaunchMode
-                                                  .externalApplication);
-                                        }
-                                        // Navigator.push(context, MaterialPageRoute(builder: (context)=>PremiumSliderDetails(sliderData: premiumSliderImages[index],availableLocationList: availableLocationList,)));
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Card(
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                            width: 340,
-                                            height: 180,
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              child: FadeInImage.assetNetwork(
-                                                placeholder:
-                                                    'assets/slider_image.png',
-                                                fit: BoxFit.fill,
-                                                image:
-                                                    sliderImages[index].image ??
-                                                        '',
-                                                imageErrorBuilder: (c, o, s) =>
-                                                    Image.asset(
-                                                        'assets/slider_image.png',
-                                                        fit: BoxFit.fill),
-                                              ),
-                                            ),
-                                            // child: Image.asset(
-                                            //   slider1Images[index],
-                                            //   scale: 4,
-                                            //   fit: BoxFit.cover,
-                                            // ),
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
+                              // SingleChildScrollView(
+                              //   scrollDirection: Axis.horizontal,
+                              //   physics: AlwaysScrollableScrollPhysics(),
+                              //   child: Row(
+                              //     children: List.generate(sliderImages.length,
+                              //         (index) {
+                              //       return InkWell(
+                              //         onTap: () async {
+                              //           if (sliderImages[index].url == null ||
+                              //               sliderImages[index].url == '') {
+                              //             print('Could not launch');
+                              //           } else {
+                              //             await launchUrl(
+                              //                 Uri.parse(
+                              //                     sliderImages[index].url ??
+                              //                         ''),
+                              //                 mode: LaunchMode
+                              //                     .externalApplication);
+                              //           }
+                              //           // Navigator.push(context, MaterialPageRoute(builder: (context)=>PremiumSliderDetails(sliderData: premiumSliderImages[index],availableLocationList: availableLocationList,)));
+                              //         },
+                              //         child: Padding(
+                              //           padding: const EdgeInsets.all(8.0),
+                              //           child: Card(
+                              //             child: Container(
+                              //               decoration: BoxDecoration(
+                              //                 borderRadius:
+                              //                     BorderRadius.circular(10),
+                              //               ),
+                              //               width: 340,
+                              //               height: 180,
+                              //               child: ClipRRect(
+                              //                 borderRadius:
+                              //                     BorderRadius.circular(10),
+                              //                 child: FadeInImage.assetNetwork(
+                              //                   placeholder:
+                              //                       'assets/slider_image.png',
+                              //                   fit: BoxFit.fill,
+                              //                   image:
+                              //                       sliderImages[index].image ??
+                              //                           '',
+                              //                   imageErrorBuilder: (c, o, s) =>
+                              //                       Image.asset(
+                              //                           'assets/slider_image.png',
+                              //                           fit: BoxFit.fill),
+                              //                 ),
+                              //               ),
+                              //               // child: Image.asset(
+                              //               //   slider1Images[index],
+                              //               //   scale: 4,
+                              //               //   fit: BoxFit.cover,
+                              //               // ),
+                              //             ),
+                              //           ),
+                              //         ),
+                              //       );
+                              //     }).toList(),
+                              //   ),
+                              // ),
                             ],
                           ),
                         ),
                       ),
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(left: 15, right: 15, top: 5),
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              if (pickupCon.text == '') {
+                                UI.setSnackBar(
+                                    "Please Select Pickup Location", context);
+                              } else if (dropCon.text == '') {
+                                UI.setSnackBar(
+                                    "Please Select Drop Location", context);
+                              } else if (currentIndex == 1 &&
+                                  bookingDate == null) {
+                                UI.setSnackBar(
+                                    "Please Select Pickup Date", context);
+                              } else if (currentIndex == 1 &&
+                                  bookingTime == null) {
+                                UI.setSnackBar(
+                                    "Please Select Pickup Time", context);
+                              } else {
+                                // showRental();
+                                await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ConfirmRiderRequest(
+                                      bookingId: 1,
+                                      bookingDate: bookingDate,
+                                      currentCar: _currentCar,
+                                      destination: LatLng(latitude, longitude),
+                                      driverList: driverList,
+                                      dropAddress: dropCon.text,
+                                      gst: gst,
+                                      nightCharge: nightCharge,
+                                      parking: parking,
+                                      paymentType: paymentType,
+                                      pickAddress: pickupCon.text,
+                                      promoDiscount: promoDiscount,
+                                      promoList: promoList,
+                                      returnDate: bookingTime.toString(),
+                                      rideList: rideList,
+                                      shareType: '',
+                                      source:
+                                          LatLng(dropLatitude, dropLongitude),
+                                      stateCharge: stateCharge,
+                                      surge: surge,
+                                      surgePer: '',
+                                      time: '',
+                                      tollTax: tollTax,
+                                      type: currentIndex == 1
+                                          ? 'current'
+                                          : 'schedule',
+                                      unitPrice: unitPrice,
+                                      vehicleId: vehicleId,
+                                      vendorId: vendorId,
+                                      partPayment: 0.0,
+                                    ),
+                                  ),
+                                );
+                              }
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) => ConfirmRiderRequest(
+                              //       bookingType: currentIndex == 0
+                              //           ? "Current Booking"
+                              //           : "Schedule Booking",
+                              //     ),
+                              //   ),
+                              // );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: Text(
+                              "Confirm",
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ),
                       SizedBox(
-                        height: 50,
-                      )
+                        height: 10,
+                      ),
                       // Align(
                       //   alignment: Alignment.topCenter,
                       //   child: bookModel != null
@@ -5652,7 +6692,7 @@ class _SearchLocationPageState extends State<SearchLocationPage>
           setState(() {
             saveStatus = false;
           });
-          getRides("3", first: true);
+          // getRidess("3", first: true);
           getBookInfo();
         }
         /* showConfirm(RidesModel(v['id'], v['user_id'], v['username'], v['uneaque_id'], v['purpose'], v['pickup_area'],
@@ -5879,8 +6919,6 @@ class _SearchLocationPageState extends State<SearchLocationPage>
         });
   }
 
-  double gst = 0.0;
-  double surge = 0.0;
   addInterCityRides(ShareRideModel model) async {
     try {
       setState(() {

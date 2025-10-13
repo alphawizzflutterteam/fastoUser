@@ -797,7 +797,8 @@ class _InterCityRidePageState extends State<InterCityRidePage> {
                               fontSize: 12.sp,
                               textColor: Colors.black),
                         )
-                  : Center(child: CircularProgressIndicator()),
+                  : Center(
+                      child: CircularProgressIndicator(color: Colors.black)),
             ],
           ),
         ),
@@ -919,7 +920,7 @@ class _InterCityRidePageState extends State<InterCityRidePage> {
                     ),
                   )
                 : Center(
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(color: Colors.black),
                   )
           ],
         ),
@@ -1199,7 +1200,7 @@ class _InterCityRidePageState extends State<InterCityRidePage> {
                                   isCentered: true,
                                   textColor: Colors.white)),
                         )
-                      : CircularProgressIndicator(),
+                      : CircularProgressIndicator(color: Colors.black),
                 ),
               ],
             ),

@@ -230,7 +230,9 @@ class _VerificationUIState extends State<VerificationUI> {
                       )
                     : Container(
                         width: 50,
-                        child: Center(child: CircularProgressIndicator())),
+                        child: Center(
+                            child: CircularProgressIndicator(
+                                color: Colors.black))),
                 SizedBox(
                   height: 10,
                 ),
