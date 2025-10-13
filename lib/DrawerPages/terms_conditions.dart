@@ -9,19 +9,18 @@ import '../utils/constant.dart';
 import '../utils/new_utils/ui.dart';
 
 class TermsConditions extends StatefulWidget {
-
   @override
   State<TermsConditions> createState() => _TermsConditionsState();
 }
 
 class _TermsConditionsState extends State<TermsConditions> {
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getData();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,10 +42,10 @@ class _TermsConditionsState extends State<TermsConditions> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: status
-              ? Center(child: CircularProgressIndicator())
+              ? Center(child: CircularProgressIndicator(color: Colors.black))
               : Column(
-            children: [Text(data.body.text)],
-          ),
+                  children: [Text(data.body.text)],
+                ),
         ),
       ),
     );
@@ -75,5 +74,4 @@ class _TermsConditionsState extends State<TermsConditions> {
       UI.setSnackBar(getTranslated(context, "WRONG")!, context);
     }
   }
-
 }

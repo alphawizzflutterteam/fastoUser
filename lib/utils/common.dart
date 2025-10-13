@@ -1,13 +1,11 @@
-import 'package:pristine_andaman/utils/ApiBaseHelper.dart';
-import 'package:pristine_andaman/utils/constant.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:pristine_andaman/utils/new_utils/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:pristine_andaman/utils/ApiBaseHelper.dart';
+import 'package:pristine_andaman/utils/constant.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
-import 'colors.dart';
 
 class Common {
   toast(String msg) {
@@ -16,20 +14,22 @@ class Common {
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.BOTTOM,
       timeInSecForIosWeb: 1,
-      backgroundColor: MyColorName.primaryDark,
-      textColor: MyColorName.colorTextPrimary,
-      fontSize: 16.sp,
+      backgroundColor: Colors.black,
+      textColor: Colors.white,
+      fontSize: 13.sp,
     );
   }
 
-  static logoutApi()async{
+  static logoutApi() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
     Map data = {
-      "user_id":curUserId,
-      "device_id":androidInfo.id.toString(),
+      "user_id": curUserId,
+      "device_id": androidInfo.id.toString(),
     };
-    ApiBaseHelper().postAPICall(Uri.parse(baseUrl + "logout_user"), data).then((value){});
+    ApiBaseHelper()
+        .postAPICall(Uri.parse(baseUrl + "logout_user"), data)
+        .then((value) {});
   }
 }
 

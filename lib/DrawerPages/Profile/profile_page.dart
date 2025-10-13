@@ -312,7 +312,7 @@ class _ProfilePageState extends State<ProfilePage> {
               width: 50,
               height: 50,
               child: Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(color: Colors.black),
               ),
             ),
       appBar: AppBar(
@@ -406,7 +406,6 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                       ),
                     ),
-
                     // Positioned Camera Icon
                     Positioned(
                       bottom: 8,
@@ -683,7 +682,7 @@ class _ProfilePageState extends State<ProfilePage> {
       //               width: 50,
       //               height: 50,
       //               child: Center(
-      //                 child: CircularProgressIndicator(),
+      //                 child: CircularProgressIndicator(color:Colors.black),
       //               ),
       //             ),
       //     ),

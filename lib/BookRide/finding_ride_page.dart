@@ -1,17 +1,16 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pristine_andaman/BookRide/map.dart';
 import 'package:pristine_andaman/BookRide/ride_booked_page.dart';
-import 'package:pristine_andaman/BookRide/search_location_page.dart';
 import 'package:pristine_andaman/Model/my_ride_model.dart';
 import 'package:pristine_andaman/utils/ApiBaseHelper.dart';
 import 'package:pristine_andaman/utils/PushNotificationService.dart';
 import 'package:pristine_andaman/utils/Session.dart';
 import 'package:pristine_andaman/utils/constant.dart';
-import 'package:pristine_andaman/utils/widget.dart';
 import 'package:pristine_andaman/utils/new_utils/ui.dart';
-import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:pristine_andaman/utils/widget.dart';
 import 'package:sizer/sizer.dart';
 
 import '../bottom_nav_screen.dart';
@@ -137,10 +136,10 @@ class _FindingRidePageState extends State<FindingRidePage>
           ),
         ),
         title: Text(
-          getTranslated(context, "FINDING_RIDE")!.toUpperCase(),style: TextStyle(color: Colors.black),
+          getTranslated(context, "FINDING_RIDE")!,
+          style: TextStyle(color: Colors.black, fontSize: 16),
         ),
       ),
-
       body: Stack(
         children: [
           ///Map
@@ -154,7 +153,7 @@ class _FindingRidePageState extends State<FindingRidePage>
                   DEST_LOCATION: widget.destination,
                   live: false,
                 )
-              : Center(child: CircularProgressIndicator()),
+              : Center(child: CircularProgressIndicator(color: Colors.black)),
 
           Align(
             alignment: Alignment.topCenter,
@@ -254,15 +253,16 @@ class _FindingRidePageState extends State<FindingRidePage>
                       decoration: boxDecoration(
                           radius: 10, bgColor: Theme.of(context).primaryColor),
                       child: Center(
-                          child: text(getTranslated(context, "CANCEL_RIDE")!,
-                              fontFamily: fontMedium,
-                              fontSize: 12.sp,
-                              isCentered: true,
-                              textColor: Colors.white)),
+                        child: text(getTranslated(context, "CANCEL_RIDE")!,
+                            fontFamily: fontMedium,
+                            fontSize: 12.sp,
+                            isCentered: true,
+                            textColor: Colors.white),
+                      ),
                     ),
                   ),
+                  boxHeight(30)
                 ],
-
               ),
             ),
           ),
@@ -280,7 +280,8 @@ class _FindingRidePageState extends State<FindingRidePage>
     Map response = await apiBaseHelper.postAPICall(
         Uri.parse(baseUrl1 + "payment/cancel_ride"), data);
     if (response['status']) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => BottomNavScreen()));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => BottomNavScreen()));
       UI.setSnackBar("Booking Cancelled", context);
     } else {}
   }

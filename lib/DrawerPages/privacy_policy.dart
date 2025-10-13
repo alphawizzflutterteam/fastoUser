@@ -42,7 +42,7 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: status
-              ? Center(child: CircularProgressIndicator())
+              ? Center(child: CircularProgressIndicator(color: Colors.black))
               : Column(
                   children: [Text(data.body.text)],
                 ),

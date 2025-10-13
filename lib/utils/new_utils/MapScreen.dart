@@ -18,6 +18,7 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
         foregroundColor: Colors.white,
         elevation: 0,
         toolbarHeight: 70,
+        centerTitle: true,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
@@ -26,6 +27,7 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
         ),
         title: const Text(
           "Select Location",
+          style: TextStyle(fontSize: 16),
         ),
       ),
       body: Padding(
@@ -33,57 +35,50 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
         child: Column(
           children: [
             // Styled Search Bar Container
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 6,
-                    offset: Offset(0, 3),
-                  ),
-                ],
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Row(
-                children: [
-                  const Icon(Icons.search, color: Colors.black),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: GooglePlacesAutoCompleteTextFormField(
-                      textEditingController: locationCtr,
-                      googleAPIKey: "AIzaSyD65ula_94BY_XziYpJOLXFN-DOVwnBdcI",
-                      debounceTime: 400,
-                      fetchCoordinates: true,
-                      onPlaceDetailsWithCoordinatesReceived: (prediction) {
-                        selectedLat =
-                            double.tryParse(prediction.lat.toString());
-                        selectedLng =
-                            double.tryParse(prediction.lng.toString());
-                        locationCtr.text = prediction.description!;
-                        locationCtr.selection = TextSelection.fromPosition(
-                          TextPosition(offset: locationCtr.text.length),
-                        );
-
-                        if (selectedLat != null && selectedLng != null) {
-                          Navigator.pop(context, {
-                            'address': locationCtr.text,
-                            'lat': selectedLat,
-                            'lng': selectedLng,
-                          });
-                        }
-                      },
-                      onSuggestionClicked: (prediction) {
-                        locationCtr.text = prediction.description!;
-                        locationCtr.selection = TextSelection.fromPosition(
-                          TextPosition(offset: prediction.description!.length),
-                        );
-                      },
+            Row(
+              children: [
+                // const Icon(Icons.search, color: Colors.black),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: GooglePlacesAutoCompleteTextFormField(
+                    textEditingController: locationCtr,
+                    googleAPIKey: "AIzaSyD65ula_94BY_XziYpJOLXFN-DOVwnBdcI",
+                    debounceTime: 400,
+                    fetchCoordinates: true,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.search),
+                      hintText: "Search location here",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     ),
+                    onPlaceDetailsWithCoordinatesReceived: (prediction) {
+                      selectedLat = double.tryParse(prediction.lat.toString());
+                      selectedLng = double.tryParse(prediction.lng.toString());
+                      locationCtr.text = prediction.description!;
+                      locationCtr.selection = TextSelection.fromPosition(
+                        TextPosition(offset: locationCtr.text.length),
+                      );
+                      if (selectedLat != null && selectedLng != null) {
+                        Navigator.pop(context, {
+                          'address': locationCtr.text,
+                          'lat': selectedLat,
+                          'lng': selectedLng,
+                        });
+                      }
+                    },
+                    onSuggestionClicked: (prediction) {
+                      locationCtr.text = prediction.description!;
+                      locationCtr.selection = TextSelection.fromPosition(
+                        TextPosition(offset: prediction.description!.length),
+                      );
+                    },
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             // const SizedBox(height: 100),
           ],

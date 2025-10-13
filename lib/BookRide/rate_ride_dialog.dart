@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:pristine_andaman/Components/custom_button.dart';
 import 'package:pristine_andaman/Components/entry_field.dart';
-import 'package:pristine_andaman/Locale/locale.dart';
-import 'package:pristine_andaman/Locale/strings_enum.dart';
 import 'package:pristine_andaman/Model/intercity_model.dart';
 import 'package:pristine_andaman/Model/my_ride_model.dart';
 import 'package:pristine_andaman/Theme/style.dart';
@@ -110,7 +108,7 @@ class _RateRideDialogState extends State<RateRideDialog> {
                   ),
                 ),*/
                 SizedBox(
-                  height: 20,
+                  height: 10,
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
@@ -125,11 +123,12 @@ class _RateRideDialogState extends State<RateRideDialog> {
                               height: 60,
                               width: 60,
                               child: ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(
+                                    30), // half of width/height for circle
                                 child: Image.network(
                                   widget.model.driverImage.toString(),
-                                  height: 72,
-                                  width: 72,
+                                  fit: BoxFit
+                                      .cover, // ensures the image fills the circle
                                 ),
                               ),
                             ),
@@ -139,21 +138,21 @@ class _RateRideDialogState extends State<RateRideDialog> {
                               style: theme.textTheme.bodyMedium!
                                   .copyWith(fontSize: 18, letterSpacing: 1.2),
                             ),
-                            SizedBox(height: 10),
-                            Text(
-                              '${widget.model.taxiType}',
-                              style: theme.textTheme.bodyMedium!
-                                  .copyWith(fontSize: 12),
-                            ),
-                            Text(
-                              '${widget.model.car_no}',
-                              style: theme.textTheme.bodyMedium!
-                                  .copyWith(fontSize: 13.5),
-                            ),
+                            // SizedBox(height: 10),
+                            // Text(
+                            //   '${widget.model.taxiType}',
+                            //   style: theme.textTheme.bodyMedium!
+                            //       .copyWith(fontSize: 12),
+                            // ),
+                            // Text(
+                            //   '${widget.model.car_no}',
+                            //   style: theme.textTheme.bodyMedium!
+                            //       .copyWith(fontSize: 13.5),
+                            // ),
                           ],
                         ),
                       ),
-                      Spacer(),
+                      // Spacer(),
                       Expanded(
                         flex: 4,
                         child: Column(
@@ -192,7 +191,7 @@ class _RateRideDialogState extends State<RateRideDialog> {
                               children: [
                                 Icon(
                                   Icons.account_balance_wallet,
-                                  color: theme.primaryColor,
+                                  color: Color(0xff7DBF04),
                                   size: 20,
                                 ),
                                 SizedBox(width: 8),
@@ -202,7 +201,7 @@ class _RateRideDialogState extends State<RateRideDialog> {
                                       : "${widget.model.transaction}",
                                   style: TextStyle(
                                       fontWeight: FontWeight.w500,
-                                      fontSize: 12.0),
+                                      fontSize: 14.0),
                                 ),
                               ],
                             ),
@@ -212,9 +211,9 @@ class _RateRideDialogState extends State<RateRideDialog> {
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
+                // SizedBox(
+                //   height: 20,
+                // ),
                 ListTile(
                   title: Text(
                     getTranslated(context, 'RIDE_INFO')!,
@@ -228,7 +227,7 @@ class _RateRideDialogState extends State<RateRideDialog> {
                   horizontalTitleGap: 0,
                   leading: Icon(
                     Icons.location_on,
-                    color: theme.primaryColor,
+                    color: Colors.red,
                   ),
                   title: Text(
                     '${widget.model.pickupAddress}',
@@ -239,19 +238,19 @@ class _RateRideDialogState extends State<RateRideDialog> {
                   horizontalTitleGap: 0,
                   leading: Icon(
                     Icons.navigation,
-                    color: theme.primaryColor,
+                    color: Colors.green,
                   ),
                   title: Text(
                     '${widget.model.dropAddress}',
                     style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
                   ),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
+                // SizedBox(
+                //   height: 20,
+                // ),
                 Divider(),
                 SizedBox(
-                  height: 20,
+                  height: 5,
                 ),
                 !widget.model.transaction.toString().contains("Wait") ||
                         paymentType != ""
@@ -264,7 +263,7 @@ class _RateRideDialogState extends State<RateRideDialog> {
                                     .copyWith(color: theme.hintColor)),
                           ),
                           SizedBox(
-                            height: 20,
+                            height: 10,
                           ),
                           Center(
                             child: RatingBar(
@@ -276,15 +275,15 @@ class _RateRideDialogState extends State<RateRideDialog> {
                               ratingWidget: RatingWidget(
                                 full: Icon(
                                   Icons.star,
-                                  color: AppTheme.primaryColor,
+                                  color: AppTheme.secondaryColor,
                                 ),
                                 half: Icon(
                                   Icons.star_half_rounded,
-                                  color: AppTheme.primaryColor,
+                                  color: AppTheme.secondaryColor,
                                 ),
                                 empty: Icon(
                                   Icons.star_border_rounded,
-                                  color: AppTheme.primaryColor,
+                                  color: AppTheme.secondaryColor,
                                 ),
                               ),
                               itemPadding: EdgeInsets.zero,
@@ -296,9 +295,9 @@ class _RateRideDialogState extends State<RateRideDialog> {
                               },
                             ),
                           ),
-                          SizedBox(
-                            height: 20,
-                          ),
+                          // SizedBox(
+                          //   height: 10,
+                          // ),
                           EntryField(
                             controller: desCon,
                             hint: getTranslated(context, 'ADD_COMMENT'),
@@ -306,121 +305,123 @@ class _RateRideDialogState extends State<RateRideDialog> {
                         ],
                       )
                     : SizedBox(),
-                SizedBox(
-                  height: 20,
-                ),
-                !widget.check
-                    ? Container(
-                        color: theme.colorScheme.background,
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        height: 52,
-                        child: Row(
-                          children: [
-                            Text(
-                              "Select " +
-                                  getTranslated(context, "PAYMENT_MODE")!,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .copyWith(
-                                    fontSize: 13.5,
-                                  ),
-                            ),
-                            Spacer(),
-                            Container(
-                              width: 1,
-                              height: 28,
-                              color: theme.hintColor,
-                            ),
-                            Spacer(),
-                            PopupMenuButton(
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.account_balance_wallet,
-                                    color: theme.primaryColor,
-                                    size: 20,
-                                  ),
-                                  SizedBox(width: 12),
-                                  Text(
-                                    paymentType != "" ? paymentType : "Select",
-                                    style: theme.textTheme.bodyMedium!.copyWith(
-                                        color: theme.primaryColor,
-                                        fontSize: 15),
-                                  ),
-                                ],
-                              ),
-                              onSelected: (val) {
-                                setState(() {
-                                  paymentType = val.toString();
-                                  status = false;
-                                });
-                              },
-                              offset: Offset(0, -144),
-                              color: theme.colorScheme.background,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8)),
-                              itemBuilder: (BuildContext context) {
-                                return [
-                                  PopupMenuItem(
-                                    value: getString(Strings.CASH)!,
-                                    child: Row(
-                                      children: [
-                                        Icon(Icons.credit_card_sharp),
-                                        SizedBox(width: 12),
-                                        Text(getTranslated(context, 'CASH')!),
-                                      ],
-                                    ),
-                                  ),
-                                  // PopupMenuItem(
-                                  //   child: Row(
-                                  //     children: [
-                                  //       Icon(Icons.account_balance_wallet),
-                                  //       SizedBox(width: 12),
-                                  //       Text(getTranslated(context, 'WALLET')!),
-                                  //     ],
-                                  //   ),
-                                  //   value: getString(Strings.WALLET)!,
-                                  // ),
-                                  // PopupMenuItem(
-                                  //   child: Row(
-                                  //     children: [
-                                  //       Icon(Icons.account_balance_wallet),
-                                  //       SizedBox(width: 12),
-                                  //       Text("Online"),
-                                  //     ],
-                                  //   ),
-                                  //   value: "Online",
-                                  // ),
-                                ];
-                              },
-                            ),
-                          ],
-                        ),
-                      )
-                    : SizedBox(),
+                // SizedBox(
+                //   height: 10,
+                // ),
+                // !widget.check
+                //     ? Container(
+                //         color: theme.colorScheme.background,
+                //         padding: EdgeInsets.symmetric(horizontal: 20),
+                //         height: 52,
+                //         child: Row(
+                //           children: [
+                //             Text(
+                //               "Select " +
+                //                   getTranslated(context, "PAYMENT_MODE")!,
+                //               style: Theme.of(context)
+                //                   .textTheme
+                //                   .bodyMedium!
+                //                   .copyWith(
+                //                     fontSize: 13.5,
+                //                   ),
+                //             ),
+                //             Spacer(),
+                //             Container(
+                //               width: 1,
+                //               height: 28,
+                //               color: theme.hintColor,
+                //             ),
+                //             Spacer(),
+                //             PopupMenuButton(
+                //               child: Row(
+                //                 children: [
+                //                   Icon(
+                //                     Icons.account_balance_wallet,
+                //                     color: theme.primaryColor,
+                //                     size: 20,
+                //                   ),
+                //                   SizedBox(width: 12),
+                //                   Text(
+                //                     paymentType != "" ? paymentType : "Select",
+                //                     style: theme.textTheme.bodyMedium!.copyWith(
+                //                         color: theme.primaryColor,
+                //                         fontSize: 15),
+                //                   ),
+                //                 ],
+                //               ),
+                //               onSelected: (val) {
+                //                 setState(() {
+                //                   paymentType = val.toString();
+                //                   status = false;
+                //                 });
+                //               },
+                //               offset: Offset(0, -144),
+                //               color: theme.colorScheme.background,
+                //               shape: RoundedRectangleBorder(
+                //                   borderRadius: BorderRadius.circular(8)),
+                //               itemBuilder: (BuildContext context) {
+                //                 return [
+                //                   PopupMenuItem(
+                //                     value: getString(Strings.CASH)!,
+                //                     child: Row(
+                //                       children: [
+                //                         Icon(Icons.credit_card_sharp),
+                //                         SizedBox(width: 12),
+                //                         Text(getTranslated(context, 'CASH')!),
+                //                       ],
+                //                     ),
+                //                   ),
+                //                   // PopupMenuItem(
+                //                   //   child: Row(
+                //                   //     children: [
+                //                   //       Icon(Icons.account_balance_wallet),
+                //                   //       SizedBox(width: 12),
+                //                   //       Text(getTranslated(context, 'WALLET')!),
+                //                   //     ],
+                //                   //   ),
+                //                   //   value: getString(Strings.WALLET)!,
+                //                   // ),
+                //                   // PopupMenuItem(
+                //                   //   child: Row(
+                //                   //     children: [
+                //                   //       Icon(Icons.account_balance_wallet),
+                //                   //       SizedBox(width: 12),
+                //                   //       Text("Online"),
+                //                   //     ],
+                //                   //   ),
+                //                   //   value: "Online",
+                //                   // ),
+                //                 ];
+                //               },
+                //             ),
+                //           ],
+                //         ),
+                //       )
+                //     : SizedBox(),
                 SizedBox(
                   height: 20,
                 ),
                 !status
                     ? CustomButton(
                         onTap: () {
-                          if (!widget.check && paymentType == "") {
-                            Common().toast("Select Payment Method");
-                            // UI.setSnackBar("Select Payment Method", context);
-                            return;
-                          }
-                          if (!widget.check &&
-                              paymentType == "Wallet" &&
-                              walletAmount <
-                                  double.parse(widget.model.amount!)) {
-                            Common().toast("Insufficient Balance");
-                            //UI.setSnackBar("Insufficient Balance", context);
-                            return;
-                          }
+                          // if (!widget.check && paymentType == "") {
+                          //   Common().toast("Select Payment Method");
+                          //   // UI.setSnackBar("Select Payment Method", context);
+                          //   return;
+                          // }
+                          // if (!widget.check &&
+                          //     paymentType == "Wallet" &&
+                          //     walletAmount <
+                          //         double.parse(widget.model.amount!)) {
+                          //   Common().toast("Insufficient Balance");
+                          //   //UI.setSnackBar("Insufficient Balance", context);
+                          //   return;
+                          // }
                           setState(() {
                             status = true;
                           });
+                          rateOrder(
+                              widget.model.driverId, widget.model.uneaqueId);
                           // if (paymentType == "Online") {
                           //   KhaltiPayHelper khaltiPay = new KhaltiPayHelper(
                           //       widget.model.amount!, context, (result) {
@@ -443,12 +444,15 @@ class _RateRideDialogState extends State<RateRideDialog> {
                           // }
                         },
                         textColor: Colors.white,
-                        text: widget.check
-                            ? getTranslated(context, 'SUBMIT')
-                            : "Pay \u{20B9}${widget.model.finalAmount}",
+                        text: getTranslated(context, 'SUBMIT'),
+                        // widget.check
+                        //     ? getTranslated(context, 'SUBMIT')
+                        //     : "Pay \u{20B9}${widget.model.finalAmount}",
                       )
                     : Center(
-                        child: CircularProgressIndicator(),
+                        child: CircularProgressIndicator(
+                          color: Colors.black,
+                        ),
                       ),
               ],
             ),
@@ -732,7 +736,7 @@ class _RateRideDialog1State extends State<RateRideDialog1> {
                       text: getTranslated(context, 'SUBMIT'),
                     )
                   : Center(
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator(color: Colors.black),
                     ),
             ],
           ),

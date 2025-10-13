@@ -270,7 +270,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
                         text: "Pay \u{20B9}${widget.model.amount}",
                       )
                     : Center(
-                        child: CircularProgressIndicator(),
+                        child: CircularProgressIndicator(color: Colors.black),
                       ),
             ],
           ),

@@ -143,7 +143,7 @@ class _FaqPageState extends State<FaqPage> {
                     ),
                   )
                 : Center(
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(color: Colors.black),
                   )
           ],
         ),

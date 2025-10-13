@@ -4,46 +4,56 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69af64c8-f614-461a-85cb-c38489fec379" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/lib/Auth/Registration/UI/SignIn.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/.filecache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/app.dill" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/debug_android_application.stamp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/flutter_assets.d" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/gen_dart_plugin_registrant.stamp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/gen_localizations.stamp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/kernel_snapshot.stamp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/kernel_snapshot_native_assets.stamp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/kernel_snapshot_program.d" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/kernel_snapshot_program.stamp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/native_assets.d" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/native_assets.dill" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/native_assets.stamp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/native_assets.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/outputs.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.dart_tool/flutter_build/30e810b2b0ca26cf448d418bf67db247/program.dill" beforeDir="false" />
+    <list default="true" id="69af64c8-f614-461a-85cb-c38489fec379" name="Changes" comment="some ui changes and function">
+      <change afterPath="$PROJECT_DIR$/assets/back-in-time.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/calendar.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.dart_tool/package_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/package_config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.dart_tool/package_config_subset" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/package_config_subset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins-dependencies" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/google-services.json" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/google-services.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/drawable/ic_launcher.png" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/res/drawable/ic_launcher.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap/ic_launcher.png" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/res/mipmap/ic_launcher.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/Auth/Login/UI/login_ui.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Auth/Login/UI/login_ui.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/Auth/Registration/UI/SignIn.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Auth/Registration/UI/SignIn.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/Auth/Registration/UI/registration_ui.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Auth/Registration/UI/registration_ui.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/Auth/Verification/UI/verification_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Auth/Verification/UI/verification_page.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/Auth/Verification/UI/verification_ui.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Auth/Verification/UI/verification_ui.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/Auth/login_navigator.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Auth/login_navigator.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/BookRide/PaymentScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/BookRide/PaymentScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/Auth/forget_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Auth/forget_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/BookRide/add_favorite_location.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/BookRide/add_favorite_location.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/BookRide/backup.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/BookRide/backup.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/BookRide/choose_cab_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/BookRide/choose_cab_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/BookRide/choose_favorite_location.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/BookRide/choose_favorite_location.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/BookRide/confirm_rider_request.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/BookRide/confirm_rider_request.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/BookRide/finding_ride_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/BookRide/finding_ride_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/BookRide/payment_dailog.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/BookRide/payment_dailog.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/BookRide/rate_ride_dialog.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/BookRide/rate_ride_dialog.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/BookRide/ride_booked_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/BookRide/ride_booked_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/BookRide/search_location_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/BookRide/search_location_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/DrawerPages/ContactUs/contact_us_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DrawerPages/ContactUs/contact_us_page.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/DrawerPages/Profile/profile_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DrawerPages/Profile/profile_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/DrawerPages/Profile/reviews.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DrawerPages/Profile/reviews.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/DrawerPages/Rides/intercity_rides.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DrawerPages/Rides/intercity_rides.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/DrawerPages/Rides/my_rides_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DrawerPages/Rides/my_rides_page.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/DrawerPages/Rides/rental_rides.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DrawerPages/Rides/rental_rides.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/DrawerPages/Rides/ride_info_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DrawerPages/Rides/ride_info_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/DrawerPages/Settings/rules.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DrawerPages/Settings/rules.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/DrawerPages/Wallet/wallet_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DrawerPages/Wallet/wallet_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/DrawerPages/Wallet/wallet_policy.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DrawerPages/Wallet/wallet_policy.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/DrawerPages/app_drawer.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DrawerPages/app_drawer.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/utils/constant.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utils/constant.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/DrawerPages/faq_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DrawerPages/faq_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/DrawerPages/notification_list.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DrawerPages/notification_list.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/DrawerPages/plan_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DrawerPages/plan_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/DrawerPages/privacy_policy.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DrawerPages/privacy_policy.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/DrawerPages/referrals_list_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DrawerPages/referrals_list_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/DrawerPages/support_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DrawerPages/support_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/DrawerPages/terms_conditions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DrawerPages/terms_conditions.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/Model/my_ride_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Model/my_ride_model.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/language/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/lib/language/en.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/utils/Session.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utils/Session.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/utils/common.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utils/common.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/utils/new_utils/MapScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utils/new_utils/MapScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/utils/new_utils/ui.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utils/new_utils/ui.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,6 +71,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitSEFilterConfiguration">
@@ -85,17 +100,21 @@
     <property name="cidr.known.project.marker" value="true" />
     <property name="dart.analysis.tool.window.visible" value="false" />
     <property name="io.flutter.reload.alreadyRun" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/android/app/src/main/res/drawable" />
     <property name="settings.editor.selected.configurable" value="flutter.settings" />
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\FastoUser\FastoUser\android\app\src\main\res\drawable" />
+      <recent name="D:\FastoUser\FastoUser\android\app\src\main\res\mipmap" />
       <recent name="C:\Users\Alphawizz\AndroidStudioProjects\Pristine-Andaman-User\assets" />
       <recent name="C:\Users\Alphawizz\AndroidStudioProjects\Pristine-Andaman-User\assets\fonts" />
       <recent name="C:\Users\Alphawizz\AndroidStudioProjects\Pristine-Andaman-User\android\app\src\main\res" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\FastoUser\FastoUser\assets" />
+      <recent name="D:\FastoUser\FastoUser\lib\BookRide" />
       <recent name="D:\FastoUser\FastoUser\android\app" />
       <recent name="D:\Pristine-Andaman-User\android\app" />
     </key>
@@ -115,6 +134,14 @@
       <option name="presentableId" value="Default" />
       <updated>1754544611518</updated>
     </task>
+    <task id="LOCAL-00001" summary="some ui changes and function">
+      <created>1755004788138</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1755004788139</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -128,14 +155,13 @@
       </map>
     </option>
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="some ui changes and function" />
+    <option name="LAST_COMMIT_MESSAGE" value="some ui changes and function" />
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/main.dart</url>
-          <line>35</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" type="Dart">
           <url>file://$PROJECT_DIR$/lib/Auth/Registration/UI/registration_ui.dart</url>
           <line>721</line>
@@ -148,23 +174,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="Dart">
           <url>file://$PROJECT_DIR$/lib/DrawerPages/Profile/profile_page.dart</url>
-          <line>745</line>
+          <line>744</line>
           <option name="timeStamp" value="4" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/utils/colors.dart</url>
-          <line>22</line>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/BookRide/search_location_page.dart</url>
-          <line>1557</line>
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/BookRide/search_location_page.dart</url>
-          <line>1713</line>
-          <option name="timeStamp" value="9" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
