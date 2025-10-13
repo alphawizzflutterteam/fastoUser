@@ -1,24 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:pristine_andaman/DrawerPages/Settings/theme_cubit.dart';
-import 'package:pristine_andaman/Theme/style.dart';
 import 'package:pristine_andaman/utils/ApiBaseHelper.dart';
 import 'package:pristine_andaman/utils/Session.dart';
 import 'package:pristine_andaman/utils/colors.dart';
 import 'package:pristine_andaman/utils/common.dart';
 import 'package:pristine_andaman/utils/constant.dart';
-import 'package:pristine_andaman/utils/widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:pristine_andaman/utils/new_utils/ui.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:pristine_andaman/utils/widget.dart';
 import 'package:sizer/sizer.dart';
+
 import 'language_cubit.dart';
-import 'package:http/http.dart' as http;
 
 class RuleModel {
   String id, title, description;
@@ -86,10 +81,9 @@ class _RulesRegulationState extends State<RulesRegulation> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
-          getTranslated(context, "RULES")??"Rules",
+          getTranslated(context, "RULES") ?? "Rules",
         ),
       ),
-
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: getWidth(25)),
         child: Column(
@@ -120,7 +114,7 @@ class _RulesRegulationState extends State<RulesRegulation> {
                         ),
                       );
                     })
-                : CircularProgressIndicator(),
+                : CircularProgressIndicator(color: Colors.black),
             SizedBox(
               height: 80,
             )

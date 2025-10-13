@@ -104,7 +104,8 @@ class _SupportScreenState extends State<SupportScreen> {
                 ? SizedBox(
                     width: MediaQuery.sizeOf(context).width,
                     height: MediaQuery.sizeOf(context).height,
-                    child: Center(child: CircularProgressIndicator()))
+                    child: Center(
+                        child: CircularProgressIndicator(color: Colors.black)))
                 : supportList.isEmpty
                     ? SizedBox(
                         width: MediaQuery.sizeOf(context).width,
@@ -121,49 +122,61 @@ class _SupportScreenState extends State<SupportScreen> {
                               elevation: 5,
                               child: Container(
                                 child: Padding(
-                                  padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
+                                  padding: const EdgeInsets.only(
+                                      left: 16, right: 16, top: 16),
                                   child: Column(
                                     children: [
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
                                         children: [
                                           Text(
-                                            supportList[index].status == '0' ? 'Open' : 'Close',
+                                            supportList[index].status == '0'
+                                                ? 'Open'
+                                                : 'Close',
                                             style: TextStyle(
-                                              color: supportList[index].status == '0'
-                                                  ? Colors.green
-                                                  : Colors.red,
+                                              color:
+                                                  supportList[index].status ==
+                                                          '0'
+                                                      ? Colors.green
+                                                      : Colors.red,
                                             ),
                                           ),
                                         ],
                                       ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text('Name'),
                                           Text(
                                             '${supportList[index].name}',
-                                            style: TextStyle(color: MyColorName.textColor),
+                                            style: TextStyle(
+                                                color: MyColorName.textColor),
                                           ),
                                         ],
                                       ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text('Email'),
                                           Text(
                                             '${supportList[index].email}',
-                                            style: TextStyle(color: MyColorName.textColor),
+                                            style: TextStyle(
+                                                color: MyColorName.textColor),
                                           ),
                                         ],
                                       ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text('Description'),
                                           Text(
                                             '${supportList[index].description}',
-                                            style: TextStyle(color: MyColorName.textColor),
+                                            style: TextStyle(
+                                                color: MyColorName.textColor),
                                           ),
                                         ],
                                       ),
@@ -173,11 +186,17 @@ class _SupportScreenState extends State<SupportScreen> {
                                           onPressed: () {
                                             // Check if replyMessage is null or empty
                                             List<String> replies = [];
-                                            bool hasReplies = supportList[index].replyMessage != null &&
-                                                supportList[index].replyMessage!.isNotEmpty;
+                                            bool hasReplies = supportList[index]
+                                                        .replyMessage !=
+                                                    null &&
+                                                supportList[index]
+                                                    .replyMessage!
+                                                    .isNotEmpty;
 
                                             if (hasReplies) {
-                                              replies = supportList[index].replyMessage!.split('|');
+                                              replies = supportList[index]
+                                                  .replyMessage!
+                                                  .split('|');
                                             }
 
                                             showDialog(
@@ -187,17 +206,22 @@ class _SupportScreenState extends State<SupportScreen> {
                                                   title: Text('Replies'),
                                                   content: hasReplies
                                                       ? Column(
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    children: replies
-                                                        .map((reply) => ListTile(
-                                                      title: Text('msg : ${reply}'),
-                                                    ))
-                                                        .toList(),
-                                                  )
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: replies
+                                                              .map((reply) =>
+                                                                  ListTile(
+                                                                    title: Text(
+                                                                        'msg : ${reply}'),
+                                                                  ))
+                                                              .toList(),
+                                                        )
                                                       : Text('No Replies'),
                                                   actions: [
                                                     TextButton(
-                                                      onPressed: () => Navigator.pop(context),
+                                                      onPressed: () =>
+                                                          Navigator.pop(
+                                                              context),
                                                       child: Text('Close'),
                                                     ),
                                                   ],
@@ -214,9 +238,6 @@ class _SupportScreenState extends State<SupportScreen> {
                               ),
                             ),
                           );
-
-
-
                         },
                       )
           ],

@@ -1017,7 +1017,8 @@ class _RentalRidesState extends State<RentalRides> {
                               fontSize: 12.sp,
                               textColor: Colors.black),
                         )
-                  : Center(child: CircularProgressIndicator()),
+                  : Center(
+                      child: CircularProgressIndicator(color: Colors.black)),
             ],
           ),
         ),
@@ -1139,7 +1140,7 @@ class _RentalRidesState extends State<RentalRides> {
                     ),
                   )
                 : Center(
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(color: Colors.black),
                   )
           ],
         ),
@@ -1413,7 +1414,7 @@ class _RentalRidesState extends State<RentalRides> {
                                   isCentered: true,
                                   textColor: Colors.white)),
                         )
-                      : CircularProgressIndicator(),
+                      : CircularProgressIndicator(color: Colors.black),
                 ),
               ],
             ),

@@ -116,6 +116,7 @@ class MyRideModel {
   String? isStateTax;
   String? stateTaxCharge;
   String? remainingBalance;
+  String? ratingComment;
   String? payment_status, add_on_charge, add_on_time, add_on_distance;
   bool? show;
   MyRideModel(
@@ -241,6 +242,7 @@ class MyRideModel {
       this.isStateTax,
       this.cancel_charge,
       this.remainingBalance,
+      this.ratingComment,
       this.sharing_type});
 
   MyRideModel.fromJson(Map<String, dynamic> json) {
@@ -370,6 +372,7 @@ class MyRideModel {
     isStateTax = json['is_state_tax'];
     isNightCharge = json['is_night_charge'];
     remainingBalance = json['remaining_balance'].toString();
+    ratingComment = json['comment'].toString();
     show = true;
   }
 
@@ -472,6 +475,7 @@ class MyRideModel {
     data['is_night_charge'] = this.isNightCharge;
     data['is_state_tax'] = this.isStateTax;
     data['remaining_balance'] = this.remainingBalance;
+    data['comment'] = this.ratingComment;
     data['driver_contact'] = this.driverContact;
     return data;
   }

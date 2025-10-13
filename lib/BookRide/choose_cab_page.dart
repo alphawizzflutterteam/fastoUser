@@ -231,7 +231,7 @@ class _ChooseCabPageState extends State<ChooseCabPage> {
                         rideList[_currentCar].catType == "Auto" ? "1" : "2",
                     live: false,
                   )
-                : Center(child: CircularProgressIndicator()),*/
+                : Center(child: CircularProgressIndicator(color:Colors.black)),*/
 
             /*     Positioned(
               right: getWidth(10),

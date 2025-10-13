@@ -240,7 +240,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
               ),
             )
           : Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(color: Colors.black),
             ),
     );
   }

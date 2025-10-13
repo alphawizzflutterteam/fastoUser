@@ -16,7 +16,6 @@ import 'package:pristine_andaman/utils/constant.dart';
 import 'package:pristine_andaman/utils/new_utils/ui.dart';
 import 'package:pristine_andaman/utils/widget.dart';
 import 'package:sizer/sizer.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class RideInfoPage extends StatefulWidget {
   MyRideModel model;
@@ -251,7 +250,7 @@ class _RideInfoPageState extends State<RideInfoPage> {
                 Column(
                   children: [
                     Container(
-                      padding: EdgeInsets.symmetric(vertical: 16),
+                      padding: EdgeInsets.symmetric(vertical: 10),
                       // margin: EdgeInsets.symmetric(horizontal: 16),
                       decoration: BoxDecoration(
                         color: MyColorName.colorBg1,
@@ -594,8 +593,8 @@ class _RideInfoPageState extends State<RideInfoPage> {
                                 text("Pickup Location",
                                     fontSize: 12,
                                     fontFamily: AppTheme.fontFamily,
-                                    fontWeight: FontWeight.w500,
-                                    textColor: MyColorName.textColor),
+                                    fontWeight: FontWeight.w700,
+                                    textColor: MyColorName.textColor1),
                                 Text(
                                   '${widget.model.pickupAddress}',
                                   style: TextStyle(
@@ -619,8 +618,8 @@ class _RideInfoPageState extends State<RideInfoPage> {
                                 text("Drop Location",
                                     fontSize: 12,
                                     fontFamily: AppTheme.fontFamily,
-                                    fontWeight: FontWeight.w500,
-                                    textColor: MyColorName.textColor),
+                                    fontWeight: FontWeight.w700,
+                                    textColor: MyColorName.textColor1),
                                 Text(
                                   '${widget.model.dropAddress}',
                                   style: TextStyle(
@@ -693,13 +692,13 @@ class _RideInfoPageState extends State<RideInfoPage> {
                         children: [
                           Row(
                             children: [
-                              Text('${getTranslated(context, "TRIP_ID")}',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
+                              Text(
+                                '${getTranslated(context, "TRIP_ID")}',
+                                style: TextStyle(
+                                    fontSize: 13,
                                     fontFamily: AppTheme.fontFamily,
-                                    color: MyColorName.textColor,
-                                  )),
+                                    fontWeight: FontWeight.w500),
+                              ),
                               Text(
                                 ' - ${widget.model.uneaqueId.toString()}',
                                 style: TextStyle(
@@ -810,16 +809,16 @@ class _RideInfoPageState extends State<RideInfoPage> {
                                 boxHeight(6),
                                 Row(
                                   children: [
-                                    widget.model.driverImage == ''
-                                        ? SizedBox()
-                                        : Image.network(
-                                            widget.model.driverImage ?? '',
-                                            width: 35,
-                                            height: 35,
-                                          ),
-                                    SizedBox(
-                                      width: 20,
-                                    ),
+                                    // widget.model.driverImage == ''
+                                    //     ? SizedBox()
+                                    //     : Image.network(
+                                    //         widget.model.driverImage ?? '',
+                                    //         width: 35,
+                                    //         height: 35,
+                                    //       ),
+                                    // SizedBox(
+                                    //   width: 20,
+                                    // ),
                                     Align(
                                       alignment: Alignment.centerLeft,
                                       child: Column(
@@ -829,13 +828,15 @@ class _RideInfoPageState extends State<RideInfoPage> {
                                           Text(
                                             "Driver Name",
                                             style: TextStyle(
-                                                fontWeight: FontWeight.bold),
+                                                color: Colors.black,
+                                                fontSize: 15),
                                           ),
                                           Text(
                                             '${widget.model.driverName}',
                                             overflow: TextOverflow.ellipsis,
-                                            style:
-                                                TextStyle(color: Colors.grey),
+                                            style: TextStyle(
+                                                color: Colors.black54,
+                                                fontSize: 13),
                                           ),
                                         ],
                                       ),
@@ -850,12 +851,14 @@ class _RideInfoPageState extends State<RideInfoPage> {
                                           Text(
                                             "Driver Number",
                                             style: TextStyle(
-                                                fontWeight: FontWeight.bold),
+                                                color: Colors.black,
+                                                fontSize: 15),
                                           ),
                                           Text(
                                             '${widget.model.driverContact}',
-                                            style:
-                                                TextStyle(color: Colors.grey),
+                                            style: TextStyle(
+                                                color: Colors.black54,
+                                                fontSize: 13),
                                           ),
                                         ],
                                       ),
@@ -869,104 +872,104 @@ class _RideInfoPageState extends State<RideInfoPage> {
                     SizedBox(
                       height: 10,
                     ),
-                    (int.tryParse(widget.model.assignedFor ?? '') != null &&
-                            int.parse(widget.model.assignedFor!) > 0)
-                        ? Container(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 16, horizontal: 12),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: MyColorName.greyBorder),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    'Vehicle Detail: ',
-                                    style: TextStyle(fontSize: 15),
-                                  ),
-                                ),
-                                boxHeight(6),
-                                Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "Vehicle Name",
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              Text(
-                                                '${widget.model.vehicleName}',
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                    color: Colors.grey),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(width: 100),
-                                        Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "Vehicle Number",
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              Text(
-                                                '${widget.model.vehicleNo}',
-                                                style: TextStyle(
-                                                    color: Colors.grey),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    // Row(
-                                    //   children: [
-                                    //     Align(
-                                    //       alignment: Alignment.centerLeft,
-                                    //       child: Column(
-                                    //         children: [
-                                    //           Text(
-                                    //             "Vehicle Category",
-                                    //             style: TextStyle(
-                                    //                 fontWeight:
-                                    //                     FontWeight.bold),
-                                    //           ),
-                                    //           Text(
-                                    //             '${widget.model.vehicleCategory}',
-                                    //             overflow: TextOverflow.ellipsis,
-                                    //           ),
-                                    //         ],
-                                    //       ),
-                                    //     ),
-                                    //   ],
-                                    // ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          )
-                        : SizedBox(height: 10),
+                    // (int.tryParse(widget.model.assignedFor ?? '') != null &&
+                    //         int.parse(widget.model.assignedFor!) > 0)
+                    //     ? Container(
+                    //         padding: EdgeInsets.symmetric(
+                    //             vertical: 16, horizontal: 12),
+                    //         decoration: BoxDecoration(
+                    //           border: Border.all(color: MyColorName.greyBorder),
+                    //           borderRadius: BorderRadius.circular(8),
+                    //         ),
+                    //         child: Column(
+                    //           crossAxisAlignment: CrossAxisAlignment.start,
+                    //           children: [
+                    //             Align(
+                    //               alignment: Alignment.centerLeft,
+                    //               child: Text(
+                    //                 'Vehicle Detail: ',
+                    //                 style: TextStyle(fontSize: 15),
+                    //               ),
+                    //             ),
+                    //             boxHeight(6),
+                    //             Column(
+                    //               children: [
+                    //                 Row(
+                    //                   children: [
+                    //                     Align(
+                    //                       alignment: Alignment.centerLeft,
+                    //                       child: Column(
+                    //                         crossAxisAlignment:
+                    //                             CrossAxisAlignment.start,
+                    //                         children: [
+                    //                           Text(
+                    //                             "Vehicle Name",
+                    //                             style: TextStyle(
+                    //                                 fontWeight:
+                    //                                     FontWeight.bold),
+                    //                           ),
+                    //                           Text(
+                    //                             '${widget.model.vehicleName}',
+                    //                             overflow: TextOverflow.ellipsis,
+                    //                             style: TextStyle(
+                    //                                 color: Colors.grey),
+                    //                           ),
+                    //                         ],
+                    //                       ),
+                    //                     ),
+                    //                     SizedBox(width: 100),
+                    //                     Align(
+                    //                       alignment: Alignment.centerLeft,
+                    //                       child: Column(
+                    //                         crossAxisAlignment:
+                    //                             CrossAxisAlignment.start,
+                    //                         children: [
+                    //                           Text(
+                    //                             "Vehicle Number",
+                    //                             style: TextStyle(
+                    //                                 fontWeight:
+                    //                                     FontWeight.bold),
+                    //                           ),
+                    //                           Text(
+                    //                             '${widget.model.vehicleNo}',
+                    //                             style: TextStyle(
+                    //                                 color: Colors.grey),
+                    //                           ),
+                    //                         ],
+                    //                       ),
+                    //                     ),
+                    //                   ],
+                    //                 ),
+                    //                 SizedBox(
+                    //                   height: 5,
+                    //                 ),
+                    //                 // Row(
+                    //                 //   children: [
+                    //                 //     Align(
+                    //                 //       alignment: Alignment.centerLeft,
+                    //                 //       child: Column(
+                    //                 //         children: [
+                    //                 //           Text(
+                    //                 //             "Vehicle Category",
+                    //                 //             style: TextStyle(
+                    //                 //                 fontWeight:
+                    //                 //                     FontWeight.bold),
+                    //                 //           ),
+                    //                 //           Text(
+                    //                 //             '${widget.model.vehicleCategory}',
+                    //                 //             overflow: TextOverflow.ellipsis,
+                    //                 //           ),
+                    //                 //         ],
+                    //                 //       ),
+                    //                 //     ),
+                    //                 //   ],
+                    //                 // ),
+                    //               ],
+                    //             ),
+                    //           ],
+                    //         ),
+                    //       )
+                    //     : SizedBox(height: 10),
                     Container(
                       padding:
                           EdgeInsets.symmetric(vertical: 16, horizontal: 12),
@@ -1310,7 +1313,7 @@ class _RideInfoPageState extends State<RideInfoPage> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    text("Taxes Fees: ",
+                                    text("Taxes: ",
                                         fontSize: 13,
                                         fontFamily: AppTheme.fontFamily,
                                         fontWeight: FontWeight.w500,
@@ -1366,25 +1369,25 @@ class _RideInfoPageState extends State<RideInfoPage> {
                                   textColor: MyColorName.textColor1),
                             ],
                           ),
-                          Divider(
-                            color: MyColorName.lineColor,
-                            thickness: 1,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              text("Coins Used: ",
-                                  fontSize: 13,
-                                  fontFamily: AppTheme.fontFamily,
-                                  fontWeight: FontWeight.w500,
-                                  textColor: MyColorName.textColor1),
-                              text("-₹" + widget.model.pointUsed.toString(),
-                                  fontSize: 13,
-                                  fontFamily: AppTheme.fontFamily,
-                                  fontWeight: FontWeight.w500,
-                                  textColor: MyColorName.textColor1),
-                            ],
-                          ),
+                          // Divider(
+                          //   color: MyColorName.lineColor,
+                          //   thickness: 1,
+                          // ),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //   children: [
+                          //     text("Coins Used: ",
+                          //         fontSize: 13,
+                          //         fontFamily: AppTheme.fontFamily,
+                          //         fontWeight: FontWeight.w500,
+                          //         textColor: MyColorName.textColor1),
+                          //     text("-₹" + widget.model.pointUsed.toString(),
+                          //         fontSize: 13,
+                          //         fontFamily: AppTheme.fontFamily,
+                          //         fontWeight: FontWeight.w500,
+                          //         textColor: MyColorName.textColor1),
+                          //   ],
+                          // ),
 
                           // double.parse(widget.model.paidAmount.toString()) > 0
                           //     ? Row(
@@ -1554,34 +1557,116 @@ class _RideInfoPageState extends State<RideInfoPage> {
                       ),
                     ),
                     SizedBox(
-                      height: 20,
+                      height: 10,
                     ),
                     widget.model.status == 'complete'
-                        ? InkWell(
-                            onTap: () async {
-                              final Uri uri = Uri.parse(
-                                  'https://bikebooking.alphawizzserver.com/api/payment/download_invoice?booking_id=${widget.model.bookingId}');
-                              if (!await launchUrl(uri,
-                                  mode: LaunchMode.externalApplication)) {
-                                throw Exception('Could not launch $uri');
-                              }
-                            },
-                            child: Container(
-                              width: 200,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                  color: MyColorName.primaryLite,
-                                  borderRadius: BorderRadius.circular(10)),
-                              child: Center(
+                        ? Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 16, horizontal: 12),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: MyColorName.greyBorder),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerLeft,
                                   child: Text(
-                                'Download Invoice',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              )),
+                                    'Ratings: ',
+                                    style: TextStyle(fontSize: 15),
+                                  ),
+                                ),
+                                boxHeight(6),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        // Stars
+                                        Row(
+                                          children: List.generate(5, (index) {
+                                            final rating = double.tryParse(
+                                                    widget.model.rating
+                                                        .toString()) ??
+                                                0.0;
+                                            return Icon(
+                                              index < rating
+                                                  ? Icons.star
+                                                  : Icons.star_border,
+                                              color: Colors.amber,
+                                              size: 20,
+                                            );
+                                          }),
+                                        ),
+
+                                        SizedBox(width: 6),
+                                        Text(
+                                          widget.model.rating.toString(),
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+
+                                    SizedBox(height: 5),
+
+                                    /// Comment
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "Comment:  ",
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          '${widget.model.ratingComment.toString()}',
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 3,
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            color: Colors.grey[800],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           )
                         : SizedBox()
+
+                    // widget.model.status == 'complete'
+                    //     ? InkWell(
+                    //         onTap: () async {
+                    //           final Uri uri = Uri.parse(
+                    //               'https://bikebooking.alphawizzserver.com/api/payment/download_invoice?booking_id=${widget.model.bookingId}');
+                    //           if (!await launchUrl(uri,
+                    //               mode: LaunchMode.externalApplication)) {
+                    //             throw Exception('Could not launch $uri');
+                    //           }
+                    //         },
+                    //         child: Container(
+                    //           width: 200,
+                    //           height: 40,
+                    //           decoration: BoxDecoration(
+                    //               color: MyColorName.primaryLite,
+                    //               borderRadius: BorderRadius.circular(10)),
+                    //           child: Center(
+                    //               child: Text(
+                    //             'Download Invoice',
+                    //             style: TextStyle(
+                    //                 color: Colors.white,
+                    //                 fontWeight: FontWeight.bold),
+                    //           )),
+                    //         ),
+                    //       )
+                    //     : SizedBox()
                   ],
                 ),
                 // : SizedBox(),

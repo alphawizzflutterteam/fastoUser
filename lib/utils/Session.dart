@@ -210,7 +210,7 @@ String? validateEmail(String value, String? msg1, String? msg2) {
 }
 
 Widget getProgress() {
-  return Center(child: CircularProgressIndicator());
+  return Center(child: CircularProgressIndicator(color: Colors.black));
 }
 
 Widget getNoItem(BuildContext context) {

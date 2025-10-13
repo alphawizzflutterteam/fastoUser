@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:sizer/sizer.dart';
 
 import '../Model/driver_model.dart';
@@ -16,8 +16,6 @@ import '../utils/colors.dart';
 import '../utils/constant.dart';
 import '../utils/new_utils/ui.dart';
 import '../utils/widget.dart';
-import 'BookingSuccess.dart';
-import 'PaymentScreen.dart';
 import 'finding_ride_page.dart';
 
 class ConfirmRiderRequest extends StatefulWidget {
@@ -87,12 +85,108 @@ class _ConfirmRiderRequestState extends State<ConfirmRiderRequest> {
 
   bool isSelectedCoin = false;
   double myAmount = 0;
+  String _paymentMethod = "Cash";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _razorpay = Razorpay();
+    _razorpay?.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay?.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay?.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+    print("inthis request ${widget.rideList.length}");
+    getPromo();
+  }
+
+  String? tranId;
+
+  Future<void> _handlePaymentSuccess(PaymentSuccessResponse response) async {
+    tranId = response.paymentId.toString();
+    Fluttertoast.showToast(msg: "Payment successfully");
+    addScheduleRides();
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    Fluttertoast.showToast(msg: "Payment cancelled by user");
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {}
+
+  Razorpay? _razorpay;
+
+  int? pricerazorpayy;
+  void openCheckout(amount) async {
+    print("razorpay");
+    double res = double.parse(amount.toString());
+    pricerazorpayy = int.parse(res.toStringAsFixed(0)) * 100;
+    var options = {
+      'key': 'rzp_test_eWu6niIBmIdUFK',
+      'amount': "$pricerazorpayy",
+      'name': 'Fasto',
+      'image': 'assets/images/Group 165.png',
+      'description': 'Fasto',
+    };
+    try {
+      _razorpay?.open(options);
+    } catch (e) {
+      debugPrint('Error: e');
+    }
+  }
+
+  String promoDiscount = "0";
+
+  String minRideAmount = '';
+  getJoiningBonus() async {
+    try {
+      setState(() {
+        driveStatus = true;
+      });
+      // Map params = {
+      //   "lat": widget.source.latitude.toString(),
+      //   "lang": widget.source.longitude.toString(),
+      // };
+      https: //productsalphawizz.com/taxi/api/Payment/get_promo_code
+      Map response = await apiBase.getAPICall(
+        Uri.parse(baseUrl1 + "Payment/joining_bonus_user"),
+      );
+
+      if (response['status']) {
+        minRideAmount = response['data']['min_booking'];
+        String promoAmount = response['data']['amount'];
+        print("this is joining bonus amount $minRideAmount and $promoAmount");
+        setState(() {
+          driveStatus = false;
+        });
+        if (isFirstUser == "0") {
+          if (double.parse(widget.rideList[widget.currentCar].intailrate) >
+              double.parse(minRideAmount)) {
+            setState(() {
+              promoDiscount = promoAmount;
+            });
+          }
+        }
+        print("this is promoDiscount $promoDiscount");
+      } else {
+        setState(() {
+          driveStatus = false;
+        });
+        //UI.setSnackBar(response['message'], context);
+      }
+    } on TimeoutException catch (_) {
+      UI.setSnackBar(getTranslated(context, "WRONG")!, context);
+      setState(() {
+        driveStatus = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     myAmount = (
         // surge + gst +
         double.parse(widget.rideList[widget.currentCar].rate_per_km) -
-            double.parse(widget.promoDiscount) -
+            double.parse(promoDiscount) -
             (isSelectedCoin ? double.parse(points.toString()) : 0));
     widget.surge = 0;
     widget.gst = 0;
@@ -152,9 +246,9 @@ class _ConfirmRiderRequestState extends State<ConfirmRiderRequest> {
         ),
         centerTitle: true,
         title: Text(
-          'Confirm Ride Request',
+          'Confirm Request',
           style: TextStyle(
-            fontSize: 16,
+            fontSize: 19,
             color: Colors.black,
           ),
         ),
@@ -172,90 +266,90 @@ class _ConfirmRiderRequestState extends State<ConfirmRiderRequest> {
                     border: Border.all(color: MyColorName.greyBorder)),
                 child: Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: widget.rideList[widget.currentCar].cartype !=
-                                    "Auto"
-                                ? Image.network(
-                                    widget.rideList[widget.currentCar].image,
-                                    width: 80,
-                                  )
-                                : Image.asset(
-                                    widget.rideList[widget.currentCar]
-                                                    .cartype !=
-                                                "" &&
-                                            widget.rideList[widget.currentCar]
-                                                    .cartype !=
-                                                "Auto"
-                                        ? "assets/cars/car2.png"
-                                        : "assets/cars/car1.png",
-                                    height: 30,
-                                    width: 30,
-                                  ),
-                          ),
-                          boxWidth(10),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Car Type',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              // SizedBox(
-                              //   height: 5,
-                              // ),
-                              // Text(
-                              //   '#4523534',
-                              //   style:
-                              //       TextStyle(color: MyColorName.detailsColor),
-                              // ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                    color:
-                                        MyColorName.primaryLite.withOpacity(.2),
-                                    borderRadius: BorderRadius.circular(6)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(6.0),
-                                  child: Text(
-                                    widget.rideList[widget.currentCar].cartype
-                                        .toString(),
-                                    style: TextStyle(
-                                        color: MyColorName.primaryLite),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    boxHeight(10),
-                    Divider(
-                      color: MyColorName.greyBorder,
-                    ),
-                    boxHeight(4),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          'Pickup & Drop',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 18),
-                        ),
-                      ],
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.all(8.0),
+                    //   child: Row(
+                    //     children: [
+                    //       Container(
+                    //         decoration: BoxDecoration(
+                    //           borderRadius: BorderRadius.circular(10),
+                    //         ),
+                    //         child: widget.rideList[widget.currentCar].cartype !=
+                    //                 "Auto"
+                    //             ? Image.network(
+                    //                 widget.rideList[widget.currentCar].image,
+                    //                 width: 80,
+                    //               )
+                    //             : Image.asset(
+                    //                 widget.rideList[widget.currentCar]
+                    //                                 .cartype !=
+                    //                             "" &&
+                    //                         widget.rideList[widget.currentCar]
+                    //                                 .cartype !=
+                    //                             "Auto"
+                    //                     ? "assets/cars/car2.png"
+                    //                     : "assets/cars/car1.png",
+                    //                 height: 30,
+                    //                 width: 30,
+                    //               ),
+                    //       ),
+                    //       boxWidth(10),
+                    //       Column(
+                    //         crossAxisAlignment: CrossAxisAlignment.start,
+                    //         children: [
+                    //           Text(
+                    //             'Car Type',
+                    //             style: TextStyle(fontWeight: FontWeight.bold),
+                    //           ),
+                    //           // SizedBox(
+                    //           //   height: 5,
+                    //           // ),
+                    //           // Text(
+                    //           //   '#4523534',
+                    //           //   style:
+                    //           //       TextStyle(color: MyColorName.detailsColor),
+                    //           // ),
+                    //           SizedBox(
+                    //             height: 5,
+                    //           ),
+                    //           Container(
+                    //             decoration: BoxDecoration(
+                    //                 color:
+                    //                     MyColorName.primaryLite.withOpacity(.2),
+                    //                 borderRadius: BorderRadius.circular(6)),
+                    //             child: Padding(
+                    //               padding: const EdgeInsets.all(6.0),
+                    //               child: Text(
+                    //                 widget.rideList[widget.currentCar].cartype
+                    //                     .toString(),
+                    //                 style: TextStyle(
+                    //                     color: MyColorName.primaryLite),
+                    //               ),
+                    //             ),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
+                    // boxHeight(10),
+                    // Divider(
+                    //   color: MyColorName.greyBorder,
+                    // ),
+                    // boxHeight(4),
+                    // Row(
+                    //   crossAxisAlignment: CrossAxisAlignment.start,
+                    //   children: [
+                    //     SizedBox(
+                    //       width: 10,
+                    //     ),
+                    //     Text(
+                    //       'Pickup & Drop',
+                    //       style: TextStyle(
+                    //           fontWeight: FontWeight.bold, fontSize: 18),
+                    //     ),
+                    //   ],
+                    // ),
                     SizedBox(
                       height: 10,
                     ),
@@ -273,13 +367,14 @@ class _ConfirmRiderRequestState extends State<ConfirmRiderRequest> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'Pickup Location',
-                                style: TextStyle(color: Color(0xff8D8D8D)),
-                              ),
-                              Text(
-                                widget.pickAddress,
-                              )
+                              Text('Pickup Location',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500)),
+                              Text(widget.pickAddress,
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w800))
                             ],
                           ),
                         )
@@ -302,11 +397,14 @@ class _ConfirmRiderRequestState extends State<ConfirmRiderRequest> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'Drop Location',
-                                style: TextStyle(color: Color(0xff8D8D8D)),
-                              ),
-                              Text(widget.dropAddress)
+                              Text('Drop Location',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500)),
+                              Text(widget.dropAddress,
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w800))
                             ],
                           ),
                         )
@@ -317,7 +415,7 @@ class _ConfirmRiderRequestState extends State<ConfirmRiderRequest> {
                 ),
               ),
               // Divider(),
-              boxHeight(15),
+              boxHeight(10),
               /*Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -334,9 +432,10 @@ class _ConfirmRiderRequestState extends State<ConfirmRiderRequest> {
 
               Container(
                 decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: MyColorName.greyBorder)),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: MyColorName.greyBorder),
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
@@ -346,25 +445,24 @@ class _ConfirmRiderRequestState extends State<ConfirmRiderRequest> {
                       ),
                       Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(
-                          'User Detail',
-                          style: TextStyle(),
-                        ),
+                        child: Text('User Detail',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w500)),
                       ),
                       boxHeight(4),
                       Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(
-                          name,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                        child: Text(name,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w800)),
                       ),
                       // boxHeight(5),
                       Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(
-                          mobile != "" ? mobile.toString() : "",
-                        ),
+                        child: Text(mobile != "" ? mobile.toString() : "",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w800)),
                       ),
                       SizedBox(
                         height: 5,
@@ -374,137 +472,252 @@ class _ConfirmRiderRequestState extends State<ConfirmRiderRequest> {
                 ),
               ),
               // Divider(),
-              widget.promoList.length > 0 && isFirstUser != "1"
-                  ? Container(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            child: TextField(
-                              controller: promoCon,
-                              decoration: InputDecoration(
-                                enabledBorder: OutlineInputBorder(),
-                                focusedBorder: OutlineInputBorder(),
-                                hintText:
-                                    getTranslated(context, "PROMO_CODE1")!,
-                                suffixIcon: IconButton(
-                                  onPressed: () async {
-                                    await getPromo();
-                                    // Navigator.pop(context);
-                                    applyCode(promoCon.text);
-                                    print("sddddsds ${promoCon.text}");
-                                  },
-                                  icon: Icon(
-                                    Icons.send,
-                                    color: MyColorName.primaryLite,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          boxHeight(5),
-                          ListView.builder(
-                              itemCount: promoList.length,
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                return Container(
-                                  margin: EdgeInsets.all(getWidth(10)),
-                                  decoration: boxDecoration(
-                                    showShadow: true,
-                                  ),
-                                  child: ListTile(
-                                    title: text(
-                                      "${getTranslated(context, "PROMO_CODE1")} : ${promoList[index].promocode}",
-                                      fontSize: 12.sp,
-                                      fontFamily: fontMedium,
-                                      textColor: MyColorName.colorTextPrimary,
-                                    ),
-                                    subtitle: text(
-                                      "${promoList[index].message}",
-                                      fontSize: 12.sp,
-                                      fontFamily: fontMedium,
-                                      textColor: MyColorName.colorTextPrimary,
-                                    ),
-                                    trailing: InkWell(
-                                      onTap: () {
-                                        if (promoCon.text !=
-                                            promoList[index]
-                                                .promocode
-                                                .toString()) {
-                                          setState(() {
-                                            promoCon.text = promoList[index]
-                                                .promocode
-                                                .toString();
-                                          });
-                                          Navigator.pop(context);
-                                          applyCode(promoList[index].promocode);
-                                        } else {
-                                          UI.setSnackBar(
-                                              "Promo code already applied",
-                                              context);
-                                        }
-                                      },
-                                      child: Container(
-                                        width: 20.w,
-                                        height: 4.h,
-                                        decoration: boxDecoration(
-                                            radius: 5,
-                                            bgColor: promoCon.text ==
-                                                    promoList[index]
-                                                        .promocode
-                                                        .toString()
-                                                ? Colors.grey
-                                                : Theme.of(context)
-                                                    .primaryColor),
-                                        child: Center(
-                                            child: text(
-                                                promoCon.text ==
-                                                        promoList[index]
-                                                            .promocode
-                                                            .toString()
-                                                    ? "Applied"
-                                                    : getTranslated(
-                                                        context, "APPLY")!,
-                                                fontFamily: fontMedium,
-                                                fontSize: 10.sp,
-                                                isCentered: true,
-                                                textColor: Colors.white)),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }),
-                        ],
-                      ),
-                    )
-                  : SizedBox(),
-              boxHeight(15),
-              Text('Available Coins'),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Image.asset(
-                        'assets/star.png',
-                        scale: 20,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(points.toString()),
-                    ],
-                  ),
-                  Checkbox(
-                    value: isSelectedCoin,
-                    onChanged: (value) {
-                      isSelectedCoin = value!;
-                      setState(() {});
-                    },
-                  )
-                ],
+              // widget.promoList.length > 0 && isFirstUser != "1"
+              //     ? Container(
+              //         child: Column(
+              //           mainAxisSize: MainAxisSize.min,
+              //           children: [
+              //             Container(
+              //               child: TextField(
+              //                 controller: promoCon,
+              //                 decoration: InputDecoration(
+              //                   enabledBorder: OutlineInputBorder(),
+              //                   focusedBorder: OutlineInputBorder(),
+              //                   hintText:
+              //                       getTranslated(context, "PROMO_CODE1")!,
+              //                   suffixIcon: IconButton(
+              //                     onPressed: () async {
+              //                       await getPromo();
+              //                       // Navigator.pop(context);
+              //                       applyCode(promoCon.text);
+              //                       print("sddddsds ${promoCon.text}");
+              //                     },
+              //                     icon: Icon(
+              //                       Icons.send,
+              //                       color: MyColorName.primaryLite,
+              //                     ),
+              //                   ),
+              //                 ),
+              //               ),
+              //             ),
+              //             // boxHeight(5),
+              //             // ListView.builder(
+              //             //     itemCount: promoList.length,
+              //             //     shrinkWrap: true,
+              //             //     physics: NeverScrollableScrollPhysics(),
+              //             //     itemBuilder: (context, index) {
+              //             //       return Container(
+              //             //         margin: EdgeInsets.all(getWidth(10)),
+              //             //         decoration: boxDecoration(
+              //             //           showShadow: true,
+              //             //         ),
+              //             //         child: ListTile(
+              //             //           title: text(
+              //             //             "${getTranslated(context, "PROMO_CODE1")} : ${promoList[index].promocode}",
+              //             //             fontSize: 12.sp,
+              //             //             fontFamily: fontMedium,
+              //             //             textColor: MyColorName.colorTextPrimary,
+              //             //           ),
+              //             //           subtitle: text(
+              //             //             "${promoList[index].message}",
+              //             //             fontSize: 12.sp,
+              //             //             fontFamily: fontMedium,
+              //             //             textColor: MyColorName.colorTextPrimary,
+              //             //           ),
+              //             //           trailing: InkWell(
+              //             //             onTap: () {
+              //             //               if (promoCon.text !=
+              //             //                   promoList[index]
+              //             //                       .promocode
+              //             //                       .toString()) {
+              //             //                 setState(() {
+              //             //                   promoCon.text = promoList[index]
+              //             //                       .promocode
+              //             //                       .toString();
+              //             //                 });
+              //             //                 Navigator.pop(context);
+              //             //                 applyCode(promoList[index].promocode);
+              //             //               } else {
+              //             //                 UI.setSnackBar(
+              //             //                     "Promo code already applied",
+              //             //                     context);
+              //             //               }
+              //             //             },
+              //             //             child: Container(
+              //             //               width: 20.w,
+              //             //               height: 4.h,
+              //             //               decoration: boxDecoration(
+              //             //                   radius: 5,
+              //             //                   bgColor: promoCon.text ==
+              //             //                           promoList[index]
+              //             //                               .promocode
+              //             //                               .toString()
+              //             //                       ? Colors.grey
+              //             //                       : Theme.of(context)
+              //             //                           .primaryColor),
+              //             //               child: Center(
+              //             //                   child: text(
+              //             //                       promoCon.text ==
+              //             //                               promoList[index]
+              //             //                                   .promocode
+              //             //                                   .toString()
+              //             //                           ? "Applied"
+              //             //                           : getTranslated(
+              //             //                               context, "APPLY")!,
+              //             //                       fontFamily: fontMedium,
+              //             //                       fontSize: 10.sp,
+              //             //                       isCentered: true,
+              //             //                       textColor: Colors.white)),
+              //             //             ),
+              //             //           ),
+              //             //         ),
+              //             //       );
+              //             //     }),
+              //           ],
+              //         ),
+              //       )
+              //     : SizedBox(),
+              SizedBox(
+                height: 15,
               ),
+              // promoList.length > 0 && isFirstUser != "0"
+              //     ? Container(
+              //         child: Column(
+              //           mainAxisSize: MainAxisSize.min,
+              //           children: [
+              //             Container(
+              //               child: TextFormField(
+              //                 controller: promoCon,
+              //                 readOnly: true,
+              //                 onTap: () async {
+              //                   await showPromoCodeBottomSheet(context);
+              //                   setState(() {});
+              //                 },
+              //                 decoration: InputDecoration(
+              //                   labelText: "Have a Promo Code?",
+              //                   suffixIcon: promoCon.text.isNotEmpty
+              //                       ? InkWell(
+              //                           onTap: () async {
+              //                             await applyCode(promoCon.text);
+              //                             setState(() {});
+              //                           },
+              //                           child: Icon(Icons.send,
+              //                               color: Colors.green),
+              //                         )
+              //                       : null,
+              //                 ),
+              //               ),
+              //               // TextField(
+              //               //   controller: promoCon,
+              //               //   decoration: InputDecoration(
+              //               //     enabledBorder: OutlineInputBorder(),
+              //               //     focusedBorder: OutlineInputBorder(),
+              //               //     hintText: getTranslated(
+              //               //         context, "PROMO_CODE1")!,
+              //               //     suffixIcon: IconButton(
+              //               //       onPressed: () async {
+              //               //         showPromoCodeBottomSheet(context);
+              //               //         // await applyCode(promoCon.text);
+              //               //         setStateDialog(() {});
+              //               //       },
+              //               //       icon: Icon(Icons.send,
+              //               //           color: Colors.black),
+              //               //     ),
+              //               //   ),
+              //               // ),
+              //             ),
+              //             // ElevatedButton(
+              //             //   onPressed: isPromoSelected
+              //             //       ? () {
+              //             //           applyCode(promoCon.text);
+              //             //         }
+              //             //       : null,
+              //             //   child: Text("Apply"),
+              //             // ),
+              //             // boxHeight(5),
+              //             // ListView.builder(
+              //             //     itemCount: promoList.length,
+              //             //     shrinkWrap: true,
+              //             //     physics: NeverScrollableScrollPhysics(),
+              //             //     itemBuilder: (context, index) {
+              //             //       return Container(
+              //             //         margin: EdgeInsets.all(getWidth(10)),
+              //             //         decoration: boxDecoration(
+              //             //           showShadow: true,
+              //             //         ),
+              //             //         child: ListTile(
+              //             //           title: text(
+              //             //             "${getTranslated(context, "PROMO_CODE1")} : ${promoList[index].promocode}",
+              //             //             fontSize: 12.sp,
+              //             //             fontFamily: fontMedium,
+              //             //             textColor:
+              //             //                 MyColorName.colorTextPrimary,
+              //             //           ),
+              //             //           subtitle: text(
+              //             //             "${promoList[index].message}",
+              //             //             fontSize: 12.sp,
+              //             //             fontFamily: fontMedium,
+              //             //             textColor:
+              //             //                 MyColorName.colorTextPrimary,
+              //             //           ),
+              //             //           trailing: InkWell(
+              //             //             onTap: () {
+              //             //               if (promoCon.text !=
+              //             //                   promoList[index]
+              //             //                       .promocode
+              //             //                       .toString()) {
+              //             //                 setState(() {
+              //             //                   promoCon.text =
+              //             //                       promoList[index]
+              //             //                           .promocode
+              //             //                           .toString();
+              //             //                 });
+              //             //                 Navigator.pop(context);
+              //             //                 applyCode(promoList[index]
+              //             //                     .promocode);
+              //             //               } else {
+              //             //                 UI.setSnackBar(
+              //             //                     "Promo code already applied",
+              //             //                     context);
+              //             //               }
+              //             //             },
+              //             //             child: Container(
+              //             //               width: 20.w,
+              //             //               height: 4.h,
+              //             //               decoration: boxDecoration(
+              //             //                   radius: 5,
+              //             //                   bgColor: promoCon.text ==
+              //             //                           promoList[index]
+              //             //                               .promocode
+              //             //                               .toString()
+              //             //                       ? Colors.grey
+              //             //                       : Theme.of(context)
+              //             //                           .primaryColor),
+              //             //               child: Center(
+              //             //                   child: text(
+              //             //                       promoCon.text ==
+              //             //                               promoList[index]
+              //             //                                   .promocode
+              //             //                                   .toString()
+              //             //                           ? "Applied"
+              //             //                           : getTranslated(
+              //             //                               context,
+              //             //                               "APPLY")!,
+              //             //                       fontFamily: fontMedium,
+              //             //                       fontSize: 10.sp,
+              //             //                       isCentered: true,
+              //             //                       textColor:
+              //             //                           Colors.white)),
+              //             //             ),
+              //             //           ),
+              //             //         ),
+              //             //       );
+              //             //     }),
+              //           ],
+              //         ),
+              //       )
+              //     : SizedBox(),
+              // boxHeight(15),
               // Divider(),
               Container(
                 decoration: BoxDecoration(
@@ -758,24 +971,24 @@ class _ConfirmRiderRequestState extends State<ConfirmRiderRequest> {
                               ],
                             )
                           : SizedBox(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          text("Service Charge ",
-                              fontSize: 10.sp,
-                              fontFamily: fontMedium,
-                              textColor: MyColorName.detailsColor),
-                          text(
-                              "₹" +
-                                  double.parse(widget
-                                          .rideList[widget.currentCar]
-                                          .service_charge)
-                                      .toStringAsFixed(2),
-                              fontSize: 10.sp,
-                              fontFamily: fontMedium,
-                              textColor: Colors.black),
-                        ],
-                      ),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //   children: [
+                      //     text("Service Charge ",
+                      //         fontSize: 10.sp,
+                      //         fontFamily: fontMedium,
+                      //         textColor: MyColorName.detailsColor),
+                      //     text(
+                      //         "₹" +
+                      //             double.parse(widget
+                      //                     .rideList[widget.currentCar]
+                      //                     .service_charge)
+                      //                 .toStringAsFixed(2),
+                      //         fontSize: 10.sp,
+                      //         fontFamily: fontMedium,
+                      //         textColor: Colors.black),
+                      //   ],
+                      // ),
                       widget.surge > 0
                           ? Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -815,39 +1028,37 @@ class _ConfirmRiderRequestState extends State<ConfirmRiderRequest> {
                               ],
                             )
                           : SizedBox(),
-                      widget.promoDiscount != "0"
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                text("${getTranslated(context, "PROMO")}  ",
-                                    fontSize: 10.sp,
-                                    fontFamily: fontMedium,
-                                    textColor: MyColorName.detailsColor),
-                                text(
-                                    "-₹" +
-                                        double.parse(widget.promoDiscount)
-                                            .toString(),
-                                    fontSize: 10.sp,
-                                    fontFamily: fontMedium,
-                                    textColor: Colors.black),
-                              ],
-                            )
-                          : SizedBox(),
-                      isSelectedCoin
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                text("Coins Used",
-                                    fontSize: 10.sp,
-                                    fontFamily: fontMedium,
-                                    textColor: MyColorName.detailsColor),
-                                text("-₹ ${points}",
-                                    fontSize: 10.sp,
-                                    fontFamily: fontMedium,
-                                    textColor: Colors.black),
-                              ],
-                            )
-                          : SizedBox(),
+                      // promoDiscount != "0"
+                      //     ?
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //   children: [
+                      //     text("${getTranslated(context, "PROMO")}  ",
+                      //         fontSize: 10.sp,
+                      //         fontFamily: fontMedium,
+                      //         textColor: MyColorName.detailsColor),
+                      //     text("-₹" + double.parse(promoDiscount).toString(),
+                      //         fontSize: 10.sp,
+                      //         fontFamily: fontMedium,
+                      //         textColor: Colors.black),
+                      //   ],
+                      // ),
+                      // : SizedBox(),
+                      // isSelectedCoin
+                      //     ? Row(
+                      //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //         children: [
+                      //           text("Coins Used",
+                      //               fontSize: 10.sp,
+                      //               fontFamily: fontMedium,
+                      //               textColor: MyColorName.detailsColor),
+                      //           text("-₹ ${points}",
+                      //               fontSize: 10.sp,
+                      //               fontFamily: fontMedium,
+                      //               textColor: Colors.black),
+                      //         ],
+                      //       )
+                      //     : SizedBox(),
                       Divider(
                         color: MyColorName.greyBorder,
                       ),
@@ -867,8 +1078,7 @@ class _ConfirmRiderRequestState extends State<ConfirmRiderRequest> {
                                           double.parse(widget
                                                   .rideList[widget.currentCar]
                                                   .rate_per_km) -
-                                              double.parse(
-                                                  widget.promoDiscount) -
+                                              double.parse(promoDiscount) -
                                               (isSelectedCoin
                                                   ? double.parse(
                                                       points.toString())
@@ -920,117 +1130,168 @@ class _ConfirmRiderRequestState extends State<ConfirmRiderRequest> {
               //       )
               //     : SizedBox(),
               boxHeight(10),
-              widget.type != "now"
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        text("${getTranslated(context, "BOOKING_DATE")}: ",
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: fontMedium,
-                            textColor: Colors.black),
-                        Expanded(
-                          child: text(getDate(widget.bookingDate),
-                              fontSize: 10.sp,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: fontMedium,
-                              textColor: Colors.black),
-                        ),
-                      ],
-                    )
-                  : SizedBox(),
+              // widget.type != "now"
+              //     ? Row(
+              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //         crossAxisAlignment: CrossAxisAlignment.start,
+              //         children: [
+              //           text("${getTranslated(context, "BOOKING_DATE")}: ",
+              //               fontSize: 10.sp,
+              //               fontWeight: FontWeight.w600,
+              //               fontFamily: fontMedium,
+              //               textColor: Colors.black),
+              //           Expanded(
+              //             child: text(getDate(widget.bookingDate),
+              //                 fontSize: 10.sp,
+              //                 fontWeight: FontWeight.w600,
+              //                 fontFamily: fontMedium,
+              //                 textColor: Colors.black),
+              //           ),
+              //         ],
+              //       )
+              //     : SizedBox(),
+              // SizedBox(
+              //   height: 10,
+              // ),
+              // Row(
+              //   children: [
+              //     // Checkbox(
+              //     //   checkColor: Colors.white, // Color of the check icon
+              //     //   fillColor: MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+              //     //     if (states.contains(MaterialState.selected)) {
+              //     //       return Colors.blue; // Color when checkbox is selected
+              //     //     }
+              //     //     return Colors.grey; // Default color
+              //     //   }),
+              //     //   value: isChecked,
+              //     //   onChanged: (bool? value) {
+              //     //     setState(() {
+              //     //       isChecked = value!;
+              //     //     });
+              //     //   },
+              //     // ),
+              //     // InkWell(
+              //     //   onTap: () {
+              //     //     _launchURL();
+              //     //   },
+              //     //   child: Text(
+              //     //     "Read Before You ---->",
+              //     //     style: TextStyle(
+              //     //       fontSize: 15,
+              //     //       color: Colors.green,
+              //     //     ),
+              //     //   ),
+              //     // ),
+              //     // Icon(Icons.arrow_forward_ios_outlined, color: Colors.green,)
+              //   ],
+              // ),
+              // boxHeight(10),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     // InkWell(
+              //     //   onTap: () {
+              //     //     Navigator.pop(context1);
+              //     //     // Navigator.push(context, MaterialPageRoute(builder: (context)=>FindingRidePage()));
+              //     //   },
+              //     //   child: Container(
+              //     //     width: 30.w,
+              //     //     height: 5.h,
+              //     //     decoration:
+              //     //         boxDecoration(radius: 5, bgColor: Colors.grey),
+              //     //     child: Center(
+              //     //         child: text(getTranslated(context, "CANCEL")!,
+              //     //             fontFamily: fontMedium,
+              //     //             fontSize: 10.sp,
+              //     //             isCentered: true,
+              //     //             textColor: Colors.white)),
+              //     //   ),
+              //     // ),
+              //   ],
+              // ),
+              // SizedBox(
+              //   height: 50,
+              // ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Select Payment Method",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  // const SizedBox(height: 10),
+                  ListTile(
+                    leading: Radio<String>(
+                      value: "Cash",
+                      groupValue: _paymentMethod,
+                      activeColor: Color(0xff7DBF04),
+                      onChanged: (value) {
+                        setState(() {
+                          _paymentMethod = value!;
+                        });
+                      },
+                    ),
+                    title: const Text("Cash"),
+                  ),
+                  ListTile(
+                    leading: Radio<String>(
+                      value: "Online",
+                      groupValue: _paymentMethod,
+                      activeColor: Color(0xff7DBF04),
+                      onChanged: (value) {
+                        setState(() {
+                          _paymentMethod = value!;
+                        });
+                      },
+                    ),
+                    title: const Text("Online Payment"),
+                  ),
+                ],
+              ),
               SizedBox(
                 height: 10,
               ),
-              Row(
-                children: [
-                  // Checkbox(
-                  //   checkColor: Colors.white, // Color of the check icon
-                  //   fillColor: MaterialStateProperty.resolveWith((Set<MaterialState> states) {
-                  //     if (states.contains(MaterialState.selected)) {
-                  //       return Colors.blue; // Color when checkbox is selected
-                  //     }
-                  //     return Colors.grey; // Default color
-                  //   }),
-                  //   value: isChecked,
-                  //   onChanged: (bool? value) {
-                  //     setState(() {
-                  //       isChecked = value!;
-                  //     });
-                  //   },
-                  // ),
-                  // InkWell(
-                  //   onTap: () {
-                  //     _launchURL();
-                  //   },
-                  //   child: Text(
-                  //     "Read Before You ---->",
-                  //     style: TextStyle(
-                  //       fontSize: 15,
-                  //       color: Colors.green,
-                  //     ),
-                  //   ),
-                  // ),
-                  // Icon(Icons.arrow_forward_ios_outlined, color: Colors.green,)
-                ],
-              ),
-              boxHeight(10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // InkWell(
-                  //   onTap: () {
-                  //     Navigator.pop(context1);
-                  //     // Navigator.push(context, MaterialPageRoute(builder: (context)=>FindingRidePage()));
-                  //   },
-                  //   child: Container(
-                  //     width: 30.w,
-                  //     height: 5.h,
-                  //     decoration:
-                  //         boxDecoration(radius: 5, bgColor: Colors.grey),
-                  //     child: Center(
-                  //         child: text(getTranslated(context, "CANCEL")!,
-                  //             fontFamily: fontMedium,
-                  //             fontSize: 10.sp,
-                  //             isCentered: true,
-                  //             textColor: Colors.white)),
-                  //   ),
-                  // ),
-                ],
-              ),
-              SizedBox(
-                height: 50,
-              ),
               isLoading
-                  ? Center(child: CircularProgressIndicator())
+                  ? Center(
+                      child: CircularProgressIndicator(color: Colors.black))
                   : Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         InkWell(
                           onTap: () {
-                            // Navigator.pop(context);
-                            paymentCalculate((double.parse(widget
-                                    .rideList[widget.currentCar].rate_per_km) -
-                                double.parse(widget.promoDiscount)));
-                            addScheduleRides();
-                            // _showPaymentBottomSheet(context);
-                            // Navigator.push(context, MaterialPageRoute(builder: (context)=>FindingRidePage()));
+                            if (_paymentMethod == "Online") {
+                              openCheckout(
+                                (double.parse(widget.rideList[widget.currentCar]
+                                        .rate_per_km) -
+                                    double.parse(promoDiscount)),
+                              );
+                            } else if (_paymentMethod == "Cash") {
+                              // Cash booking ka logic
+                              paymentCalculate(
+                                (double.parse(widget.rideList[widget.currentCar]
+                                        .rate_per_km) -
+                                    double.parse(promoDiscount)),
+                              );
+                              addScheduleRides();
+                            }
                           },
                           child: Container(
-                            width: 69.w,
+                            width: 90.w,
                             height: 6.h,
                             decoration: boxDecoration(
-                                radius: 5, bgColor: MyColorName.secondary),
+                              radius: 5,
+                              bgColor: Color(0xff7DBF04),
+                            ),
                             child: Center(
-                                child: text(
-                                    // getTranslated(context, "CONFIRM")!,
-                                    "BOOK RIDE",
-                                    fontFamily: fontMedium,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 13.sp,
-                                    isCentered: true,
-                                    textColor: Colors.white)),
+                              child: text(
+                                "BOOK RIDE",
+                                fontFamily: fontMedium,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 13.sp,
+                                isCentered: true,
+                                textColor: Colors.white,
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -1128,6 +1389,63 @@ class _ConfirmRiderRequestState extends State<ConfirmRiderRequest> {
     }
   }
 
+  late Future<List<Map<String, dynamic>>> futurePromoList;
+  String? selectedPromo;
+
+  Future<void> showPromoCodeBottomSheet(BuildContext context) async {
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setStateBottomSheet) {
+            return DraggableScrollableSheet(
+              expand: false,
+              initialChildSize: 0.6,
+              builder: (context, scrollController) {
+                return ListView.builder(
+                  controller: scrollController,
+                  itemCount: promoList.length,
+                  padding: EdgeInsets.all(12),
+                  itemBuilder: (context, index) {
+                    final promo = promoList[index];
+
+                    return Container(
+                      margin: EdgeInsets.only(bottom: 10),
+                      decoration: boxDecoration(showShadow: true),
+                      child: ListTile(
+                        title: text(
+                          "${getTranslated(context, "PROMO_CODE1")} : ${promo.promocode}",
+                          fontSize: 12.sp,
+                          fontFamily: fontMedium,
+                          textColor: MyColorName.colorTextPrimary,
+                        ),
+                        subtitle: text(
+                          "${promo.message}",
+                          fontSize: 12.sp,
+                          fontFamily: fontMedium,
+                          textColor: MyColorName.colorTextPrimary,
+                        ),
+                        onTap: () async {
+                          promoCon.text = promo.promocode.toString();
+                          setStateBottomSheet(() {});
+                          Navigator.pop(context);
+                        },
+                      ),
+                    );
+                  },
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
   double? partPayment, amounFinal;
   paymentCalculate(double? amount) {
     partPayment = double.parse(amount.toString()) * 0.30;
@@ -1138,6 +1456,7 @@ class _ConfirmRiderRequestState extends State<ConfirmRiderRequest> {
   bool saveStatus = true;
   bool driveStatus = true;
   bool isLoading = false;
+
   addScheduleRides() async {
     try {
       setState(() {
@@ -1158,7 +1477,7 @@ class _ConfirmRiderRequestState extends State<ConfirmRiderRequest> {
         "amount": widget.rideList[widget.currentCar].rate_per_km,
         // (double.parse(widget.rideList[widget.currentCar].intailrate)
         //             .roundToDouble() -
-        //         double.parse(widget.promoDiscount).roundToDouble() +
+        //         double.parse(promoDiscount).roundToDouble() +
         //         widget.gst )
         //     .toStringAsFixed(2),
         "paid_amount": '0',
@@ -1180,14 +1499,10 @@ class _ConfirmRiderRequestState extends State<ConfirmRiderRequest> {
         "base_fare": double.parse(widget.rideList[widget.currentCar].base_fare)
             .toString(),
         "time_amount": widget.rideList[widget.currentCar].time_cahrge,
-        "paymenttype": "Wait For Payment", //paymentType,
-        "transaction": "Wait For Payment", //paymentType,
+        "paymenttype": _paymentMethod,
+        "transaction": "Wait For Payment",
         "cancel_charge": widget.rideList[widget.currentCar].cancellation_charge,
-        "pickup_time": widget.bookingDate == null
-            ? '${DateTime.now()?.hour}:${DateTime.now()?.minute}'
-            : widget.bookingDate?.minute == 0
-                ? '${widget.bookingDate?.hour}:${widget.bookingDate?.minute}0'
-                : '${widget.bookingDate?.hour}:${widget.bookingDate?.minute}',
+        "pickup_time": widget.returnDate,
         "pickup_date": widget.bookingDate == null
             ? DateFormat("yyyy-MM-dd").format(DateTime.now())
             : DateFormat("yyyy-MM-dd").format(widget.bookingDate!),
@@ -1196,7 +1511,7 @@ class _ConfirmRiderRequestState extends State<ConfirmRiderRequest> {
         'vendor_id': widget.vendorId.toString(),
         'vehicle_id': widget.rideList[widget.currentCar].taxi_id,
         'order_type': widget.bookingDate == null ? 'current' : 'schedule',
-        'return_date': widget.returnDate.toString(),
+        // 'return_date': widget.bookingDate.toString(),
         "is_parking": widget.tollTax.toString(),
         "is_toll_tax": widget.parking.toString(),
         'fuel_type': "${widget.rideList[widget.currentCar].fuel_type}",
@@ -1207,11 +1522,11 @@ class _ConfirmRiderRequestState extends State<ConfirmRiderRequest> {
             widget.rideList[widget.currentCar].cancellation_charges,
         'service_charge': widget.rideList[widget.currentCar].service_charge,
 
-        // 'return_time': widget.returnTime.toString()
+        // 'return_time': widget.returnDate.toString()
       };
-      if (widget.promoDiscount != "0") {
+      if (promoDiscount != "0") {
         params['promo_discount'] =
-            double.parse(widget.promoDiscount).roundToDouble().toString();
+            double.parse(promoDiscount).roundToDouble().toString();
         params['promo_code'] = promoCon.text.toString();
       }
       print("schedule ride is $params");
@@ -1221,46 +1536,42 @@ class _ConfirmRiderRequestState extends State<ConfirmRiderRequest> {
         isLoading = false;
         saveStatus = true;
       });
-      print('sdaDda${response}');
+      print('confirm ride booking para ${response}');
       if (response['status']) {
         widget.bookingId = response['booking_id'];
-        if (widget.bookingDate == null) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => FindingRidePage(
-                      widget.source,
-                      widget.destination,
-                      widget.pickAddress,
-                      widget.dropAddress,
-                      widget.paymentType,
-                      response['booking_id'].toString(),
-                      (
-                              // surge + gst +
-                              double.parse(widget.rideList[widget.currentCar]
-                                      .rate_per_km) -
-                                  double.parse(widget.promoDiscount) -
-                                  (isSelectedCoin
-                                      ? double.parse(points.toString())
-                                      : 0))
-                          .toStringAsFixed(2),
-                      // (widget.surge +
-                      //         widget.gst +
-                      //         double.parse(widget
-                      //                 .rideList[widget.currentCar].intailrate)
-                      //             .roundToDouble() -
-                      //         double.parse(widget.promoDiscount))
-                      //     .roundToDouble()
-                      //     .toStringAsFixed(2),
-                      // (double.parse(rideList[_currentCar].rate_per_km)+double.parse(rideList[_currentCar].base_fare)-double.parse(promoDiscount)+gst+surge).toStringAsFixed(2),
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => FindingRidePage(
+                widget.source,
+                widget.destination,
+                widget.pickAddress,
+                widget.dropAddress,
+                widget.paymentType,
+                response['booking_id'].toString(),
+                (
+                        // surge + gst +
+                        double.parse(widget
+                                .rideList[widget.currentCar].rate_per_km) -
+                            double.parse(promoDiscount) -
+                            (isSelectedCoin
+                                ? double.parse(points.toString())
+                                : 0))
+                    .toStringAsFixed(2),
+                // (widget.surge +
+                //         widget.gst +
+                //         double.parse(widget
+                //                 .rideList[widget.currentCar].intailrate)
+                //             .roundToDouble() -
+                //         double.parse(promoDiscount))
+                //     .roundToDouble()
+                //     .toStringAsFixed(2),
+                // (double.parse(rideList[_currentCar].rate_per_km)+double.parse(rideList[_currentCar].base_fare)-double.parse(promoDiscount)+gst+surge).toStringAsFixed(2),
 
-                      widget.rideList[widget.currentCar].distance //distance
-
-                      )));
-        } else {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => BookingSuccess()));
-        }
+                widget.rideList[widget.currentCar].distance //distance
+                ),
+          ),
+        );
 
         // Navigator.pop(context, "yes");
         // Navigator.push(
@@ -1272,7 +1583,7 @@ class _ConfirmRiderRequestState extends State<ConfirmRiderRequest> {
         //       amount:
         //           (double.parse(widget.rideList[widget.currentCar].rate_per_km)
         //                       .roundToDouble() -
-        //                   double.parse(widget.promoDiscount).roundToDouble())
+        //                   double.parse(promoDiscount).roundToDouble())
         //               .toStringAsFixed(2),
         //       // unitPri: unitPrice.toString(),
         //     ),
@@ -1335,10 +1646,12 @@ class _ConfirmRiderRequestState extends State<ConfirmRiderRequest> {
         "promo_code": code,
         "user_id": curUserId,
       };
+      print("appy promo code ${params}");
       https: //productsalphawizz.com/taxi/api/Payment/get_promo_code
       Map response = await apiBase.postAPICall(
-          Uri.parse(baseUrl1 + "Payment/validate_promo_code5"), params);
-      // Uri.parse(baseUrl1 + "Payment/apply_promo_code"),params);
+          // Uri.parse(baseUrl1 + "Payment/validate_promo_code5"), params);
+          Uri.parse(baseUrl1 + "Payment/apply_promo_code"),
+          params);
 
       if (response['status']) {
         UI.setSnackBar("${response['message']}", context);
@@ -1349,32 +1662,31 @@ class _ConfirmRiderRequestState extends State<ConfirmRiderRequest> {
             response['data'].length > 0 &&
             response['data'][0]['type'] == 'Percentage') {
           setState(() {
-            widget.promoDiscount =
-                response['data'][0]['final_discount'] != null &&
-                        response['data'][0]['final_discount'] != ""
-                    ? (double.parse(
-                            response['data'][0]['final_discount'].toString()))
-                        .roundToDouble()
-                        .toString()
-                    : "0";
+            promoDiscount = response['data'][0]['final_discount'] != null &&
+                    response['data'][0]['final_discount'] != ""
+                ? (double.parse(
+                        response['data'][0]['final_discount'].toString()))
+                    .roundToDouble()
+                    .toString()
+                : "0";
             /*rideList[_currentCar].intailrate =
                 (double.parse(rideList[_currentCar].intailrate) -
                         double.parse(promoDiscount))
                     .toStringAsFixed(0);*/
           });
+          getJoiningBonus();
         } else {
           if (response['data'] is List && response['data'].length > 0)
             setState(() {
-              widget.promoDiscount =
-                  response['data'][0]['final_discount'] != null &&
-                          response['data'][0]['final_discount'] != ""
-                      ? response['data'][0]['final_discount'].toString()
-                      : "0";
+              promoDiscount = response['data'][0]['final_discount'] != null &&
+                      response['data'][0]['final_discount'] != ""
+                  ? response['data'][0]['final_discount'].toString()
+                  : "0";
               // rideList[_currentCar].intailrate = (double.parse(rideList[_currentCar].intailrate) -
               //             double.parse(promoDiscount)).toStringAsFixed(0);
             });
         }
-        print("this is promo discount ===>${widget.promoDiscount.toString()}");
+        print("this is promo discount ===>${promoDiscount.toString()}");
       } else {
         UI.setSnackBar("${response['message']}", context);
         setState(() {

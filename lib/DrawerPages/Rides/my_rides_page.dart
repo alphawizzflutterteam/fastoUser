@@ -23,7 +23,6 @@ import 'package:pristine_andaman/utils/colors.dart';
 import 'package:pristine_andaman/utils/common.dart';
 import 'package:pristine_andaman/utils/new_utils/ui.dart';
 import 'package:pristine_andaman/utils/widget.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:sizer/sizer.dart';
 
 // import 'package:social_share/social_share.dart';
@@ -214,7 +213,7 @@ class _MyRidesPageState extends State<MyRidesPage> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: 34),
+              SizedBox(height: 24),
               // Container(
               //   padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               //   width: getWidth(375),
@@ -224,166 +223,167 @@ class _MyRidesPageState extends State<MyRidesPage> {
               //         .copyWith(color: theme.hintColor, fontSize: 12),
               //   ),
               // ),
-
               ///Tabs
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 16),
                 width: double.infinity,
-                height: 40, //getWidth(322.1),
+                height: 40,
                 decoration: boxDecoration(
                   bgColor: MyColorName.colorBg1,
-                  // radius: 10,
-                  // showShadow: true,
-                  // color: Theme.of(context).primaryColor,
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        setState(() {
-                          selected = 1;
-                        });
-                        getRides("1", "upcoming");
-                      },
-                      child: Container(
-                        height: getHeight(40),
-                        width: getWidth(74),
-                        decoration: selected == 1
-                            ? BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color.fromARGB(52, 61, 164, 139),
-                                    offset: Offset(0.0, 0.0),
-                                    blurRadius: 8.0,
-                                  ),
-                                ],
-                                borderRadius: BorderRadius.circular(10),
-                                color: Theme.of(context).primaryColor,
-                              )
-                            : BoxDecoration(),
-                        child: Center(
-                          child: text(
-                            getTranslated(context, "UPCOMING")!,
-                            fontFamily: AppTheme.fontFamily,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            textColor: selected == 1
-                                ? Colors.white
-                                : MyColorName.secondary,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            selected = 1;
+                          });
+                          getRides("1", "upcoming");
+                        },
+                        child: Container(
+                          margin: EdgeInsets.only(right: 8),
+                          height: getHeight(50),
+                          width: getWidth(85),
+                          decoration: selected == 1
+                              ? BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color.fromARGB(52, 61, 164, 139),
+                                      offset: Offset(0.0, 0.0),
+                                      blurRadius: 8.0,
+                                    ),
+                                  ],
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Color(0xff7DBF04),
+                                )
+                              : BoxDecoration(),
+                          child: Center(
+                            child: text(
+                              getTranslated(context, "UPCOMING")!,
+                              fontFamily: AppTheme.fontFamily,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              textColor: selected == 1
+                                  ? Colors.white
+                                  : MyColorName.secondary,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        setState(() {
-                          selected = 0;
-                        });
-                        getRides("1", "accept");
-                      },
-                      child: Container(
-                        height: getHeight(40),
-                        width: getWidth(70),
-                        decoration: selected == 0
-                            ? BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color.fromARGB(52, 61, 164, 139),
-                                    offset: Offset(0.0, 0.0),
-                                    blurRadius: 8.0,
-                                  )
-                                ],
-                                borderRadius: BorderRadius.circular(10),
-                                color: Theme.of(context).primaryColor,
-                              )
-                            : BoxDecoration(),
-                        child: Center(
-                          child: text(
-                            "Accepted",
-                            fontFamily: AppTheme.fontFamily,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            textColor: selected == 0
-                                ? Colors.white
-                                : MyColorName.secondary,
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            selected = 0;
+                          });
+                          getRides("1", "accept");
+                        },
+                        child: Container(
+                          margin: EdgeInsets.only(right: 8),
+                          height: getHeight(50),
+                          width: getWidth(85),
+                          decoration: selected == 0
+                              ? BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color.fromARGB(52, 61, 164, 139),
+                                      offset: Offset(0.0, 0.0),
+                                      blurRadius: 8.0,
+                                    )
+                                  ],
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Color(0xff7DBF04),
+                                )
+                              : BoxDecoration(),
+                          child: Center(
+                            child: text(
+                              "Accepted",
+                              fontFamily: AppTheme.fontFamily,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              textColor: selected == 0
+                                  ? Colors.white
+                                  : MyColorName.secondary,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        setState(() {
-                          selected = 2;
-                        });
-                        getRides("1", "complete");
-                      },
-                      child: Container(
-                        height: getHeight(40),
-                        width: getWidth(90),
-                        decoration: selected == 2
-                            ? BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color.fromARGB(52, 61, 164, 139),
-                                    offset: Offset(0.0, 0.0),
-                                    blurRadius: 8.0,
-                                  )
-                                ],
-                                borderRadius: BorderRadius.circular(10),
-                                color: Theme.of(context).primaryColor,
-                              )
-                            : BoxDecoration(),
-                        child: Center(
-                          child: text(
-                            getTranslated(context, "COMPLETED")!,
-                            fontFamily: AppTheme.fontFamily,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            textColor: selected == 2
-                                ? Colors.white
-                                : MyColorName.secondary,
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            selected = 2;
+                          });
+                          getRides("1", "complete");
+                        },
+                        child: Container(
+                          margin: EdgeInsets.only(right: 8),
+                          height: getHeight(40),
+                          width: getWidth(90),
+                          decoration: selected == 2
+                              ? BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color.fromARGB(52, 61, 164, 139),
+                                      offset: Offset(0.0, 0.0),
+                                      blurRadius: 8.0,
+                                    )
+                                  ],
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Color(0xff7DBF04),
+                                )
+                              : BoxDecoration(),
+                          child: Center(
+                            child: text(
+                              getTranslated(context, "COMPLETED")!,
+                              fontFamily: AppTheme.fontFamily,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              textColor: selected == 2
+                                  ? Colors.white
+                                  : MyColorName.secondary,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        setState(() {
-                          selected = 3;
-                        });
-                        getRides("1", "cancel");
-                      },
-                      child: Container(
-                        height: getHeight(40),
-                        width: getWidth(90),
-                        decoration: selected == 3
-                            ? BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color.fromARGB(52, 61, 164, 139),
-                                    offset: Offset(0.0, 0.0),
-                                    blurRadius: 8.0,
-                                  )
-                                ],
-                                borderRadius: BorderRadius.circular(10),
-                                color: Theme.of(context).primaryColor,
-                              )
-                            : BoxDecoration(),
-                        child: Center(
-                          child: text(
-                            "Cancelled", //getTranslated(context, "UPCOMING")!,
-                            fontFamily: AppTheme.fontFamily,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            textColor: selected == 3
-                                ? Colors.white
-                                : MyColorName.secondary,
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            selected = 3;
+                          });
+                          getRides("1", "cancel");
+                        },
+                        child: Container(
+                          height: getHeight(40),
+                          width: getWidth(90),
+                          decoration: selected == 3
+                              ? BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color.fromARGB(52, 61, 164, 139),
+                                      offset: Offset(0.0, 0.0),
+                                      blurRadius: 8.0,
+                                    )
+                                  ],
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Color(0xff7DBF04),
+                                )
+                              : BoxDecoration(),
+                          child: Center(
+                            child: text(
+                              "Cancelled",
+                              fontFamily: AppTheme.fontFamily,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              textColor: selected == 3
+                                  ? Colors.white
+                                  : MyColorName.secondary,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               boxHeight(19),
@@ -481,6 +481,8 @@ class _MyRidesPageState extends State<MyRidesPage> {
                               rideList[index].show!
                                   ? GestureDetector(
                                       onTap: () async {
+                                        print(
+                                            "dsaaaaaaaaaa ${rideList[index].status}");
                                         var result = await Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -660,11 +662,11 @@ class _MyRidesPageState extends State<MyRidesPage> {
                                                     //   ),
                                                     // ),
                                                     Container(
-                                                      height: 80,
+                                                      height: 60,
                                                       padding:
                                                           EdgeInsets.symmetric(
                                                               vertical: 12,
-                                                              horizontal: 14),
+                                                              horizontal: 10),
                                                       child: Column(
                                                         children: [
                                                           Row(
@@ -684,8 +686,7 @@ class _MyRidesPageState extends State<MyRidesPage> {
                                                               //         .toString()),
                                                               //   ),
                                                               // ),
-                                                              SizedBox(
-                                                                  width: 8),
+
                                                               Column(
                                                                 crossAxisAlignment:
                                                                     CrossAxisAlignment
@@ -699,11 +700,10 @@ class _MyRidesPageState extends State<MyRidesPage> {
                                                                   // ),
 
                                                                   Text(
-                                                                    '${getTranslated(context, "TRIP_ID")} - ${rideList[index].uneaqueId.toString()}',
-                                                                    style: theme
-                                                                        .textTheme
-                                                                        .bodyMedium,
-                                                                  ),
+                                                                      '${getTranslated(context, "TRIP_ID")} - ${rideList[index].uneaqueId.toString()}',
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              14)),
                                                                   // Text(
                                                                   //   '${rideList[index].taxiType}',
                                                                   //   maxLines: 3,
@@ -766,11 +766,18 @@ class _MyRidesPageState extends State<MyRidesPage> {
                                                                         .textTheme
                                                                         .bodyMedium
                                                                         ?.copyWith(
-                                                                            fontSize:
-                                                                                16,
-                                                                            color: rideList[index].status == "Cancelled"
-                                                                                ? Colors.red
-                                                                                : AppTheme.primaryColor),
+                                                                      fontSize:
+                                                                          16,
+                                                                      color: rideList[index].status ==
+                                                                              "Cancelled"
+                                                                          ? Colors
+                                                                              .red
+                                                                          : rideList[index].status == "pending"
+                                                                              ? Colors.orange
+                                                                              : rideList[index].status == "accept"
+                                                                                  ? Colors.green
+                                                                                  : AppTheme.secondaryColor,
+                                                                    ),
                                                                   ),
                                                                 ],
                                                               ),
@@ -861,41 +868,40 @@ class _MyRidesPageState extends State<MyRidesPage> {
                                                             ),
                                                           Spacer(),
                                                           Text(
-                                                            "${rideList[index].distance.toString()} Kms",
-                                                            style: theme
-                                                                .textTheme
-                                                                .bodyMedium,
-                                                          ),
-                                                          rideList[index]
-                                                                      .status ==
-                                                                  'complete'
-                                                              ? InkWell(
-                                                                  onTap:
-                                                                      () async {
-                                                                    await _getCurrentLocation();
-                                                                    String
-                                                                        googleMapsUrl =
-                                                                        "https://www.google.com/maps?q=${_currentPosition?.latitude},${_currentPosition?.longitude}";
-                                                                    String
-                                                                        shareMessage =
-                                                                        'Pickup Address: ${rideList[index].pickupAddress}\n'
-                                                                        'Drop Address: ${rideList[index].dropAddress}\n'
-                                                                        'Driver Name: ${rideList[index].driverName}\n'
-                                                                        'Driver Mobile No.: ${rideList[index].driverContact}\n'
-                                                                        'Navigate to location: $googleMapsUrl';
-
-                                                                    Share.share(
-                                                                        shareMessage,
-                                                                        subject:
-                                                                            'Ride Information');
-                                                                  },
-                                                                  child: Icon(
-                                                                      Icons
-                                                                          .share,
-                                                                      color: Colors
-                                                                          .black),
-                                                                )
-                                                              : SizedBox()
+                                                              "${rideList[index].distance.toString()} Kms",
+                                                              style: TextStyle(
+                                                                  fontSize:
+                                                                      14)),
+                                                          // rideList[index]
+                                                          //             .status ==
+                                                          //         'complete'
+                                                          //     ? InkWell(
+                                                          //         onTap:
+                                                          //             () async {
+                                                          //           await _getCurrentLocation();
+                                                          //           String
+                                                          //               googleMapsUrl =
+                                                          //               "https://www.google.com/maps?q=${_currentPosition?.latitude},${_currentPosition?.longitude}";
+                                                          //           String
+                                                          //               shareMessage =
+                                                          //               'Pickup Address: ${rideList[index].pickupAddress}\n'
+                                                          //               'Drop Address: ${rideList[index].dropAddress}\n'
+                                                          //               'Driver Name: ${rideList[index].driverName}\n'
+                                                          //               'Driver Mobile No.: ${rideList[index].driverContact}\n'
+                                                          //               'Navigate to location: $googleMapsUrl';
+                                                          //
+                                                          //           Share.share(
+                                                          //               shareMessage,
+                                                          //               subject:
+                                                          //                   'Ride Information');
+                                                          //         },
+                                                          //         child: Icon(
+                                                          //             Icons
+                                                          //                 .share,
+                                                          //             color: Colors
+                                                          //                 .black),
+                                                          //       )
+                                                          //     : SizedBox()
                                                         ],
                                                       ),
                                                     ),
@@ -1121,7 +1127,7 @@ class _MyRidesPageState extends State<MyRidesPage> {
                                                                             animatedTexts: [
                                                                               ColorizeAnimatedText(
                                                                                 "Booking Date - ${rideList[index].pickupDate ?? ''} ${rideList[index].pickupTime}",
-                                                                                textStyle: colorizeTextStyle.copyWith(fontSize: 16),
+                                                                                textStyle: colorizeTextStyle.copyWith(fontSize: 14),
                                                                                 colors: colorizeColors,
                                                                               ),
                                                                             ],
@@ -1450,59 +1456,61 @@ class _MyRidesPageState extends State<MyRidesPage> {
                                                                 ),
                                                               ),
                                                             )
-                                                          : InkWell(
-                                                              onTap: () {
-                                                                showDialog(
-                                                                  context:
-                                                                      context,
-                                                                  builder:
-                                                                      (context) =>
-                                                                          RateRideDialog(
-                                                                    rideList[
-                                                                        index],
-                                                                    check: rideList[index]
-                                                                            .transaction!
-                                                                            .contains("Wait")
-                                                                        ? false
-                                                                        : true,
-                                                                  ),
-                                                                );
-                                                                // showBottom(rideList[index].driverId,rideList[index].bookingId);
-                                                              },
-                                                              child: Container(
-                                                                width: 80.w,
-                                                                margin: EdgeInsets
-                                                                    .symmetric(
-                                                                        vertical:
-                                                                            5,
-                                                                        horizontal:
-                                                                            16),
-                                                                height: 5.h,
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              3),
-                                                                  border: Border.all(
-                                                                      color: Colors
-                                                                          .black),
-                                                                ),
-                                                                child: Center(
-                                                                  child:
-                                                                      loading1
-                                                                          ? text(
-                                                                              "RATE DRIVER",
-                                                                              fontFamily: fontMedium,
-                                                                              fontSize: 10.sp,
-                                                                              isCentered: true,
-                                                                              textColor: Colors.black)
-                                                                          : CircularProgressIndicator(
-                                                                              color: Colors.white,
-                                                                            ),
-                                                                ),
-                                                              ),
-                                                            )
+                                                          : SizedBox()
+
+                                                      // InkWell(
+                                                      //         onTap: () {
+                                                      //           showDialog(
+                                                      //             context:
+                                                      //                 context,
+                                                      //             builder:
+                                                      //                 (context) =>
+                                                      //                     RateRideDialog(
+                                                      //               rideList[
+                                                      //                   index],
+                                                      //               check: rideList[index]
+                                                      //                       .transaction!
+                                                      //                       .contains("Wait")
+                                                      //                   ? false
+                                                      //                   : true,
+                                                      //             ),
+                                                      //           );
+                                                      //           // showBottom(rideList[index].driverId,rideList[index].bookingId);
+                                                      //         },
+                                                      //         child: Container(
+                                                      //           width: 80.w,
+                                                      //           margin: EdgeInsets
+                                                      //               .symmetric(
+                                                      //                   vertical:
+                                                      //                       5,
+                                                      //                   horizontal:
+                                                      //                       16),
+                                                      //           height: 5.h,
+                                                      //           decoration:
+                                                      //               BoxDecoration(
+                                                      //             borderRadius:
+                                                      //                 BorderRadius
+                                                      //                     .circular(
+                                                      //                         3),
+                                                      //             border: Border.all(
+                                                      //                 color: Colors
+                                                      //                     .black),
+                                                      //           ),
+                                                      //           child: Center(
+                                                      //             child:
+                                                      //                 loading1
+                                                      //                     ? text(
+                                                      //                         "RATE DRIVER",
+                                                      //                         fontFamily: fontMedium,
+                                                      //                         fontSize: 10.sp,
+                                                      //                         isCentered: true,
+                                                      //                         textColor: Colors.black)
+                                                      //                     : CircularProgressIndicator(
+                                                      //                         color: Colors.white,
+                                                      //                       ),
+                                                      //           ),
+                                                      //         ),
+                                                      //       )
 
                                                       ///Share
                                                       // InkWell(
@@ -1591,7 +1599,8 @@ class _MyRidesPageState extends State<MyRidesPage> {
                               fontSize: 12.sp,
                               textColor: Colors.black),
                         )
-                  : Center(child: CircularProgressIndicator()),
+                  : Center(
+                      child: CircularProgressIndicator(color: Colors.black)),
             ],
           ),
         ),
@@ -1713,7 +1722,7 @@ class _MyRidesPageState extends State<MyRidesPage> {
                     ),
                   )
                 : Center(
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(color: Colors.black),
                   )
           ],
         ),
@@ -1971,11 +1980,12 @@ class _MyRidesPageState extends State<MyRidesPage> {
                     decoration: boxDecoration(
                         radius: 5, bgColor: Theme.of(context).primaryColor),
                     child: Center(
-                        child: text(getTranslated(context, "CANCEL")!,
-                            fontFamily: fontMedium,
-                            fontSize: 10.sp,
-                            isCentered: true,
-                            textColor: Colors.white)),
+                      child: text(getTranslated(context, "CANCEL")!,
+                          fontFamily: fontMedium,
+                          fontSize: 10.sp,
+                          isCentered: true,
+                          textColor: Colors.white),
+                    ),
                   ),
                 ),
                 boxWidth(10),
@@ -2001,7 +2011,7 @@ class _MyRidesPageState extends State<MyRidesPage> {
                                   isCentered: true,
                                   textColor: Colors.white)),
                         )
-                      : CircularProgressIndicator(),
+                      : CircularProgressIndicator(color: Colors.black),
                 ),
               ],
             ),

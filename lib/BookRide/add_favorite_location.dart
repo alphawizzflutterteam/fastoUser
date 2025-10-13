@@ -144,7 +144,7 @@ class _AddFavoriteLocationState extends State<AddFavoriteLocation> {
               ),
             )
           : Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(color: Colors.black),
             ),
     );
   }

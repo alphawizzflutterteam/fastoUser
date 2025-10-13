@@ -188,7 +188,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       .copyWith(color: theme.hintColor),
                                 ),
                               )
-                            : CircularProgressIndicator()
+                            : CircularProgressIndicator(color: Colors.black)
                         : SizedBox(),
                   ],
                 ),
@@ -196,8 +196,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
               !loading
                   ? notificationList.length > 0
                       ? Container(
-                          color: theme.colorScheme.background,
-                          padding: EdgeInsets.only(top: 16),
+                          // color: theme.colorScheme.background,
+                          // padding: EdgeInsets.only(top: 5),
                           child: ListView.builder(
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
@@ -247,7 +247,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               textColor: Colors.black),
                         )
                   : Center(
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator(color: Colors.black),
                     )
             ],
           ),

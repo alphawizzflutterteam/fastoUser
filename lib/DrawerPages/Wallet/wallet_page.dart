@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
-import 'package:sizer/sizer.dart';
 import 'package:pristine_andaman/Components/custom_button.dart';
 import 'package:pristine_andaman/Components/entry_field.dart';
 import 'package:pristine_andaman/Model/wallet_model.dart';
@@ -14,6 +12,8 @@ import 'package:pristine_andaman/utils/colors.dart';
 import 'package:pristine_andaman/utils/constant.dart';
 import 'package:pristine_andaman/utils/new_utils/ui.dart';
 import 'package:pristine_andaman/utils/widget.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:sizer/sizer.dart';
 
 class WalletPage extends StatefulWidget {
   @override
@@ -405,8 +405,10 @@ class _WalletPageState extends State<WalletPage> {
           centerTitle: true,
           title: Text(
             getTranslated(context, "WALLET") ?? "Wallet",
-            style: TextStyle(fontSize: 16  ,color: Colors.black,),
-
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black,
+            ),
           ),
         ),
         // drawer: AppDrawer(false),
@@ -770,7 +772,9 @@ class _WalletPageState extends State<WalletPage> {
                                             fontSize: 12.sp,
                                             textColor: Colors.black),
                                       )
-                                : Center(child: CircularProgressIndicator())
+                                : Center(
+                                    child: CircularProgressIndicator(
+                                        color: Colors.black))
                             // : saveStatus ? paymentList.length > 0
                             //         ? ListView.builder(
                             //             physics: NeverScrollableScrollPhysics(),
@@ -897,11 +901,13 @@ class _WalletPageState extends State<WalletPage> {
                             //                 fontSize: 12.sp,
                             //                 textColor: Colors.black),
                             //           )
-                            : Center(child: CircularProgressIndicator())
+                            : Center(
+                                child: CircularProgressIndicator(
+                                    color: Colors.black))
                       ],
                     ),
                   )
-                : Center(child: CircularProgressIndicator()),
+                : Center(child: CircularProgressIndicator(color: Colors.black)),
           ),
         ),
       ),

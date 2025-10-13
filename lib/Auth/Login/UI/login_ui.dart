@@ -703,7 +703,7 @@ class _LoginUIState extends State<LoginUI> {
     //           //                               fontFamily: fontMedium,
     //           //                               fontSize: 12.sp,
     //           //                               textColor: Colors.white)
-    //           //                               : CircularProgressIndicator()),
+    //           //                               : CircularProgressIndicator(color:Colors.black)),
     //           //                     ),
     //           //                   ),
     //           //                   InkWell(
@@ -725,7 +725,7 @@ class _LoginUIState extends State<LoginUI> {
     //           //                               fontFamily: fontMedium,
     //           //                               fontSize: 12.sp,
     //           //                               textColor: Colors.white)
-    //           //                               : CircularProgressIndicator()),
+    //           //                               : CircularProgressIndicator(color:Colors.black)),
     //           //                     ),
     //           //                   ),
     //           //                 ],
@@ -1166,7 +1166,7 @@ class _LoginUIState extends State<LoginUI> {
 //                                 fontFamily: fontMedium,
 //                                 fontSize: 12.sp,
 //                                 textColor: Colors.white)
-//                             : CircularProgressIndicator()),
+//                             : CircularProgressIndicator(color:Colors.black)),
 //                   ),
 //                 ),
 //                 InkWell(
@@ -1187,7 +1187,7 @@ class _LoginUIState extends State<LoginUI> {
 //                                 fontFamily: fontMedium,
 //                                 fontSize: 12.sp,
 //                                 textColor: Colors.white)
-//                             : CircularProgressIndicator()),
+//                             : CircularProgressIndicator(color:Colors.black)),
 //                   ),
 //                 ),
 //               ],
@@ -1286,7 +1286,7 @@ class _LoginUIState extends State<LoginUI> {
 //               : Container(
 //                   width: 50,
 //                   child:
-//                       Center(child: CircularProgressIndicator())),*/
+//                       Center(child: CircularProgressIndicator(color:Colors.black))),*/
 //         ],
 //       ),
 //     ),

@@ -472,7 +472,7 @@ class _AppDrawerState extends State<AppDrawer> {
                                 child: Text('No'),
                                 style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all(
-                                      MyColorName.primaryLite),
+                                      Color(0xff7DBF04)),
                                 ),
                                 /*   textColor: Theme.of(context).colorScheme.primary,
                                 shape: RoundedRectangleBorder(
@@ -485,7 +485,7 @@ class _AppDrawerState extends State<AppDrawer> {
                                   child: Text('Yes'),
                                   style: ButtonStyle(
                                     backgroundColor: MaterialStateProperty.all(
-                                        MyColorName.primaryLite),
+                                        Color(0xff7DBF04)),
                                   ),
                                   /* shape: RoundedRectangleBorder(
                                       side: BorderSide(color: Colors.transparent)),

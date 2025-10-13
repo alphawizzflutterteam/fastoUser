@@ -1,35 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
 
-
-
-
-
-
-
-
 import 'package:flutter/material.dart';
-
-
-
-
 import 'package:http/http.dart' as http;
 import 'package:pristine_andaman/Model/policy_model.dart';
 import 'package:pristine_andaman/Theme/style.dart';
 import 'package:pristine_andaman/utils/ApiBaseHelper.dart';
 import 'package:pristine_andaman/utils/Session.dart';
-import 'package:pristine_andaman/utils/colors.dart';
 import 'package:pristine_andaman/utils/constant.dart';
 import 'package:pristine_andaman/utils/new_utils/ui.dart';
 
 import '../../utils/new_utils/common_ui.dart';
 
-
-
-
-
 class WalletPolicy extends StatefulWidget {
-
   @override
   _WalletPolicyState createState() => _WalletPolicyState();
 
@@ -37,14 +20,13 @@ class WalletPolicy extends StatefulWidget {
 }
 
 class _WalletPolicyState extends State<WalletPolicy> {
-
-
   bool loading = true;
   @override
   void initState() {
     super.initState();
     getRules();
   }
+
   ApiBaseHelper apiBase = new ApiBaseHelper();
   bool isNetwork = false;
   List<PolicyModel> ruleList = [];
@@ -56,7 +38,8 @@ class _WalletPolicyState extends State<WalletPolicy> {
         Map data = {
           "user_id": curUserId,
         };
-        var res = await http.get(Uri.parse(baseUrl1 + "Authentication/wallet_request_policy"));
+        var res = await http
+            .get(Uri.parse(baseUrl1 + "Authentication/wallet_request_policy"));
         print(res.body);
         Map response = jsonDecode(res.body);
         print(response);
@@ -76,8 +59,6 @@ class _WalletPolicyState extends State<WalletPolicy> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,7 +74,7 @@ class _WalletPolicyState extends State<WalletPolicy> {
         centerTitle: true,
         backgroundColor: AppTheme.primaryColor,
         title: Text(
-         'Wallet Request Policy',
+          'Wallet Request Policy',
           style: TextStyle(fontSize: 16),
         ),
       ),
@@ -105,26 +86,29 @@ class _WalletPolicyState extends State<WalletPolicy> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height:20),
+                SizedBox(height: 20),
                 Expanded(
                   child: ListView.builder(
                       shrinkWrap: true,
                       itemCount: ruleList.length,
-                      itemBuilder: (context,index){
+                      itemBuilder: (context, index) {
                         return Container(
                           child: Column(
-
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(height:10),
-                              Text(Common.getString1(ruleList[index].title),style: Theme.of(context).textTheme.titleLarge,),
-                              SizedBox(height:10),
+                              SizedBox(height: 10),
+                              Text(
+                                Common.getString1(ruleList[index].title),
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                              SizedBox(height: 10),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Expanded(
                                     child: UI.commonButton(
-                                        title: "Convenience Fee - \u{20B9}${ruleList[index].convenienceFee}",
+                                        title:
+                                            "Convenience Fee - \u{20B9}${ruleList[index].convenienceFee}",
                                         loading: false,
                                         fontSize: 12.0,
                                         onPressed: null),
@@ -134,7 +118,8 @@ class _WalletPolicyState extends State<WalletPolicy> {
                                   ),
                                   Expanded(
                                     child: UI.commonButton(
-                                        title: "Due Duration - ${ruleList[index].paybleMonth} Month",
+                                        title:
+                                            "Due Duration - ${ruleList[index].paybleMonth} Month",
                                         loading: false,
                                         fontSize: 12.0,
                                         // bgColor: Colors.white,
@@ -143,9 +128,11 @@ class _WalletPolicyState extends State<WalletPolicy> {
                                   ),
                                 ],
                               ),
-                              SizedBox(height:10),
+                              SizedBox(height: 10),
                               Text(
-                                  Common.getString1(ruleList[index].description,),
+                                Common.getString1(
+                                  ruleList[index].description,
+                                ),
                                 style: Theme.of(context).textTheme.labelMedium,
                               ),
                             ],
@@ -159,7 +146,7 @@ class _WalletPolicyState extends State<WalletPolicy> {
               ],
             ),
           ),
-          if (loading) CircularProgressIndicator(),
+          if (loading) CircularProgressIndicator(color: Colors.black),
         ],
       ),
     );

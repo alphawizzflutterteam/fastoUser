@@ -130,7 +130,7 @@ class UI {
       {double right = 20.0,
       double bottom = 50.0,
       String title = "",
-      Color color = Colors.red}) {
+      Color color = Colors.black}) {
     var overlayEntry;
     overlayEntry = OverlayEntry(
       builder: (context) => Positioned(

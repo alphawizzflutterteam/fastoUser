@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../Model/favorite_location_model.dart';
@@ -62,23 +61,21 @@ class _ChooseFavoriteLocationState extends State<ChooseFavoriteLocation> {
     super.initState();
     getFavoriteList();
   }
+
   deleteAddress(String id) async {
     try {
       setState(() {
         saveStatus = true;
       });
-      Map params = {
-        "user_id": curUserId.toString(),
-        'id':id
-
-      };
+      Map params = {"user_id": curUserId.toString(), 'id': id};
       Map response = await apiBase.postAPICall(
-          Uri.parse(baseUrl1 + "authentication/delete_favourite_addressess"), params);
+          Uri.parse(baseUrl1 + "authentication/delete_favourite_addressess"),
+          params);
       setState(() {
         saveStatus = false;
       });
       if (response['status']) {
-        UI.setSnackBar(response['message'], context,color: Colors.green);
+        UI.setSnackBar(response['message'], context, color: Colors.green);
         getFavoriteList();
       } else {
         UI.setSnackBar(response['message'], context);
@@ -90,6 +87,7 @@ class _ChooseFavoriteLocationState extends State<ChooseFavoriteLocation> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -143,7 +141,8 @@ class _ChooseFavoriteLocationState extends State<ChooseFavoriteLocation> {
                 ? SizedBox(
                     width: MediaQuery.sizeOf(context).width,
                     height: MediaQuery.sizeOf(context).height,
-                    child: Center(child: CircularProgressIndicator()))
+                    child: Center(
+                        child: CircularProgressIndicator(color: Colors.black)))
                 : favoriteLocationList.isEmpty
                     ? SizedBox(
                         width: MediaQuery.sizeOf(context).width,
@@ -166,8 +165,10 @@ class _ChooseFavoriteLocationState extends State<ChooseFavoriteLocation> {
                                     favoriteLocationList[index]
                                         .longitude
                                         .toString());
-                                Navigator.pop(context,[widget.from,
-                                    favoriteLocationList[index].address]);
+                                Navigator.pop(context, [
+                                  widget.from,
+                                  favoriteLocationList[index].address
+                                ]);
                               } else {
                                 latitude = double.parse(
                                     favoriteLocationList[index]
@@ -228,10 +229,17 @@ class _ChooseFavoriteLocationState extends State<ChooseFavoriteLocation> {
                                               ),
                                             ),
                                             InkWell(
-                                              onTap: () {
-                                                deleteAddress(favoriteLocationList[index].id ?? '');
-                                              },
-                                                child: Icon(Icons.close,color: Colors.black,))
+                                                onTap: () {
+                                                  deleteAddress(
+                                                      favoriteLocationList[
+                                                                  index]
+                                                              .id ??
+                                                          '');
+                                                },
+                                                child: Icon(
+                                                  Icons.close,
+                                                  color: Colors.black,
+                                                ))
                                           ],
                                         ),
                                       ],
