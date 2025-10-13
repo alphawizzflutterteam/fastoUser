@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:pristine_andaman/Auth/Registration/UI/registration_page.dart';
 import 'package:pristine_andaman/DrawerPages/Settings/language_cubit.dart';
 import 'package:pristine_andaman/DrawerPages/Settings/theme_cubit.dart';
 import 'package:pristine_andaman/utils/Demo_Localization.dart';
@@ -149,7 +148,6 @@ class _WhyTaxiUserState extends State<WhyTaxiUser> {
                   theme: theme,
                   // initialRoute: "Login",
                   home: SplashScreen(),
-
                   // routes: PageRoutes().routes(),
                   debugShowCheckedModeBanner: false,
                 );

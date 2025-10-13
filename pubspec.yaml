@@ -70,6 +70,7 @@ dependencies:
   flutter_svg: ^2.0.9
   share_plus: ^11.0.0
   smooth_page_indicator: ^1.2.0+3
+  google_places_flutter: ^2.1.1
   html: ^0.15.4
   #firebase_dynamic_links: ^5.1.0
 dev_dependencies:

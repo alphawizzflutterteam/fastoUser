@@ -191,31 +191,33 @@ class _ChooseCabPageState extends State<ChooseCabPage> {
       CabType(Assets.Car2, getTranslated(context, 'PRIVATE'), '65.50'),
       CabType(Assets.Car3, getTranslated(context, 'LUXURY'), '128.20'),
     ];
-    return Scaffold(
-      key: scaffoldKey,
-      backgroundColor: MyColorName.lightGrey,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        leading: InkWell(
-          onTap: () => Navigator.pop(context),
-          child: Icon(
-            Icons.arrow_back_ios,
-            size: 20,
-            color: Colors.black,
+    return SafeArea(
+      top: false,
+      bottom: true,
+      child: Scaffold(
+        key: scaffoldKey,
+        backgroundColor: MyColorName.lightGrey,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          leading: InkWell(
+            onTap: () => Navigator.pop(context),
+            child: Icon(
+              Icons.arrow_back_ios,
+              size: 20,
+              color: Colors.black,
+            ),
+          ),
+          centerTitle: true,
+          title: Text(
+            'Cabs',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black,
+            ),
           ),
         ),
-        centerTitle: true,
-        title: Text(
-          'Cabs',
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.black,
-          ),
-        ),
-      ),
-      body: SafeArea(
-        child: Stack(
+        body: Stack(
           children: [
             ///Map
             /*latitude != 0 && !driveStatus && rideList.length > 0
@@ -456,6 +458,7 @@ class _ChooseCabPageState extends State<ChooseCabPage> {
                               },
                               child: Card(
                                 elevation: 0,
+                                color: Colors.white,
                                 child: AnimatedContainer(
                                   duration: Duration(milliseconds: 350),
                                   width:
@@ -464,9 +467,7 @@ class _ChooseCabPageState extends State<ChooseCabPage> {
                                   decoration: BoxDecoration(
                                     color: _currentCar == index && cabSelected
                                         ? MyColorName.secondary.withOpacity(0.1)
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .background,
+                                        : Colors.white,
                                     borderRadius: BorderRadius.circular(8),
                                     border: Border.all(
                                         color: MyColorName.greyBorder
@@ -509,10 +510,13 @@ class _ChooseCabPageState extends State<ChooseCabPage> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                Text('Car Type',
-                                                    style: TextStyle(
-                                                        color: MyColorName
-                                                            .detailsColor)),
+                                                Text(
+                                                  'Car Types',
+                                                  style: TextStyle(
+                                                      color: MyColorName
+                                                          .detailsColor,
+                                                      fontSize: 18),
+                                                ),
                                                 SizedBox(
                                                   height: 5,
                                                 ),
@@ -534,7 +538,8 @@ class _ChooseCabPageState extends State<ChooseCabPage> {
                                                           .toString(),
                                                       style: TextStyle(
                                                           color: MyColorName
-                                                              .primaryLite),
+                                                              .primaryLite,
+                                                          fontSize: 16),
                                                     ),
                                                   ),
                                                 ),
@@ -543,14 +548,14 @@ class _ChooseCabPageState extends State<ChooseCabPage> {
                                                 ),
 
                                                 Text(
-                                                    // + surge
-                                                    // '₹ ${double.parse(rideList[index].intailrate.toString()) - double.parse(promoDiscount)}',
-                                                    '₹ ${double.parse(rideList[index].rate_per_km.toString()).toStringAsFixed(2)}',
-                                                    style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    )),
+                                                  // + surge
+                                                  // '₹ ${double.parse(rideList[index].intailrate.toString()) - double.parse(promoDiscount)}',
+                                                  '₹ ${double.parse(rideList[index].rate_per_km.toString()).toStringAsFixed(2)}',
+                                                  style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
                                                 // Row(
                                                 //   mainAxisAlignment:
                                                 //       MainAxisAlignment
@@ -1174,426 +1179,426 @@ class _ChooseCabPageState extends State<ChooseCabPage> {
             ),
           ],
         ),
-      ),
-      // floatingActionButton: promoList.length > 0 && isFirstUser != "0"
-      //     ? InkWell(
-      //         onTap: () {
-      //           scaffoldKey.currentState!.showBottomSheet(
-      //             (context) => Container(
-      //               child: Column(
-      //                 mainAxisSize: MainAxisSize.min,
-      //                 children: [
-      //                   boxHeight(10),
-      //                   Row(
-      //                     children: [
-      //                       Expanded(
-      //                         child: text(
-      //                           getTranslated(context, "OFFER")!,
-      //                           isCentered: true,
-      //                           fontSize: 14.sp,
-      //                           fontFamily: fontMedium,
-      //                           textColor: MyColorName.colorTextPrimary,
-      //                         ),
-      //                       ),
-      //                       IconButton(
-      //                         onPressed: () {
-      //                           Navigator.pop(context);
-      //                         },
-      //                         icon: Icon(
-      //                           Icons.close,
-      //                           color: MyColorName.colorTextPrimary,
-      //                         ),
-      //                       ),
-      //                     ],
-      //                   ),
-      //                   boxHeight(10),
-      //                   Container(
-      //                     margin: EdgeInsets.all(getWidth(10)),
-      //                     child: TextField(
-      //                       controller: promoCon,
-      //                       decoration: InputDecoration(
-      //                           enabledBorder: OutlineInputBorder(),
-      //                           focusedBorder: OutlineInputBorder(),
-      //                           hintText:
-      //                               getTranslated(context, "PROMO_CODE1")!,
-      //                           suffixIcon: IconButton(
-      //                             onPressed: () {
-      //                               Navigator.pop(context);
-      //                               applyCode(promoCon.text);
-      //                             },
-      //                             icon: Icon(
-      //                               Icons.send,
-      //                               color: MyColorName.primaryLite,
-      //                             ),
-      //                           )),
-      //                     ),
-      //                   ),
-      //                   boxHeight(10),
-      //                   ListView.builder(
-      //                       itemCount: promoList.length,
-      //                       shrinkWrap: true,
-      //                       physics: NeverScrollableScrollPhysics(),
-      //                       itemBuilder: (context, index) {
-      //                         return Container(
-      //                           margin: EdgeInsets.all(getWidth(10)),
-      //                           decoration: boxDecoration(
-      //                             showShadow: true,
-      //                           ),
-      //                           child: ListTile(
-      //                             title: text(
-      //                               "${getTranslated(context, "PROMO_CODE1")} : ${promoList[index].promocode}",
-      //                               fontSize: 14.sp,
-      //                               fontFamily: fontMedium,
-      //                               textColor: MyColorName.colorTextPrimary,
-      //                             ),
-      //                             subtitle: text(
-      //                               "${promoList[index].message}",
-      //                               fontSize: 14.sp,
-      //                               fontFamily: fontMedium,
-      //                               textColor: MyColorName.colorTextPrimary,
-      //                             ),
-      //                             trailing: InkWell(
-      //                               onTap: () {
-      //                                 if (promoCon.text !=
-      //                                     promoList[index]
-      //                                         .promocode
-      //                                         .toString()) {
-      //                                   setState(() {
-      //                                     promoCon.text = promoList[index]
-      //                                         .promocode
-      //                                         .toString();
-      //                                   });
-      //                                   Navigator.pop(context);
-      //                                   applyCode(promoList[index].promocode);
-      //                                 } else {
-      //                                   UI.setSnackBar(
-      //                                       "Promo code already applied",
-      //                                       context);
-      //                                 }
-      //                               },
-      //                               child: Container(
-      //                                 width: 20.w,
-      //                                 height: 4.h,
-      //                                 decoration: boxDecoration(
-      //                                     radius: 5,
-      //                                     bgColor: promoCon.text ==
-      //                                             promoList[index]
-      //                                                 .promocode
-      //                                                 .toString()
-      //                                         ? Colors.grey
-      //                                         : Theme.of(context).primaryColor),
-      //                                 child: Center(
-      //                                     child: text(
-      //                                         promoCon.text ==
-      //                                                 promoList[index]
-      //                                                     .promocode
-      //                                                     .toString()
-      //                                             ? "Applied"
-      //                                             : getTranslated(
-      //                                                 context, "APPLY")!,
-      //                                         fontFamily: fontMedium,
-      //                                         fontSize: 10.sp,
-      //                                         isCentered: true,
-      //                                         textColor: Colors.white)),
-      //                               ),
-      //                             ),
-      //                           ),
-      //                         );
-      //                       }),
-      //                   boxHeight(10),
-      //                 ],
-      //               ),
-      //             ),
-      //           );
-      //         },
-      //         child: Container(
-      //           padding: EdgeInsets.all(12),
-      //           decoration: BoxDecoration(
-      //               borderRadius: BorderRadius.circular(15),
-      //               // radius: 100,
-      //               // showShadow: true,
-      //               color: Theme.of(context).primaryColor),
-      //           height: 6.h,
-      //           width: 27.h,
-      //           child: Row(
-      //             children: [
-      //               Text(
-      //                 "Have a promo code?",
-      //                 style: TextStyle(color: Colors.white),
-      //               ),
-      //               const SizedBox(
-      //                 width: 5,
-      //               ),
-      //               Icon(
-      //                 Icons.local_offer_outlined,
-      //                 color: Colors.white,
-      //                 size: 20.sp,
-      //               ),
-      //             ],
-      //           ),
-      //         ),
-      //       )
-      //     : SizedBox(),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      bottomNavigationBar: Container(
-        color: Colors.white,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            boxHeight(10),
-            /*Container(
-              color: theme.backgroundColor,
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              height: 52,
-              child: Row(
-                children: [
-                  Text(
-                    getTranslated(context, "PAYMENT_MODE")!,
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          fontSize: 13.5,
-                        ),
-                  ),
-                  Spacer(),
-                  Container(
-                    width: 1,
-                    height: 28,
-                    color: theme.hintColor,
-                  ),
-                  Spacer(),
-                  PopupMenuButton(
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.account_balance_wallet,
-                          color: theme.primaryColor,
-                          size: 20,
-                        ),
-                        SizedBox(width: 12),
-                        Text(
-                          paymentType != ""
-                              ? paymentType
-                              : getTranslated(context, 'WALLET')!,
-                          style: theme.textTheme.button!.copyWith(
-                              color: theme.primaryColor, fontSize: 15),
-                        ),
-                      ],
+        // floatingActionButton: promoList.length > 0 && isFirstUser != "0"
+        //     ? InkWell(
+        //         onTap: () {
+        //           scaffoldKey.currentState!.showBottomSheet(
+        //             (context) => Container(
+        //               child: Column(
+        //                 mainAxisSize: MainAxisSize.min,
+        //                 children: [
+        //                   boxHeight(10),
+        //                   Row(
+        //                     children: [
+        //                       Expanded(
+        //                         child: text(
+        //                           getTranslated(context, "OFFER")!,
+        //                           isCentered: true,
+        //                           fontSize: 14.sp,
+        //                           fontFamily: fontMedium,
+        //                           textColor: MyColorName.colorTextPrimary,
+        //                         ),
+        //                       ),
+        //                       IconButton(
+        //                         onPressed: () {
+        //                           Navigator.pop(context);
+        //                         },
+        //                         icon: Icon(
+        //                           Icons.close,
+        //                           color: MyColorName.colorTextPrimary,
+        //                         ),
+        //                       ),
+        //                     ],
+        //                   ),
+        //                   boxHeight(10),
+        //                   Container(
+        //                     margin: EdgeInsets.all(getWidth(10)),
+        //                     child: TextField(
+        //                       controller: promoCon,
+        //                       decoration: InputDecoration(
+        //                           enabledBorder: OutlineInputBorder(),
+        //                           focusedBorder: OutlineInputBorder(),
+        //                           hintText:
+        //                               getTranslated(context, "PROMO_CODE1")!,
+        //                           suffixIcon: IconButton(
+        //                             onPressed: () {
+        //                               Navigator.pop(context);
+        //                               applyCode(promoCon.text);
+        //                             },
+        //                             icon: Icon(
+        //                               Icons.send,
+        //                               color: MyColorName.primaryLite,
+        //                             ),
+        //                           )),
+        //                     ),
+        //                   ),
+        //                   boxHeight(10),
+        //                   ListView.builder(
+        //                       itemCount: promoList.length,
+        //                       shrinkWrap: true,
+        //                       physics: NeverScrollableScrollPhysics(),
+        //                       itemBuilder: (context, index) {
+        //                         return Container(
+        //                           margin: EdgeInsets.all(getWidth(10)),
+        //                           decoration: boxDecoration(
+        //                             showShadow: true,
+        //                           ),
+        //                           child: ListTile(
+        //                             title: text(
+        //                               "${getTranslated(context, "PROMO_CODE1")} : ${promoList[index].promocode}",
+        //                               fontSize: 14.sp,
+        //                               fontFamily: fontMedium,
+        //                               textColor: MyColorName.colorTextPrimary,
+        //                             ),
+        //                             subtitle: text(
+        //                               "${promoList[index].message}",
+        //                               fontSize: 14.sp,
+        //                               fontFamily: fontMedium,
+        //                               textColor: MyColorName.colorTextPrimary,
+        //                             ),
+        //                             trailing: InkWell(
+        //                               onTap: () {
+        //                                 if (promoCon.text !=
+        //                                     promoList[index]
+        //                                         .promocode
+        //                                         .toString()) {
+        //                                   setState(() {
+        //                                     promoCon.text = promoList[index]
+        //                                         .promocode
+        //                                         .toString();
+        //                                   });
+        //                                   Navigator.pop(context);
+        //                                   applyCode(promoList[index].promocode);
+        //                                 } else {
+        //                                   UI.setSnackBar(
+        //                                       "Promo code already applied",
+        //                                       context);
+        //                                 }
+        //                               },
+        //                               child: Container(
+        //                                 width: 20.w,
+        //                                 height: 4.h,
+        //                                 decoration: boxDecoration(
+        //                                     radius: 5,
+        //                                     bgColor: promoCon.text ==
+        //                                             promoList[index]
+        //                                                 .promocode
+        //                                                 .toString()
+        //                                         ? Colors.grey
+        //                                         : Theme.of(context).primaryColor),
+        //                                 child: Center(
+        //                                     child: text(
+        //                                         promoCon.text ==
+        //                                                 promoList[index]
+        //                                                     .promocode
+        //                                                     .toString()
+        //                                             ? "Applied"
+        //                                             : getTranslated(
+        //                                                 context, "APPLY")!,
+        //                                         fontFamily: fontMedium,
+        //                                         fontSize: 10.sp,
+        //                                         isCentered: true,
+        //                                         textColor: Colors.white)),
+        //                               ),
+        //                             ),
+        //                           ),
+        //                         );
+        //                       }),
+        //                   boxHeight(10),
+        //                 ],
+        //               ),
+        //             ),
+        //           );
+        //         },
+        //         child: Container(
+        //           padding: EdgeInsets.all(12),
+        //           decoration: BoxDecoration(
+        //               borderRadius: BorderRadius.circular(15),
+        //               // radius: 100,
+        //               // showShadow: true,
+        //               color: Theme.of(context).primaryColor),
+        //           height: 6.h,
+        //           width: 27.h,
+        //           child: Row(
+        //             children: [
+        //               Text(
+        //                 "Have a promo code?",
+        //                 style: TextStyle(color: Colors.white),
+        //               ),
+        //               const SizedBox(
+        //                 width: 5,
+        //               ),
+        //               Icon(
+        //                 Icons.local_offer_outlined,
+        //                 color: Colors.white,
+        //                 size: 20.sp,
+        //               ),
+        //             ],
+        //           ),
+        //         ),
+        //       )
+        //     : SizedBox(),
+        // floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+        bottomNavigationBar: Container(
+          color: Colors.white,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              boxHeight(10),
+              /*Container(
+                color: theme.backgroundColor,
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                height: 52,
+                child: Row(
+                  children: [
+                    Text(
+                      getTranslated(context, "PAYMENT_MODE")!,
+                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                            fontSize: 13.5,
+                          ),
                     ),
-                    onSelected: (val) {
-                      setState(() {
-                        paymentType = val.toString();
-                      });
-                    },
-                    offset: Offset(0, -144),
-                    color: theme.backgroundColor,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
-                    itemBuilder: (BuildContext context) {
-                      return [
-                        PopupMenuItem(
-                          value: getString(Strings.CASH)!,
-                          child: Row(
-                            children: [
-                              Icon(Icons.credit_card_sharp),
-                              SizedBox(width: 12),
-                              Text(getTranslated(context, 'CASH')!),
-                            ],
+                    Spacer(),
+                    Container(
+                      width: 1,
+                      height: 28,
+                      color: theme.hintColor,
+                    ),
+                    Spacer(),
+                    PopupMenuButton(
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.account_balance_wallet,
+                            color: theme.primaryColor,
+                            size: 20,
                           ),
-                        ),
-                        PopupMenuItem(
-                          child: Row(
-                            children: [
-                              Icon(Icons.account_balance_wallet),
-                              SizedBox(width: 12),
-                              Text(getTranslated(context, 'WALLET')!),
-                            ],
+                          SizedBox(width: 12),
+                          Text(
+                            paymentType != ""
+                                ? paymentType
+                                : getTranslated(context, 'WALLET')!,
+                            style: theme.textTheme.button!.copyWith(
+                                color: theme.primaryColor, fontSize: 15),
                           ),
-                          value: getString(Strings.WALLET)!,
-                        ),
-                      ];
-                    },
-                  ),
-                ],
-              ),
-            ),*/
+                        ],
+                      ),
+                      onSelected: (val) {
+                        setState(() {
+                          paymentType = val.toString();
+                        });
+                      },
+                      offset: Offset(0, -144),
+                      color: theme.backgroundColor,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                      itemBuilder: (BuildContext context) {
+                        return [
+                          PopupMenuItem(
+                            value: getString(Strings.CASH)!,
+                            child: Row(
+                              children: [
+                                Icon(Icons.credit_card_sharp),
+                                SizedBox(width: 12),
+                                Text(getTranslated(context, 'CASH')!),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem(
+                            child: Row(
+                              children: [
+                                Icon(Icons.account_balance_wallet),
+                                SizedBox(width: 12),
+                                Text(getTranslated(context, 'WALLET')!),
+                              ],
+                            ),
+                            value: getString(Strings.WALLET)!,
+                          ),
+                        ];
+                      },
+                    ),
+                  ],
+                ),
+              ),*/
 
-            ///Distance
-            // Container(
-            //   color: theme.backgroundColor,
-            //   padding: EdgeInsets.symmetric(horizontal: 20),
-            //   height: 52,
-            //   child: Row(
-            //     children: [
-            //       Text(
-            //         "${getTranslated(context, "DISTANCE")}         ",
-            //         style: Theme.of(context).textTheme.bodyText1!.copyWith(
-            //               fontSize: 13.5,
-            //             ),
-            //       ),
-            //       Spacer(),
-            //       Container(
-            //         width: 1,
-            //         height: 28,
-            //         color: theme.hintColor,
-            //       ),
-            //       Spacer(),
-            //       Text(
-            //         distance + " Km",
-            //         style: theme.textTheme.button!
-            //             .copyWith(color: theme.primaryColor, fontSize: 15),
-            //       ),
-            //     ],
-            //   ),
-            // ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  InkWell(
-                    onTap: () {
-                      Future.delayed(Duration(seconds: 1), () {
-                        if (cabSelected) {
-                          if (bookingDate != null) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ConfirmRiderRequest(
-                                    bookingId: bookingId,
-                                    bookingDate: bookingDate,
-                                    currentCar: _currentCar,
-                                    destination: widget.destination,
-                                    driverList: driverList,
-                                    dropAddress: widget.dropAddress,
-                                    gst: gst,
-                                    nightCharge: nightCharge,
-                                    parking: parking,
-                                    paymentType: paymentType,
-                                    pickAddress: widget.pickAddress,
-                                    promoDiscount: promoDiscount,
-                                    promoList: promoList,
-                                    returnDate: widget.returnDate,
-                                    rideList: rideList,
-                                    shareType: widget.shareType,
-                                    source: widget.source,
-                                    stateCharge: stateCharge,
-                                    surge: surge,
-                                    surgePer: surgePer,
-                                    time: widget.time,
-                                    tollTax: tollTax,
-                                    type: "schedule",
-                                    unitPrice: unitPrice,
-                                    vehicleId: vehicleId,
-                                    vendorId: vendorId,
-                                    partPayment: partPayment,
-                                  ),
-                                ));
-                            // showConfirm("schedule");
+              ///Distance
+              // Container(
+              //   color: theme.backgroundColor,
+              //   padding: EdgeInsets.symmetric(horizontal: 20),
+              //   height: 52,
+              //   child: Row(
+              //     children: [
+              //       Text(
+              //         "${getTranslated(context, "DISTANCE")}         ",
+              //         style: Theme.of(context).textTheme.bodyText1!.copyWith(
+              //               fontSize: 13.5,
+              //             ),
+              //       ),
+              //       Spacer(),
+              //       Container(
+              //         width: 1,
+              //         height: 28,
+              //         color: theme.hintColor,
+              //       ),
+              //       Spacer(),
+              //       Text(
+              //         distance + " Km",
+              //         style: theme.textTheme.button!
+              //             .copyWith(color: theme.primaryColor, fontSize: 15),
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        Future.delayed(Duration(seconds: 1), () {
+                          if (cabSelected) {
+                            if (bookingDate != null) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ConfirmRiderRequest(
+                                      bookingId: bookingId,
+                                      bookingDate: bookingDate,
+                                      currentCar: _currentCar,
+                                      destination: widget.destination,
+                                      driverList: driverList,
+                                      dropAddress: widget.dropAddress,
+                                      gst: gst,
+                                      nightCharge: nightCharge,
+                                      parking: parking,
+                                      paymentType: paymentType,
+                                      pickAddress: widget.pickAddress,
+                                      promoDiscount: promoDiscount,
+                                      promoList: promoList,
+                                      returnDate: widget.returnDate,
+                                      rideList: rideList,
+                                      shareType: widget.shareType,
+                                      source: widget.source,
+                                      stateCharge: stateCharge,
+                                      surge: surge,
+                                      surgePer: surgePer,
+                                      time: widget.time,
+                                      tollTax: tollTax,
+                                      type: "schedule",
+                                      unitPrice: unitPrice,
+                                      vehicleId: vehicleId,
+                                      vendorId: vendorId,
+                                      partPayment: partPayment,
+                                    ),
+                                  ));
+                              // showConfirm("schedule");
+                            } else {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ConfirmRiderRequest(
+                                      bookingId: bookingId,
+                                      bookingDate: bookingDate,
+                                      currentCar: _currentCar,
+                                      destination: widget.destination,
+                                      driverList: driverList,
+                                      dropAddress: widget.dropAddress,
+                                      gst: gst,
+                                      nightCharge: nightCharge,
+                                      parking: parking,
+                                      paymentType: paymentType,
+                                      pickAddress: widget.pickAddress,
+                                      promoDiscount: promoDiscount,
+                                      promoList: promoList,
+                                      returnDate: widget.returnDate,
+                                      rideList: rideList,
+                                      shareType: widget.shareType,
+                                      source: widget.source,
+                                      stateCharge: stateCharge,
+                                      surge: surge,
+                                      surgePer: surgePer,
+                                      time: widget.time,
+                                      tollTax: tollTax,
+                                      type: "now",
+                                      unitPrice: unitPrice,
+                                      vehicleId: vehicleId,
+                                      vendorId: vendorId,
+                                      partPayment: partPayment,
+                                    ),
+                                  ));
+                              // showConfirm("now");
+                            }
                           } else {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ConfirmRiderRequest(
-                                    bookingId: bookingId,
-                                    bookingDate: bookingDate,
-                                    currentCar: _currentCar,
-                                    destination: widget.destination,
-                                    driverList: driverList,
-                                    dropAddress: widget.dropAddress,
-                                    gst: gst,
-                                    nightCharge: nightCharge,
-                                    parking: parking,
-                                    paymentType: paymentType,
-                                    pickAddress: widget.pickAddress,
-                                    promoDiscount: promoDiscount,
-                                    promoList: promoList,
-                                    returnDate: widget.returnDate,
-                                    rideList: rideList,
-                                    shareType: widget.shareType,
-                                    source: widget.source,
-                                    stateCharge: stateCharge,
-                                    surge: surge,
-                                    surgePer: surgePer,
-                                    time: widget.time,
-                                    tollTax: tollTax,
-                                    type: "now",
-                                    unitPrice: unitPrice,
-                                    vehicleId: vehicleId,
-                                    vendorId: vendorId,
-                                    partPayment: partPayment,
-                                  ),
-                                ));
-                            // showConfirm("now");
+                            UI.setSnackBar("Select a cab first", context);
                           }
-                        } else {
-                          UI.setSnackBar("Select a cab first", context);
-                        }
-                      });
-                      // Navigator.push(context, MaterialPageRoute(builder: (context)=>FindingRidePage()));
-                    },
-                    child: Container(
-                      width: 90.w,
-                      height: bookingDate != null &&
-                              bookingDate!.minute > DateTime.now().minute
-                          ? 7.h
-                          : 7.h,
-                      decoration: boxDecoration(
-                          radius: 10, bgColor: MyColorName.secondary),
-                      child: Center(
-                        child: saveStatus
-                            ? text(
-                                bookingDate != null
-                                    ? "CONFIRM"
-                                    // "\n${getDate(bookingDate.toString())}"
-                                    : "CONFIRM", //"${getTranslated(context, "RIDE_NOW")}",
-                                fontFamily: fontMedium,
-                                fontSize: bookingDate != null ? 12.sp : 14.sp,
-                                isCentered: true,
-                                fontWeight: FontWeight.w600,
-                                textColor: Colors.white)
-                            : CircularProgressIndicator(
-                                color: Colors.white,
-                              ),
+                        });
+                        // Navigator.push(context, MaterialPageRoute(builder: (context)=>FindingRidePage()));
+                      },
+                      child: Container(
+                        width: 90.w,
+                        height: bookingDate != null &&
+                                bookingDate!.minute > DateTime.now().minute
+                            ? 7.h
+                            : 7.h,
+                        decoration: boxDecoration(
+                            radius: 10, bgColor: MyColorName.secondary),
+                        child: Center(
+                          child: saveStatus
+                              ? text(
+                                  bookingDate != null
+                                      ? "CONFIRM"
+                                      // "\n${getDate(bookingDate.toString())}"
+                                      : "CONFIRM", //"${getTranslated(context, "RIDE_NOW")}",
+                                  fontFamily: fontMedium,
+                                  fontSize: bookingDate != null ? 12.sp : 14.sp,
+                                  isCentered: true,
+                                  fontWeight: FontWeight.w600,
+                                  textColor: Colors.white)
+                              : CircularProgressIndicator(
+                                  color: Colors.white,
+                                ),
+                        ),
                       ),
                     ),
-                  ),
-                  // bookingDate != null
-                  //     ? Container(
-                  //         decoration: boxDecoration(
-                  //             radius: 10,
-                  //             color: Theme.of(context).primaryColor),
-                  //         height: 6.h,
-                  //         width: 6.h,
-                  //         child: Center(
-                  //           child: IconButton(
-                  //               onPressed: () {
-                  //                 DatePicker.showDateTimePicker(context,
-                  //                     showTitleActions: true,
-                  //                     onChanged: (date) {
-                  //                   print('change $date in time zone ' +
-                  //                       date.timeZoneOffset.inHours.toString());
-                  //                 }, onConfirm: (date) {
-                  //                   setState(() {
-                  //                     bookingDate = date;
-                  //                   });
-                  //                   print('confirm $date');
-                  //                 },
-                  //                     //currentTime: DateTime.now(),
-                  //                     minTime: DateTime.now(),
-                  //                     maxTime: DateTime.now()
-                  //                         .add(Duration(days: 2)));
-                  //               },
-                  //               icon: Icon(
-                  //                 Icons.calendar_today_outlined,
-                  //                 color: Theme.of(context).primaryColor,
-                  //                 size: 24.sp,
-                  //               )),
-                  //         ),
-                  //       )
-                  //     : SizedBox()
-                ],
+                    // bookingDate != null
+                    //     ? Container(
+                    //         decoration: boxDecoration(
+                    //             radius: 10,
+                    //             color: Theme.of(context).primaryColor),
+                    //         height: 6.h,
+                    //         width: 6.h,
+                    //         child: Center(
+                    //           child: IconButton(
+                    //               onPressed: () {
+                    //                 DatePicker.showDateTimePicker(context,
+                    //                     showTitleActions: true,
+                    //                     onChanged: (date) {
+                    //                   print('change $date in time zone ' +
+                    //                       date.timeZoneOffset.inHours.toString());
+                    //                 }, onConfirm: (date) {
+                    //                   setState(() {
+                    //                     bookingDate = date;
+                    //                   });
+                    //                   print('confirm $date');
+                    //                 },
+                    //                     //currentTime: DateTime.now(),
+                    //                     minTime: DateTime.now(),
+                    //                     maxTime: DateTime.now()
+                    //                         .add(Duration(days: 2)));
+                    //               },
+                    //               icon: Icon(
+                    //                 Icons.calendar_today_outlined,
+                    //                 color: Theme.of(context).primaryColor,
+                    //                 size: 24.sp,
+                    //               )),
+                    //         ),
+                    //       )
+                    //     : SizedBox()
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

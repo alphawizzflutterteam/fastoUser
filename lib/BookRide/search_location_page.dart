@@ -14,6 +14,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:pristine_andaman/BookRide/choose_cab_page.dart';
 import 'package:pristine_andaman/BookRide/ride_booked_page.dart';
 import 'package:pristine_andaman/DrawerPages/Rides/intercity_rides.dart';
 import 'package:pristine_andaman/DrawerPages/Rides/rental_rides.dart';
@@ -44,7 +45,6 @@ import '../Model/rental_model_new.dart';
 import '../Model/rides_model.dart';
 import '../utils/PushNotificationService.dart';
 import '../utils/new_utils/MapScreen.dart';
-import 'confirm_rider_request.dart';
 
 class SearchLocationPage extends StatefulWidget {
   @override
@@ -4908,40 +4908,64 @@ class _SearchLocationPageState extends State<SearchLocationPage>
                                 await Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => ConfirmRiderRequest(
-                                      bookingId: 1,
-                                      bookingDate: bookingDate,
-                                      currentCar: _currentCar,
-                                      destination: LatLng(latitude, longitude),
-                                      driverList: driverList,
-                                      dropAddress: dropCon.text,
-                                      gst: gst,
-                                      nightCharge: nightCharge,
-                                      parking: parking,
-                                      paymentType: paymentType,
-                                      pickAddress: pickupCon.text,
-                                      promoDiscount: promoDiscount,
-                                      promoList: promoList,
-                                      returnDate: bookingTime.toString(),
-                                      rideList: rideList,
-                                      shareType: '',
-                                      source:
-                                          LatLng(dropLatitude, dropLongitude),
-                                      stateCharge: stateCharge,
-                                      surge: surge,
-                                      surgePer: '',
-                                      time: '',
-                                      tollTax: tollTax,
-                                      type: currentIndex == 1
-                                          ? 'current'
-                                          : 'schedule',
-                                      unitPrice: unitPrice,
-                                      vehicleId: vehicleId,
-                                      vendorId: vendorId,
-                                      partPayment: 0.0,
+                                    builder: (context) => ChooseCabPage(
+                                      LatLng(latitude, longitude),
+                                      LatLng(dropLatitude, dropLongitude),
+                                      pickupCon.text,
+                                      pickupCityCon.text,
+                                      dropCityCon.text,
+                                      dropCon.text,
+                                      paymentType,
+                                      bookingDate != null ? bookingDate : null,
+                                      currentIndex == 3
+                                          ? sharing
+                                              ? "Share"
+                                              : "Personal"
+                                          : "",
+                                      selectCabType.toString(),
+                                      selectedHour.toString(),
+                                      returnDate.toString(),
+                                      returnTime.toString(),
                                     ),
                                   ),
                                 );
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) => ConfirmRiderRequest(
+                                //       bookingId: 1,
+                                //       bookingDate: bookingDate,
+                                //       currentCar: _currentCar,
+                                //       destination: LatLng(latitude, longitude),
+                                //       driverList: driverList,
+                                //       dropAddress: dropCon.text,
+                                //       gst: gst,
+                                //       nightCharge: nightCharge,
+                                //       parking: parking,
+                                //       paymentType: paymentType,
+                                //       pickAddress: pickupCon.text,
+                                //       promoDiscount: promoDiscount,
+                                //       promoList: promoList,
+                                //       returnDate: bookingTime.toString(),
+                                //       rideList: rideList,
+                                //       shareType: '',
+                                //       source:
+                                //           LatLng(dropLatitude, dropLongitude),
+                                //       stateCharge: stateCharge,
+                                //       surge: surge,
+                                //       surgePer: '',
+                                //       time: '',
+                                //       tollTax: tollTax,
+                                //       type: currentIndex == 1
+                                //           ? 'current'
+                                //           : 'schedule',
+                                //       unitPrice: unitPrice,
+                                //       vehicleId: vehicleId,
+                                //       vendorId: vendorId,
+                                //       partPayment: 0.0,
+                                //     ),
+                                //   ),
+                                // );
                               }
                               // Navigator.push(
                               //   context,

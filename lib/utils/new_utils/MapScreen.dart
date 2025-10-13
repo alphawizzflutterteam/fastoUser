@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_places_autocomplete_text_field/google_places_autocomplete_text_field.dart';
+import 'package:google_places_flutter/google_places_flutter.dart';
+import 'package:google_places_flutter/model/prediction.dart';
+// import 'package:google_places_autocomplete_text_field/google_places_autocomplete_text_field.dart';
 
 class MapSearchScreen extends StatefulWidget {
   @override
@@ -39,41 +41,76 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
               children: [
                 // const Icon(Icons.search, color: Colors.black),
                 const SizedBox(width: 8),
+                // Expanded(
+                //   child: GooglePlacesAutoCompleteTextFormField(
+                //     textEditingController: locationCtr,
+                //     googleAPIKey: "AIzaSyD65ula_94BY_XziYpJOLXFN-DOVwnBdcI",
+                //     debounceTime: 400,
+                //     fetchCoordinates: true,
+                //     decoration: InputDecoration(
+                //       prefixIcon: Icon(Icons.search),
+                //       hintText: "Search location here",
+                //       border: OutlineInputBorder(
+                //         borderRadius: BorderRadius.circular(8),
+                //         borderSide: BorderSide(color: Colors.grey),
+                //       ),
+                //       contentPadding:
+                //           EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                //     ),
+                //     onPlaceDetailsWithCoordinatesReceived: (prediction) {
+                //       selectedLat = double.tryParse(prediction.lat.toString());
+                //       selectedLng = double.tryParse(prediction.lng.toString());
+                //       locationCtr.text = prediction.description!;
+                //       locationCtr.selection = TextSelection.fromPosition(
+                //         TextPosition(offset: locationCtr.text.length),
+                //       );
+                //       if (selectedLat != null && selectedLng != null) {
+                //         Navigator.pop(context, {
+                //           'address': locationCtr.text,
+                //           'lat': selectedLat,
+                //           'lng': selectedLng,
+                //         });
+                //       }
+                //     },
+                //     onSuggestionClicked: (prediction) {
+                //       locationCtr.text = prediction.description!;
+                //       locationCtr.selection = TextSelection.fromPosition(
+                //         TextPosition(offset: prediction.description!.length),
+                //       );
+                //     },
+                //   ),
+                // ),
                 Expanded(
-                  child: GooglePlacesAutoCompleteTextFormField(
+                  child: GooglePlaceAutoCompleteTextField(
                     textEditingController: locationCtr,
                     googleAPIKey: "AIzaSyD65ula_94BY_XziYpJOLXFN-DOVwnBdcI",
-                    debounceTime: 400,
-                    fetchCoordinates: true,
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.search),
-                      hintText: "Search location here",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(color: Colors.grey),
-                      ),
+                    inputDecoration: const InputDecoration(
+                      isDense: true,
                       contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                      border: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      disabledBorder: InputBorder.none,
+                      hintText: "Search location...",
                     ),
-                    onPlaceDetailsWithCoordinatesReceived: (prediction) {
-                      selectedLat = double.tryParse(prediction.lat.toString());
-                      selectedLng = double.tryParse(prediction.lng.toString());
-                      locationCtr.text = prediction.description!;
-                      locationCtr.selection = TextSelection.fromPosition(
-                        TextPosition(offset: locationCtr.text.length),
-                      );
-                      if (selectedLat != null && selectedLng != null) {
+                    debounceTime: 400,
+                    isLatLngRequired: true,
+                    getPlaceDetailWithLatLng: (Prediction prediction) {
+                      if (prediction.lat != null && prediction.lng != null) {
+                        selectedLat = double.tryParse(prediction.lat!);
+                        selectedLng = double.tryParse(prediction.lng!);
                         Navigator.pop(context, {
-                          'address': locationCtr.text,
+                          'address': prediction.description ?? '',
                           'lat': selectedLat,
                           'lng': selectedLng,
                         });
                       }
                     },
-                    onSuggestionClicked: (prediction) {
-                      locationCtr.text = prediction.description!;
+                    itemClick: (Prediction prediction) {
+                      locationCtr.text = prediction.description ?? '';
                       locationCtr.selection = TextSelection.fromPosition(
-                        TextPosition(offset: prediction.description!.length),
+                        TextPosition(offset: locationCtr.text.length),
                       );
                     },
                   ),

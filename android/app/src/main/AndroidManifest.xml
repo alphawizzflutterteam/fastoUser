@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.fasto.user">
+    package="com.fasto_main.user">
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
          calls FlutterMain.startInitialization(this); in its onCreate method.
          In most cases you can leave thi€s as-is, but you if you want to provide
@@ -129,7 +129,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="kpg" android:host="com.fasto.user" />
+                <data android:scheme="kpg" android:host="com.fasto_main.user" />
             </intent-filter>
         </activity>
         <activity
